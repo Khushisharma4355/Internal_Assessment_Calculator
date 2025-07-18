@@ -28,6 +28,11 @@ const Student=sequelize.define("Student",{     //create a table named Students i
     },
     parent:{
         type:DataTypes.STRING,
+        allowNull: false,
+        validate: {
+    len: [10, 15], // Optional: restrict to valid mobile number lengths
+    is: /^[0-9]+$/i // Optional: allows only digits (no letters)
+  }
     },
 
 });
