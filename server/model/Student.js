@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../config/db";
+import sequelize from "../config/db.js";
 const Student=sequelize.define("Student",{     //create a table named Students in the db
     name:{
         type:DataTypes.STRING,
@@ -31,4 +31,4 @@ const Student=sequelize.define("Student",{     //create a table named Students i
     },
 
 });
-export default Student;
+export default Student
