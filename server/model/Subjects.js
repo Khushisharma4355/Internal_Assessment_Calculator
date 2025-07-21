@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
 
 const Subject = sequelize.define("Subject", {
-  subjectId: {
+  id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
@@ -13,23 +13,32 @@ const Subject = sequelize.define("Subject", {
   },
   subjectCode: {
     type: DataTypes.STRING,
-    unique: true
+    unique: true,
+    allowNull: false
+  },
+  course_id: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    references: {
+      model: "courses",  // table name or model name
+      key: "courseId"
+    }
+  },
+  semester_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    // references: {
+    //   model: "Semesters",
+    //   key: "id"
+    // }
   },
   subjectType: {
     type: DataTypes.ENUM("Theory", "Practical"),
     defaultValue: "Theory"
-  },
-  courseId: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  semesterNumber: {
-    type: DataTypes.INTEGER,
-    allowNull: false
   }
 }, {
   tableName: "subjects",
-  timestamps: false
+  timestamps: true
 });
 
 export default Subject;
