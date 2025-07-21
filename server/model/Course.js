@@ -12,7 +12,11 @@ const Course = sequelize.define("Course", {
   courseName: {
     type: DataTypes.STRING,
     allowNull: false
-  }
+  },
+},{
+    tableName: "course",
+  timestamps: true
+  
 });
 
 export default Course;

@@ -13,17 +13,18 @@ Course.hasMany(Student, {
 Student.belongsTo(Course, {
   foreignKey: "courseId"
 });
-
+// Course has many Subjects
 Course.hasMany(Subject, {
   foreignKey: "courseId"
 });
-
 Subject.belongsTo(Course, {
   foreignKey: "courseId"
 });
+
+
 const syncDatabase = async () => {
   try {
-    await sequelize.sync({ alter: true }); // create/update tables
+    await sequelize.sync({ force: true }); // create/update tables
     console.log("All models synced successfully");
   } catch (err) {
     console.error("Error syncing models:", err);

@@ -19,6 +19,7 @@ const Student = sequelize.define("Student", {     //create a table named Student
     },
     registrationNo: {
         type: DataTypes.BIGINT,
+        primaryKey:true,
         allowNull: false
     },
     email: {
@@ -34,6 +35,14 @@ const Student = sequelize.define("Student", {     //create a table named Student
             is: /^[0-9]+$/i // Optional: allows only digits (no letters)
         }
     },
+     section_id: {
+        type: DataTypes.STRING,
+        allowNull: true, //  Allows MCA or non-section students
+        // references: {
+        //     model: 'Sections',
+        //     key: 'id'
+        // }
+    }
 
 });
 export default Student
