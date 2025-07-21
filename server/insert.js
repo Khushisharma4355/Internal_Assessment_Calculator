@@ -15,7 +15,7 @@ const insertStudent = async () => {
         const student = await Student.create({
             name: 'Pallavi Goswami',
             classs: 'BCA',
-            courseId: 'BCA2023',
+            courseId: '4',
             rollno: 101001,
             registrationNo: 2023123457,
             email: 'pallvi.sharma@example.com',
@@ -59,5 +59,5 @@ const insertCourse = async () => {
     }
 
 };
-// insertStudent();
-insertCourse();
+insertStudent();
+// insertCourse();

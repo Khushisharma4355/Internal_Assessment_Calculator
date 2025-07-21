@@ -24,7 +24,7 @@ Subject.belongsTo(Course, {
 
 const syncDatabase = async () => {
   try {
-    await sequelize.sync({ force: true }); // create/update tables
+    await sequelize.sync(); // create/update tables
     console.log("All models synced successfully");
   } catch (err) {
     console.error("Error syncing models:", err);
