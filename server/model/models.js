@@ -4,6 +4,8 @@ import Student from "./Student.js";
 import Course from "./Course.js";
 import Subject from "./Subjects.js";
 // import Subject from "./subject.js";
+import Department from "./Department.js";
+import Teacher from "./Teacher.js";
 
 //Course has many Students
 Course.hasMany(Student, {
@@ -19,6 +21,9 @@ Course.hasMany(Subject, {
 });
 Subject.belongsTo(Course, {
   foreignKey: "courseId"
+});
+Teacher.belongsTo(Department,{
+  foreignKey:"dep_id"
 });
 
 
