@@ -7,6 +7,7 @@ import { StuHome } from './Screens/Students/StuHome'
 import { UploadMarks } from './Screens/Teacher/UploadMarks'
 import { Managestu } from './Screens/Teacher/ManageStudents'
 import { TeaReports } from './Screens/Teacher/Result'
+import { Footer } from './Components/Footer/Footer'
 function App() {
 
   return (
@@ -23,6 +24,7 @@ function App() {
 
 
       </Routes>
+      <Footer/>
     </>
   )
 }
