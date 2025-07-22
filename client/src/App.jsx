@@ -9,11 +9,14 @@ import { Managestu } from './Screens/Teacher/ManageStudents'
 import { TeaReports } from './Screens/Teacher/Result'
 import { Footer } from './Components/Footer/Footer'
 import { AdminHome } from './Screens/Admin/AdminHome'
+import { MainHome } from './Screens/Main/Main'
 function App() {
 
   return (
     <>
       <Routes>
+
+        <Route path="/" element={<MainHome/>}/>
         <Route path="/students/" element={<StuHome/>}/>
         <Route path="/students/assesments" element={<Assesments/>}/>
         <Route path="/students/reports" element={<Reports/>}/>
@@ -26,7 +29,7 @@ function App() {
 
 
       </Routes>
-      <Footer/>
+      <Footer />
     </>
   )
 }
