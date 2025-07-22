@@ -8,18 +8,20 @@ import { UploadMarks } from './Screens/Teacher/UploadMarks'
 import { Managestu } from './Screens/Teacher/ManageStudents'
 import { TeaReports } from './Screens/Teacher/Result'
 import { Footer } from './Components/Footer/Footer'
+import { AdminHome } from './Screens/Admin/AdminHome'
 function App() {
 
   return (
     <>
       <Routes>
-        <Route path="/" element={<StuHome/>}/>
-        <Route path="/assesments" element={<Assesments/>}/>
-        <Route path="/reports" element={<Reports/>}/>
+        <Route path="/students/" element={<StuHome/>}/>
+        <Route path="/students/assesments" element={<Assesments/>}/>
+        <Route path="/students/reports" element={<Reports/>}/>
         <Route path="/teachers/" element={<TeaHome/>}/>
         <Route path="/teachers/uploadmarks" element={<UploadMarks/>}/>
         <Route path="/teachers/managestudents" element={<Managestu/>}/>
         <Route path="/teachers/reports" element={<TeaReports/>}/>
+        <Route path="/admin/" element={<AdminHome/>}/>
 
 
 

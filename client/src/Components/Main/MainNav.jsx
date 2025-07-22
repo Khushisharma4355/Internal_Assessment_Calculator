@@ -1,7 +1,7 @@
 import { Navbar, Nav, Container, NavDropdown,Dropdown } from "react-bootstrap"
 import "./navbar.css"
 import { Link } from "react-router-dom"
-export const Stunav = () => {
+export const MainNav = () => {
     return (
         <>
             <Navbar
@@ -21,17 +21,6 @@ export const Stunav = () => {
                         />
                         <span style={{ fontWeight: 'bold', fontSize: '1.6rem', color: 'white' }}><span style={{color:"orange"}}>Ur</span>Level</span>
                     </Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav " className="ms-auto" />
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="me-auto fw-bold fs-5">
-                            <Nav.Link as={Link} to="/students/">Home</Nav.Link>
-                            <Nav.Link as={Link} to="/students/assesments">Assesments</Nav.Link>
-                            <Nav.Link as={Link} to="/students/reports">Report</Nav.Link>
-                        </Nav>
-                        <Nav className="fw-bold fs-5">
-                            <Nav.Link as={Link} to="/logout">Logout</Nav.Link>
-                        </Nav>
-                    </Navbar.Collapse>
                 </Container>
             </Navbar>
         </>
