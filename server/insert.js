@@ -1,12 +1,13 @@
 //this file is use to insert data into the table only nothing else
-//so run this whenver you want to insert new data to the table okkk shri shri pallavi ji
+//so run this whenver you want to insert new data to the table okkk shri shri pallavi ji 
+// 👍👍👍okkk khushi jiiii
 import sequelize from './config/db.js';
 import Student from './model/Student.js';
 import Course from './model/Course.js';
 const insertStudent = async () => {
     try {
         await sequelize.authenticate();
-        console.log('✅ Connected to DB');
+        console.log(' Connected to DB');
 
         //  sync the model (run this only once)
         await sequelize.sync(); // to create table if they dont exist
