@@ -46,6 +46,7 @@ export const StuHome=()=>{
           </Col>
         </Row>
         </Container>
+        
         </>
     )
 }

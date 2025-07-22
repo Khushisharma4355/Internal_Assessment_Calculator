@@ -1,6 +1,7 @@
 // import {Navv} from "../../Components/Students/NavBar/Navbar"
 import { Row,Col,Container } from "react-bootstrap"
 import { TeaNav } from "../../Components/Teachers/TeaNav"
+
 export const TeaHome=()=>{
     return(
         <>
