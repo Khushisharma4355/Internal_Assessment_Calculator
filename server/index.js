@@ -1,20 +1,32 @@
-// import { ApolloServer } from "@apollo/server";
-// import { startStandaloneServer } from '@apollo/server/standalone';
 import express from "express";
-import sequelize from "./config/db.js";
-// import  Student  from "./model/Student.js";
-// import Course from "./model/Course.js";
-import { syncDatabase } from "./model/models.js";
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@apollo/server/express4";
+import { typeDefs } from "./graphql/typeDefs.js";
+import { resolvers } from "./graphql/resolvers.js";
+import cors from "cors";
 import dotenv from "dotenv";
+import { syncDatabase } from "./model/models.js";
+
 dotenv.config();
-const app=express();
-app.use(express.json());
-const PORT=process.env.PORT||4000;
-// sequelize.sync({alter:true})
-// .then(()=>{
-//     console.log("My sql synced");
-// })
-syncDatabase();
-app.listen(PORT,()=>{
-    console.log("server running  at 4000 port");
-})
+
+const app = express();
+app.use(cors());
+app.use(express.json()); 
+
+//Create Apollo Server
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+});
+await server.start();
+app.use(
+  "/graphql",
+  expressMiddleware(server)
+);
+
+const PORT = process.env.PORT || 4000;
+
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}/graphql`);
+  syncDatabase(); // connect to database
+});
