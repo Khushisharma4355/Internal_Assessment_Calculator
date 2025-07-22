@@ -6,12 +6,14 @@ import Subject from "./Subjects.js";
 // import Subject from "./subject.js";
 import Department from "./Department.js";
 import Teacher from "./Teacher.js";
-
+import Admin from "./Admin.js";
 //Course has many Students
 Course.hasMany(Student, {
   foreignKey: "courseId"
 });
-
+Admin.belongsTo(Teacher,{
+  foreignKey:"emp_id"
+})
 Student.belongsTo(Course, {
   foreignKey: "courseId"
 });
@@ -36,4 +38,4 @@ const syncDatabase = async () => {
   }
 };
 
-export { Student, Course, Subject,syncDatabase};
+export { Student, Course, Subject,Teacher,Admin,Department,syncDatabase};
