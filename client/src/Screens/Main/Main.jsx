@@ -1,47 +1,63 @@
 import { Row, Col, Container, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { MainNav } from "../../Components/Main/MainNav";
+import { motion } from "framer-motion"; // Optional animation library
+import { FaUserGraduate, FaChalkboardTeacher, FaUserShield } from "react-icons/fa";
+
+
 export const MainHome = () => {
   const navigate = useNavigate();
 
   const data = [
-    { id: 1, login: "Students", oper: "students" },
-    { id: 2, login: "Teachers", oper: "teachers" },
-    { id: 3, login: "Admin", oper: "admin" }
+    { id: 1, login: "Students", oper: "students", icon: <FaUserGraduate size={40} /> },
+    { id: 2, login: "Teachers", oper: "teachers", icon: <FaChalkboardTeacher size={40} /> },
+    { id: 3, login: "Admin", oper: "admin", icon: <FaUserShield size={40} /> }
   ];
 
   const handleClick = (oper) => {
-    if (oper === "students") {
-      navigate("/students/");
-    } else if (oper === "teachers") {
-      navigate("/teachers/");
-    } else if (oper === "admin") {
-      navigate("/admin/");
-    }
+    navigate(`/${oper}/`);
   };
 
   return (
     <>
-      <MainNav />
-      <Container className="bg-light py-5">
-       <Row
-              className="text-center p-5 m-5 fs-5 fw-bold "
-        >
-            <Col>
-            <h1>UrLevel Login!!!</h1></Col>
+      {/* <MainNav /> */}
+      <Container fluid className="bg-light py-5 min-vh-100">
+        <Row className="text-center mb-4">
+          <Col>
+            <img
+              src="http://192.168.1.12/images/maimt_logo.png"
+              width="120"
+              height="120"
+              alt="MAIMT Logo"
+              className="mb-3"
+            />
+            <h1 style={{ fontFamily: "cursive", fontWeight: "bold", fontSize: "3rem" }}>
+              <span style={{ color: "orange" }}>Ur</span>Level
+            </h1>
+          </Col>
         </Row>
-        <Row 
-        className="justify-content-center"
-        >
+
+        <Row className="justify-content-center gap-4">
           {data.map((item) => (
-            <Col key={item.id} md={4} className="mb-4 d-flex justify-content-center" >
-              <Card
-              className="text-center p-5 m-5 fs-5 fw-bold shadow-lg border-0"
-                style={{ width: "12rem", cursor: "pointer",backgroundColor:"#FFB433" }}
-                onClick={() => handleClick(item.oper)}
-              >
-                {item.login}
-              </Card>
+            <Col key={item.id} xs={10} sm={6} md={4} lg={3} className="d-flex justify-content-center">
+              <motion.div whileHover={{ scale: 1.05 }}>
+                <Card
+                  className="text-white text-center p-4 shadow border-0"
+                  style={{
+                    background: "linear-gradient(135deg, #1d3557 0%, #152a47ff 100%)",
+                    cursor: "pointer",
+                    borderRadius: "1.2rem",
+                    minWidth: "180px"
+                  }}
+                  onClick={() => handleClick(item.oper)}
+                >
+                  <Card.Body className="fs-4 fw-semibold">
+                                        <div className="mb-2">{item.icon}</div>
+
+                    {item.login}
+                    </Card.Body>
+                </Card>
+              </motion.div>
             </Col>
           ))}
         </Row>
