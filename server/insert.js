@@ -61,4 +61,4 @@ const insertCourse = async () => {
 
 };
 insertStudent();
-// insertCourse();
+insertCourse();

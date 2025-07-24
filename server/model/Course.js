@@ -13,10 +13,19 @@ const Course = sequelize.define("Course", {
     type: DataTypes.STRING,
     allowNull: false
   },
-},{
-    tableName: "courses",
+  dep_id: {
+    type: DataTypes.STRING,
+    references: {
+      model: "Departments",
+      key: "dep_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE"
+    }
+  }
+}, {
+  tableName: "Courses",
   timestamps: true
-  
+
 });
 
 export default Course;
