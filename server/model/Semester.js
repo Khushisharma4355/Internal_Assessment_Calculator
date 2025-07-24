@@ -6,14 +6,6 @@ const Semester=sequelize.define("Semesters",{
         autoIncrement:true,
         primaryKey:true
     },
-    // courseId:{
-    //     type:DataTypes.STRING,
-    //     // allowNull:true,
-    //     references:{
-    //         model:"Courses",
-    //         key:"courseId"
-    //     } 
-    // },
 },{
     tableName:"Semesters",
     timestamps:true

@@ -49,10 +49,10 @@ const Student = sequelize.define("Student", {     //create a table named Student
     section_id: {
         type: DataTypes.STRING,
         allowNull: true, //  Allows MCA or non-section students
-        // references: {
-        //     model: 'Sections',
-        //     key: 'id'
-        // }
+        references: {
+            model: 'Sections',
+            key: 'section_id'
+        }
     },
     dep_id: {
         type: DataTypes.STRING,

@@ -8,13 +8,15 @@ import Department from "./Department.js";
 import Teacher from "./Teacher.js";
 import Admin from "./Admin.js";
 import Semester from "./Semester.js";
-// import CourseSemester from "./CourseSemester.js";
+import CourseSemester from "./CourseSemester.js";
+import Section from "./Section.js";
+import TeacherSubjectSection from "./TeacherSubSection.js";
 //course has many sem 
-Course.hasMany(Semester,{
-  foreignKey:"courseId",
-   onDelete: "CASCADE",
-  onUpdate: "CASCADE"
-})
+// Course.hasMany(Semester,{
+//   foreignKey:"courseId",
+//    onDelete: "CASCADE",
+//   onUpdate: "CASCADE"
+// })
 //Course has many Students
 Course.hasMany(Student, {
   foreignKey: "courseId"
@@ -25,6 +27,37 @@ Student.belongsTo(Course, {
   onUpdate: "CASCADE"
 });
 
+// A teacher can teach many subjects in different sections
+Teacher.belongsToMany(Subject, {
+  through: TeacherSubjectSection,
+  foreignKey: "emp_id",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE"
+});
+
+Subject.belongsToMany(Teacher, {
+  through: TeacherSubjectSection,
+  foreignKey: "subjectCode",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE"
+});
+
+// A section can have multiple teachers for different subjects
+Section.belongsToMany(Teacher, {
+  through: TeacherSubjectSection,
+  foreignKey: "section_id",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE"
+});
+
+Teacher.belongsToMany(Section, {
+  through: TeacherSubjectSection,
+  foreignKey: "emp_id",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE"
+});
+
+
 //course belongs to department
 Course.belongsTo(Department,{
   foreignKey:"dep_id",
@@ -32,6 +65,9 @@ Course.belongsTo(Department,{
   onUpdate: "CASCADE"
 })
 
+// Student belongs to a section (already handled in your Student model as section_id)
+Section.hasMany(Student, { foreignKey: "section_id" });
+Student.belongsTo(Section, { foreignKey: "section_id" });
 
 // Course has many Subjects
 Course.hasMany(Subject, {
@@ -96,12 +132,16 @@ Teacher.hasMany(Admin,{
   onUpdate: "CASCADE"
 })
 
-//
+// Section belongs to a specific course and semester
+Course.hasMany(Section, { foreignKey: "courseId" });
+Semester.hasMany(Section, { foreignKey: "semesterId" });
+Section.belongsTo(Course, { foreignKey: "courseId" });
+Section.belongsTo(Semester, { foreignKey: "semesterId" });
 
 
 const syncDatabase = async () => {
   try {
-    // await sequelize.drop();
+    // await TeacherSubjectSection.drop();
     await sequelize.sync({alter:true}); // create/update tables
     console.log("All models synced successfully");
   } catch (err) {
