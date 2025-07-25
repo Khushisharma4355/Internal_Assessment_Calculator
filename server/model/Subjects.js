@@ -2,26 +2,29 @@ import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
 
 const Subject = sequelize.define("Subject", {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
+  // id: {
+  //   type: DataTypes.INTEGER,
+  //   primaryKey: true,
+  //   autoIncrement: true
+  // },
   subjectName: {
     type: DataTypes.STRING,
     allowNull: false
   },
   subjectCode: {
     type: DataTypes.STRING,
+    primaryKey: true,
     unique: true,
     allowNull: false
   },
-  course_id: {
+  courseId: {
     type: DataTypes.STRING,
     allowNull: false,
     references: {
-      model: "courses",  // table name or model name
-      key: "courseId"
+      model: "Courses",  // table name or model name
+      key: "courseId",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE"
     }
   },
   semester_id: {
@@ -37,7 +40,7 @@ const Subject = sequelize.define("Subject", {
     defaultValue: "Theory"
   }
 }, {
-  tableName: "subjects",
+  tableName: "Subjects",
   timestamps: true
 });
 
