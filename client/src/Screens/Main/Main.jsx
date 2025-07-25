@@ -3,19 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { MainNav } from "../../Components/Main/MainNav";
 import { motion } from "framer-motion"; // Optional animation library
 import { FaUserGraduate, FaChalkboardTeacher, FaUserShield } from "react-icons/fa";
+import { LoginForm } from "../../Components/Login/login";
 
 
 export const MainHome = () => {
   const navigate = useNavigate();
 
   const data = [
-    { id: 1, login: "Students", oper: "students", icon: <FaUserGraduate size={40} /> },
-    { id: 2, login: "Teachers", oper: "teachers", icon: <FaChalkboardTeacher size={40} /> },
-    { id: 3, login: "Admin", oper: "admin", icon: <FaUserShield size={40} /> }
+    { id: 1, login: "Students", oper: "/students/login", icon: <FaUserGraduate size={40} /> },
+    { id: 2, login: "Teachers", oper: "/teachers/login", icon: <FaChalkboardTeacher size={40} /> },
+    { id: 3, login: "Admin", oper: "/admin/login", icon: <FaUserShield size={40} /> }
   ];
 
   const handleClick = (oper) => {
-    navigate(`/${oper}/`);
+    navigate(`${oper}`);
   };
 
   return (
@@ -62,6 +63,7 @@ export const MainHome = () => {
           ))}
         </Row>
       </Container>
+      
     </>
   );
 };
