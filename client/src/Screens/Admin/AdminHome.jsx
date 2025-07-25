@@ -6,11 +6,11 @@ export const AdminHome=()=>{
         <>
 <AdminNav/>
         <Container className="bg-light">
-            <Row >
-          <Col className="d-flex  justify-content-center">
+        <Row >
+        <Col className="d-flex  justify-content-center">
         <h3>Welcome Admin!!!</h3>
                 </Col>
-            </Row>
+        </Row>
         </Container>
         </>
     )
