@@ -1,16 +1,13 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
-const Semesters=sequelize.define("Semesters",{
+const Semester=sequelize.define("Semesters",{
     sem_id:{
         type:DataTypes.INTEGER,
         autoIncrement:true,
         primaryKey:true
     },
-    course_id:{
-        type:DataTypes.STRING,
-        allowNull:true,
-        
-    },
-
+},{
+    tableName:"Semesters",
+    timestamps:true
 })
-export default Semesters
+export default Semester

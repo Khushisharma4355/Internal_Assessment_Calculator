@@ -32,7 +32,7 @@ export const MainHome = () => {
               alt="MAIMT Logo"
               className="mb-3"
             />
-            <h1 style={{ fontFamily: "cursive", fontWeight: "bold", fontSize: "3rem" }}>
+            <h1 style={{ fontFamily: "cursive", fontWeight: "bold", fontSize: "3rem", color:" #1d3557"}}>
               <span style={{ color: "orange" }}>Ur</span>Level
             </h1>
           </Col>
