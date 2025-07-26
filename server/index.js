@@ -25,6 +25,7 @@ app.use(
 );
 
 const PORT = process.env.PORT || 4000;
+syncDatabase(); 
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}/graphql`);

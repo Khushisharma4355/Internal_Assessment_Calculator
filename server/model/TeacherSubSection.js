@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
+
 const TeacherSubjectSection = sequelize.define("TeacherSubjectSection", {
   id: {
     type: DataTypes.INTEGER,
@@ -32,9 +33,10 @@ const TeacherSubjectSection = sequelize.define("TeacherSubjectSection", {
   timestamps: false,
   indexes: [
     {
-      unique: true,
-      fields: ["emp_id", "subjectCode", "section_id"] // ✅ Unique across all 3 now
+      unique: true, // ✅ enable unique constraint
+      fields: ['emp_id', 'subjectCode', 'section_id']
     }
   ]
 });
-export default TeacherSubjectSection
+
+export default TeacherSubjectSection;
