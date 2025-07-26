@@ -46,7 +46,8 @@ export const TeacherLogin = () => {
                       margin: 0
                     }}
                   >
-                    <span style={{ color: 'orange' }}>Ur</span>Level
+                    <span style={{ color: 'orange' }}>Ur</span>
+                   <span style={{color:"#1d3557"}}>Level</span>
                   </h2>
                 </div>
 

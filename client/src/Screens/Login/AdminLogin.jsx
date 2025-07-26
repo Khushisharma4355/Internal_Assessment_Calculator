@@ -26,7 +26,7 @@ export const AdminLogin = () => {
              xs={12} lg={6} className="d-flex align-items-center justify-content-center min-vh-100 bg-light"
           >
             
-            <Card className="p-4 shadow-lg rounded-4 w-100" style={{ maxWidth: '450px' }}>
+            <Card className="p-4 shadow-lg border-0 rounded-4 w-100 " style={{ maxWidth: '450px' }}>
 
               {/* Logo and Branding */}
               <div className="text-center mb-4">
@@ -46,7 +46,8 @@ export const AdminLogin = () => {
                     margin: 0
                   }}
                 >
-                  <span style={{ color: 'orange' }}>Ur</span>Level
+                  <span style={{ color: 'orange' }}>Ur</span>
+                  <span style={{color:"#1d3557"}}>Level</span>
                 </h2>
               </div>
 

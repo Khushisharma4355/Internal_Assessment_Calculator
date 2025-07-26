@@ -38,8 +38,8 @@ export const Footer = () => {
                     </Col>
                 </Row>
                 <Row className="justify-content-center">
-                    <Col xs="auto">
-                        <small className="text-muted">MAIMT Digital Library 2025.</small>
+                    <Col xs="auto" >
+                        <small className="text-muted text-black">MAIMT Internal Assessment Calculator and Communication System 2025.</small>
                     </Col>
                 </Row>
             </Container>
