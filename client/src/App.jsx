@@ -15,6 +15,7 @@ import { StuLogin } from './Screens/Login/stuLogin'
 import { TeacherLogin } from './Screens/Login/TeacherLogin'
 import { AdminLogin } from './Screens/Login/AdminLogin'
 import { DemoStudentHome } from './Screens/Students/demoStudentHome'
+import { Attendance } from './Screens/Students/Attendance'
 function App() {
 
   return (
@@ -30,6 +31,8 @@ function App() {
 
         <Route path="/students/assesments" element={<Assesments />} />
         <Route path="/students/reports" element={<Reports />} />
+        {/* ADDING ROUTE FOR ATTENDANCE(sarita)  */}
+        <Route path="/students/attendance" element={<Attendance />} />
 
 
         <Route path="/teachers/login" element={<TeacherLogin />} />
