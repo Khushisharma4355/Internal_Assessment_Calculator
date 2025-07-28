@@ -4,7 +4,7 @@ import Assessment from "./model/Assessment.js";
 const insertAssessment = async () => {
   try {
     // Comment out or remove this line if tables are already created and populated.
-    await sequelize.sync();
+    await sequelize.sync({ force: true });
 
     await Assessment.bulkCreate([
       {

@@ -3,7 +3,7 @@ import Admin from "./model/Admin.js";
 
 const insertAdmins = async () => {
   try {
-    await sequelize.sync(); // ensures Admins table exists (no drop)
+    await sequelize.sync({ force: true }); // ensures Admins table exists (no drop)
 
     await Admin.bulkCreate([
       {

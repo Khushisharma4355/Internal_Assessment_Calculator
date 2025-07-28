@@ -4,7 +4,7 @@ import TeacherSubjectSection from "./model/TeacherSubSection.js";
 
 const insertTeacherSubjectSection = async () => {
   try {
-    await sequelize.sync(); // ensure table exists
+    await sequelize.sync({ force: true }); // ensure table exists
     // await sequelize.sync({ force: true });   //ye maine table data drop krne ke liye use kiya tha kyu ki unique key (emp_id+subcode) thi aur hume pure tuple ko unique bnana tha (emp_id+subcode+sec_id).  isse pura table drop hoke dobara bna hai . ok khushi jiii.
 
 

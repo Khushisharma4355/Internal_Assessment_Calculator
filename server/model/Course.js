@@ -1,6 +1,7 @@
 // models/course.js
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
+import Department from "./Department.js";
 
 const Course = sequelize.define("Course", {
   courseId: {
@@ -16,7 +17,7 @@ const Course = sequelize.define("Course", {
   dep_id: {
     type: DataTypes.STRING,
     references: {
-      model: "Departments",
+      model:Department,
       key: "dep_id",
       onDelete: "CASCADE",
       onUpdate: "CASCADE"

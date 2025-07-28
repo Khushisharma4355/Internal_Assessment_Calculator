@@ -3,7 +3,7 @@ import CourseSemester from "./model/CourseSemester.js";
 
 const insertCourseSemesterMappings = async () => {
   try {
-    await sequelize.sync(); // Make sure the table exists
+    await sequelize.sync({ force: true }); // Make sure the table exists
 
     await CourseSemester.bulkCreate([
       // BCA → 1 to 6

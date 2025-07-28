@@ -7,7 +7,7 @@ import Student from './model/Student.js';
 
 const insertStudent = async () => {
   try {
-    await sequelize.sync(); // make sure the table exists
+    await sequelize.sync({ force: true }); // make sure the table exists
 
     await Student.bulkCreate([
       {
