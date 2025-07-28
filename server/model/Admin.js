@@ -7,7 +7,7 @@ emp_id:{
     allowNull:false,
     primaryKey:true,
     references:{
-        model:"Teachers",
+        model:Teacher,
         key:"emp_id"
     }
    

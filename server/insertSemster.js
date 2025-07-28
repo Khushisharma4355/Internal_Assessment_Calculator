@@ -3,7 +3,7 @@ import Semester from "./model/Semester.js";
 
 const insertSemesters = async () => {
   try {
-    await sequelize.sync(); // ensure the table exists
+    await sequelize.sync({ force: true }); // ensure the table exists
 
     await Semester.bulkCreate([
       { sem_id: 1 }, 

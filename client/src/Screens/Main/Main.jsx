@@ -1,24 +1,18 @@
 import { Row, Col, Container, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { MainNav } from "../../Components/Main/MainNav";
-import { motion } from "framer-motion"; // Optional animation library
 import { FaUserGraduate, FaChalkboardTeacher, FaUserShield } from "react-icons/fa";
 import { LoginForm } from "../../Components/Login/login";
-
-
 export const MainHome = () => {
   const navigate = useNavigate();
-
   const data = [
     { id: 1, login: "Students", oper: "/students/login", icon: <FaUserGraduate size={40} /> },
     { id: 2, login: "Teachers", oper: "/teachers/login", icon: <FaChalkboardTeacher size={40} /> },
     { id: 3, login: "Admin", oper: "/admin/login", icon: <FaUserShield size={40} /> }
   ];
-
   const handleClick = (oper) => {
     navigate(`${oper}`);
   };
-
   return (
     <>
       {/* <MainNav /> */}
@@ -32,7 +26,7 @@ export const MainHome = () => {
               alt="MAIMT Logo"
               className="mb-3"
             />
-            <h1 style={{ fontFamily: "cursive", fontWeight: "bold", fontSize: "3rem", color:" #1d3557"}}>
+            <h1 style={{ fontFamily: "cursive", fontWeight: "bold", fontSize: "3rem", color: " #1d3557" }}>
               <span style={{ color: "orange" }}>Ur</span>Level
             </h1>
           </Col>
@@ -53,17 +47,17 @@ export const MainHome = () => {
                   onClick={() => handleClick(item.oper)}
                 >
                   <Card.Body className="fs-4 fw-semibold">
-                                        <div className="mb-2">{item.icon}</div>
+                    <div className="mb-2">{item.icon}</div>
 
                     {item.login}
-                    </Card.Body>
+                  </Card.Body>
                 </Card>
               </motion.div>
             </Col>
           ))}
         </Row>
       </Container>
-      
+
     </>
   );
 };

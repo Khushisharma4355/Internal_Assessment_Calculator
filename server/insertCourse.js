@@ -3,7 +3,7 @@ import Course from "./model/Course.js";
 
 const insertDummyCourses = async () => {
   try {
-    await sequelize.sync(); // ensure table exists
+    await sequelize.sync({ force: true }); // ensure table exists
 
     await Course.bulkCreate([
       {

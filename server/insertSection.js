@@ -3,7 +3,7 @@ import Section from "./model/Section.js";
 
 const insertSections = async () => {
   try {
-    await sequelize.sync(); // ensures Sections table exists
+    await sequelize.sync({ force: true }); // ensures Sections table exists
 
     await Section.bulkCreate([
       // BCA (courseId: '1'), Semester 1 & 2

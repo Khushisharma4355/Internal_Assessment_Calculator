@@ -55,12 +55,12 @@ const Assessment = sequelize.define("Assessment", {
       key: "sem_id"
     }
   },
-  attendance: {            // Spelling fixed: 'attendance'
+  attendance: {          
     type: DataTypes.INTEGER,
     allowNull: true,
     defaultValue: null
   },
-  emp_id: {            // clearer naming
+  emp_id: {         
     type: DataTypes.STRING,
     allowNull: false,
     references: {

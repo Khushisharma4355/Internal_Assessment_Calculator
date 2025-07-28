@@ -1,7 +1,6 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import { Container, Form, Button } from 'react-bootstrap';
-
 export const LoginForm = () => {
   const formik = useFormik({
     initialValues: {
@@ -12,7 +11,6 @@ export const LoginForm = () => {
       // You can call your OTP API here
     }
   });
-
   return (
     <Container className="mt-5" style={{ maxWidth: '400px' }}>
       {/* <h3 className="mb-4 text-center">Login</h3> */}
