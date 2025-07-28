@@ -14,6 +14,8 @@ import { LoginForm } from './Components/Login/login'
 import { StuLogin } from './Screens/Login/stuLogin'
 import { TeacherLogin } from './Screens/Login/TeacherLogin'
 import { AdminLogin } from './Screens/Login/AdminLogin'
+import { DemoStudentHome } from './Screens/Students/demoStudentHome'
+import { Attendance } from './Screens/Students/Attendance'
 function App() {
   return (
     <>

@@ -3,18 +3,18 @@ import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
 import Department from "./Department.js";
 
-const Course = sequelize.define("Course", {
-  courseId: {
+const Course = sequelize.define("Course",{
+  courseId:{
     type: DataTypes.STRING,
     primaryKey: true,
     allowNull: false,
     unique: true
   },
-  courseName: {
+  courseName:{
     type: DataTypes.STRING,
     allowNull: false
   },
-  dep_id: {
+  dep_id:{
     type: DataTypes.STRING,
     references: {
       model:Department,
@@ -23,10 +23,9 @@ const Course = sequelize.define("Course", {
       onUpdate: "CASCADE"
     }
   }
-}, {
+},{
   tableName: "Courses",
   timestamps: true
-
 });
 
 export default Course;

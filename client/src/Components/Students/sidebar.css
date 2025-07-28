@@ -1,0 +1,9 @@
+.sidebar a {
+  padding: 10px 0;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+.sidebar a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
