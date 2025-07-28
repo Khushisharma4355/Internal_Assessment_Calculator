@@ -138,6 +138,7 @@ import { MdOutlineAssessment } from "react-icons/md";
 import { SlCalender } from "react-icons/sl";
 import { GrScorecard } from "react-icons/gr";
 import { MdOutlineMiscellaneousServices } from "react-icons/md";
+import { Stunav } from './Stunav';
 // import maimtlogo from '../../assets/maimtlogo.jpeg'
 
 
@@ -157,35 +158,9 @@ export const StudentDashboard = () => {
   return (
     <Container  className="p-0">
       <Row className="min-vh-100 gap-0">
-        {/* Sidebar */}
-        <Col
-          md={3}
-          className={` d-none d-md-block p-0 rounded`}
-          style={{ minHeight: '100vh',backgroundColor:"#1d3557" ,width:"230px"}}
-        >
-          <div className="h-100 d-flex flex-column align-items-center">
-            <div className="text-center py-4 d-flex">
-              <img
-                src="http://192.168.1.12/images/maimt_logo.png"
-              
-                alt="MAIMT Logo"
-                width="80"
-                height="80"
-              />
-    <h2 className="mt-2 mt-4 ">
-                <span style={{ color: 'orange', fontWeight: 'bold' ,marginTop:"40px"}}>Ur</span>
-                <span style={{ color: 'white', fontWeight: 'bold',marginTop:"40px" }}>Level</span>
-              </h2>
-            </div>
-            <ListGroup variant="flush" className="w-100 text-center " style={{backgroundColor:"#1d3557"}}>
-              <ListGroup.Item style={navItemStyle}><MdOutlineAssessment /> Assessments</ListGroup.Item>
-              <ListGroup.Item style={navItemStyle}><GrScorecard />  Report Card</ListGroup.Item>
-              <ListGroup.Item style={navItemStyle}><SlCalender /> Attendance</ListGroup.Item>
-              <ListGroup.Item style={navItemStyle}><MdOutlineMiscellaneousServices />       Services</ListGroup.Item>
-            </ListGroup>
-          </div>
-        </Col>
-
+        <Col>
+<Stunav/>
+</Col>
         {/* Toggle button for mobile */}
         <Col xs={12} className="d-md-none px-3 py-2 d-flex justify-content-end">
           <button
@@ -247,6 +222,7 @@ export const StudentDashboard = () => {
         </Col>
       </Row>
     </Container>
+    
   );
 };
 
