@@ -1,5 +1,8 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
+import Department from "./Department.js";
+import Section from "./Section.js";
+import Course from "./Course.js";
 const Student = sequelize.define("Student", {     //create a table named Students in the db
     //       id: {
     //     type: DataTypes.INTEGER,
@@ -18,7 +21,7 @@ const Student = sequelize.define("Student", {     //create a table named Student
         type: DataTypes.STRING,
         allowNull: false,
         references: {
-            model: "Courses",     // table name 
+            model: Course,     // table name 
             key: "courseId",
             onDelete: "CASCADE",
             onUpdate: "CASCADE"
@@ -50,7 +53,7 @@ const Student = sequelize.define("Student", {     //create a table named Student
         type: DataTypes.STRING,
         allowNull: true, //  Allows MCA or non-section students
         references: {
-            model: 'Sections',
+            model: Section,
             key: 'section_id'
         }
     },
@@ -58,7 +61,7 @@ const Student = sequelize.define("Student", {     //create a table named Student
         type: DataTypes.STRING,
         allowNull: true,
         references: {
-            model: "Departments",
+            model: Department,
             key: "dep_id",
             onDelete: "CASCADE",
             onUpdate: "CASCADE"
