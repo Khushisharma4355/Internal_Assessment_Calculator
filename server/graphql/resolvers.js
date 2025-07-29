@@ -2,6 +2,7 @@ import Assessment from "../model/Assessment.js";
 import Student from "../model/Student.js";
 import Teacher from "../model/Teacher.js";
 import Course from "../model/Course.js";
+import { where } from "sequelize";
 
 export const resolvers = {
   Query: {
@@ -24,6 +25,12 @@ export const resolvers = {
 
     // Fetch all courses
     courses: async () => await Course.findAll(),
+    
+    courseById:async(_,{courseId})=>{
+      return await course.findByPk({
+        where:{courseId:courseId.toString()},
+      })
+    },
 
     // Fetch assessment records for a student by registrationNo
     getStudentAssessment: async (_, { registrationNo }) => {
