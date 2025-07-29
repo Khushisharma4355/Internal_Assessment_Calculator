@@ -14,7 +14,7 @@ import { LoginForm } from './Components/Login/login'
 import { StuLogin } from './Screens/Login/stuLogin'
 import { TeacherLogin } from './Screens/Login/TeacherLogin'
 import { AdminLogin } from './Screens/Login/AdminLogin'
-import { DemoStudentHome } from './Screens/Students/demoStudentHome'
+import { StudentHome } from './Screens/Students/StudentHome'
 import { Attendance } from './Screens/Students/Attendance'
 function App() {
 
@@ -27,7 +27,7 @@ function App() {
         <Route path="/students/login" element={<StuLogin />} />
         {/* <Route path="/students/" element={<StuHome/>}/> */}
         {/* the below route is home route of student and right now working on /students route */}
-        <Route path="/students/" element={<DemoStudentHome />} />
+        <Route path="/students/" element={<StudentHome />} />
 
         <Route path="/students/assesments" element={<Assesments />} />
         <Route path="/students/reports" element={<Reports />} />
@@ -37,6 +37,7 @@ function App() {
 
         <Route path="/teachers/login" element={<TeacherLogin />} />
         <Route path="/teachers/" element={<TeaHome />} />
+
 
 
         <Route path="/teachers/uploadmarks" element={<UploadMarks />} />
@@ -52,7 +53,7 @@ function App() {
 
 
       </Routes>
-      <Footer />
+      {/* <Footer /> */}
     </>
   )
 }
