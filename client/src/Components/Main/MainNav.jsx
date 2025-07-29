@@ -10,8 +10,7 @@ export const MainNav = () => {
                     backgroundColor: "#1d3557"
                 }} className="m-0 p-3" sticky-top>
                 <Container fluid className="m-0 p-0 justify-content-start">
-
-                    <Navbar.Brand as={Link} to="/">
+                <Navbar.Brand as={Link} to="/">
                         <img
                             src="http://192.168.1.12/images/maimt_logo.png"
                             width="40"
