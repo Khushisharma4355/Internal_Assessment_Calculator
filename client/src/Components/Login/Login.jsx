@@ -28,7 +28,7 @@ export const LoginForm = () => {
           />
         </Form.Group>
 
-        <Button variant="primary" type="submit" className="w-100">
+        <Button type="submit" className="w-100" style={{ backgroundColor: '#1d3557', border: 'none' }}>
           Send OTP
         </Button>
       </Form>
