@@ -30,7 +30,7 @@ export const StuLogin = () => {
         
                       {/* Logo and Branding */}
                       <div className="text-center mb-4">
-                        <h1 className="text-center mb-3 text-dark fw-bold">Student Login</h1>
+                        <h1 className="text-center mb-3  fw-bold" style={{ color: '#1d3557' }}>Student Login</h1>
                         <img
                           src="http://192.168.1.12/images/maimt_logo.png"
                           width="100"

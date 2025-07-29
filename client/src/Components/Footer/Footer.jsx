@@ -1,5 +1,6 @@
 import { Container, Row, Col } from "react-bootstrap";
 import { FaLinkedin, FaInstagram, FaFacebook } from "react-icons/fa";
+import { RiCopyrightLine } from "react-icons/ri";
 
 export const Footer = () => {
     return (
@@ -39,7 +40,7 @@ export const Footer = () => {
                 </Row>
                 <Row className="justify-content-center">
                     <Col xs="auto" >
-                        <small className="text-muted text-black">MAIMT Internal Assessment Calculator and Communication System 2025.</small>
+                        <small className="text-muted text-black fw-bold"><RiCopyrightLine  className="fs-5"/>UrLevel 2025 | All Rights Reserved</small>
                     </Col>
                 </Row>
             </Container>
