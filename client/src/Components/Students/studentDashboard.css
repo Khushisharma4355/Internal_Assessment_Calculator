@@ -1,0 +1,16 @@
+.mobile-sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px; /* Hide off-screen */
+   width: 250px;
+  height: 100%;
+  background-color: #1d3557;
+  z-index: 999;
+  transition: left 0.3s ease;
+  padding-top: 60px;
+} 
+
+.mobile-sidebar.show {
+  left: 0; /* Slide in */
+} 
+
