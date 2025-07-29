@@ -1,5 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
+import Course from "./Course.js";
+import Semester from "./Semester.js";
 const CourseSemester = sequelize.define("CourseSemester", {
   id: {
     type: DataTypes.INTEGER,
@@ -10,7 +12,7 @@ const CourseSemester = sequelize.define("CourseSemester", {
     type: DataTypes.STRING,
     allowNull: false,
     references: {
-      model: "Courses",
+      model: Course,
       key: "courseId"
     }
   },
@@ -18,7 +20,7 @@ const CourseSemester = sequelize.define("CourseSemester", {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: "Semesters",
+      model: Semester,
       key: "sem_id"
     }
   }

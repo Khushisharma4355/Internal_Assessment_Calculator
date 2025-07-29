@@ -1,5 +1,8 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
+import Teacher from "./Teacher.js";
+import Subject from "./Subjects.js";
+import Section from "./Section.js";
 const TeacherSubjectSection = sequelize.define("TeacherSubjectSection", {
   id: {
     type: DataTypes.INTEGER,
@@ -9,21 +12,21 @@ const TeacherSubjectSection = sequelize.define("TeacherSubjectSection", {
   emp_id: {
     type: DataTypes.STRING,
     references: {
-      model: "Teachers",
+      model: Teacher,
       key: "emp_id"
     }
   },
   subjectCode: {
     type: DataTypes.STRING,
     references: {
-      model: "Subjects",
+      model: Subject,
       key: "subjectCode"
     }
   },
   section_id: {
     type: DataTypes.STRING,
     references: {
-      model: "Sections",
+      model: Section,
       key: "section_id"
     }
   }
@@ -32,9 +35,9 @@ const TeacherSubjectSection = sequelize.define("TeacherSubjectSection", {
   timestamps: false,
   indexes: [
     {
-      unique: true,
-      fields: ["emp_id", "subjectCode", "section_id"] // ✅ Unique across all 3 now
+      unique: true, // enable unique constraint
+      fields: ['emp_id', 'subjectCode', 'section_id']
     }
   ]
 });
-export default TeacherSubjectSection
+export default TeacherSubjectSection;

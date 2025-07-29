@@ -17,13 +17,10 @@ import { AdminLogin } from './Screens/Login/AdminLogin'
 import { StudentHome } from './Screens/Students/StudentHome'
 import { Attendance } from './Screens/Students/Attendance'
 function App() {
-
   return (
     <>
       <Routes>
-
         <Route path="/" element={<MainHome />} />
-
         <Route path="/students/login" element={<StuLogin />} />
         {/* <Route path="/students/" element={<StuHome/>}/> */}
         {/* the below route is home route of student and right now working on /students route */}
@@ -31,10 +28,6 @@ function App() {
 
         <Route path="/students/assesments" element={<Assesments />} />
         <Route path="/students/reports" element={<Reports />} />
-        {/* ADDING ROUTE FOR ATTENDANCE(sarita)  */}
-        <Route path="/students/attendance" element={<Attendance />} />
-
-
         <Route path="/teachers/login" element={<TeacherLogin />} />
         <Route path="/teachers/" element={<TeaHome />} />
 
@@ -43,15 +36,9 @@ function App() {
         <Route path="/teachers/uploadmarks" element={<UploadMarks />} />
         <Route path="/teachers/managestudents" element={<Managestu />} />
         <Route path="/teachers/reports" element={<TeaReports />} />
-      
-
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/" element={<AdminHome />} />
-
-
         <Route path="*" element={<h1>404 Not Found</h1>} />
-
-
       </Routes>
       {/* <Footer /> */}
     </>

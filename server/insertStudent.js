@@ -1,44 +1,57 @@
-//this file is use to insert data into the table only nothing else
-//so run this whenver you want to insert new data to the table okkk shri shri pallavi ji 
-// 👍👍👍okkk khushi jiiii
+// This file is used to insert data into the Student table only
+// So run this whenever you want to insert new data, okkk Shri Shri Pallavi ji 😄
+// 👍👍👍 okkk Khushi jiiii
+
 import sequelize from './config/db.js';
 import Student from './model/Student.js';
+
 const insertStudent = async () => {
-     try {
-    await sequelize.sync(); // make sure the table exists
+  try {
+    await sequelize.sync({ force: true }); // make sure the table exists
 
     await Student.bulkCreate([
       {
         student_name: "Khushi Sharma",
         classs: "BCA",
-        courseId: "BCA101",
+        courseId: "1", // BCA
         rollno: 1001,
         registrationNo: 20230001,
         student_email: "khushi@example.com",
         parent_Detail: "9876543210",
-        section_id: "A",
+        section_id: "S001",
         dep_id: "DEP001"
       },
       {
         student_name: "Rohan Mehta",
         classs: "BBA",
-        courseId: "BBA101",
+        courseId: "2", // BBA
         rollno: 1002,
         registrationNo: 20230002,
         student_email: "rohan@example.com",
         parent_Detail: "9988776655",
-        section_id: "B",
+        section_id: "S006",
         dep_id: "DEP002"
       },
       {
         student_name: "Ananya Singh",
         classs: "BCA",
-        courseId: "BCA101",
+        courseId: "1", // BCA
         rollno: 1003,
         registrationNo: 20230003,
         student_email: "ananya@example.com",
         parent_Detail: "9123456789",
-        section_id: "A",
+        section_id: "S001",
+        dep_id: "DEP001"
+      },
+      {
+        student_name: "Pallavi Goswami",
+        classs: "BCA",
+        courseId: "1", // BCA
+        rollno: 1004,
+        registrationNo: 20230004,
+        student_email: "pallavi@example.com",
+        parent_Detail: "9012345678",
+        section_id: "S001",
         dep_id: "DEP001"
       }
     ]);
@@ -52,4 +65,3 @@ const insertStudent = async () => {
 };
 
 insertStudent();
-

@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
+import Course from "./Course.js";
 
 const Subject = sequelize.define("Subject", {
   // id: {
@@ -21,7 +22,7 @@ const Subject = sequelize.define("Subject", {
     type: DataTypes.STRING,
     allowNull: false,
     references: {
-      model: "Courses",  // table name or model name
+      model: Course,  // table name or model name
       key: "courseId",
       onDelete: "CASCADE",
       onUpdate: "CASCADE"

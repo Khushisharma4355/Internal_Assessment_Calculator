@@ -11,6 +11,7 @@ import Semester from "./Semester.js";
 import CourseSemester from "./CourseSemester.js";
 import Section from "./Section.js";
 import TeacherSubjectSection from "./TeacherSubSection.js";
+import Assessment from "./Assessment.js";
 //course has many sem 
 // Course.hasMany(Semester,{
 //   foreignKey:"courseId",
@@ -138,6 +139,39 @@ Semester.hasMany(Section, { foreignKey: "semesterId" });
 Section.belongsTo(Course, { foreignKey: "courseId" });
 Section.belongsTo(Semester, { foreignKey: "semesterId" });
 
+
+
+// Student - Assessment
+Student.hasMany(Assessment, {
+  foreignKey: "registrationNo",
+});
+Assessment.belongsTo(Student, {
+  foreignKey: "registrationNo"
+});
+
+// Subject - Assessment
+Subject.hasMany(Assessment, {
+  foreignKey: "subjectCode"
+});
+Assessment.belongsTo(Subject, {
+  foreignKey: "subjectCode"
+});
+
+// Teacher - Assessment
+Teacher.hasMany(Assessment, {
+  foreignKey: "emp_id"
+});
+Assessment.belongsTo(Teacher, {
+  foreignKey: "emp_id"
+});
+
+// Semester - Assessment
+Semester.hasMany(Assessment, {
+  foreignKey: "sem_id"
+});
+Assessment.belongsTo(Semester, {
+  foreignKey: "sem_id"
+});
 
 const syncDatabase = async () => {
   try {
