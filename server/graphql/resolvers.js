@@ -3,6 +3,7 @@ import Student from "../model/Student.js";
 import Teacher from "../model/Teacher.js";
 import Course from "../model/Course.js";
 import { where } from "sequelize";
+import TeacherSubjectSection from "../model/TeacherSubSection.js";
 
 export const resolvers = {
   Query: {
@@ -10,12 +11,22 @@ export const resolvers = {
     students: async () => await Student.findAll({ include: Course }),
 
     // Fetch a student by registrationNo (BigInt), including course
-    student: async (_, { registrationNo }) =>
-      await Student.findOne({ where: { registrationNo: registrationNo.toString() }, 
-    // include: Course 
-     include: [{ model: Course }]
-  }),
-
+    student: async (_, { registrationNo }) => {
+  try {
+    return await Student.findOne({ 
+      where: { registrationNo: registrationNo.toString() },
+      include: [Course],
+    });
+  } catch (err) {
+    throw new Error("Failed to fetch student");
+  }
+},
+getSubjects:async(_,{emp_id})=>{
+  return await TeacherSubjectSection.findAll({where:{emp_id}})
+},
+getTeacher:async(_,{emp_id})=>{
+return await Teacher.findOne({where:{emp_id}});
+},
     // Fetch a student by email
     studentByEmail: async (_, { student_email }) =>
       await Student.findOne({
@@ -25,7 +36,7 @@ export const resolvers = {
 
     // Fetch all courses
     courses: async () => await Course.findAll(),
-    
+
     courseById:async(_,{courseId})=>{
       return await course.findByPk({
         where:{courseId:courseId.toString()},
@@ -63,5 +74,10 @@ export const resolvers = {
     student: (parent) => parent.Student,
     teacher: (parent) => parent.Teacher,
     // course:(parent)=>parent.course
+  },
+   Teacher: {
+    Subjects: async (parent) => {
+      return await TeacherSubjectSection.findAll({ where: { emp_id: parent.emp_id } });
+    }
   },
 };
