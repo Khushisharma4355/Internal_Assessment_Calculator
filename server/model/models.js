@@ -95,10 +95,16 @@ Course.belongsToMany(Semester, {
 
 Semester.belongsToMany(Course, {
   through: "CourseSemester",
-  foreignKey: "semesterId",
+  foreignKey: "semester_id",
    onDelete: "CASCADE",
   onUpdate: "CASCADE"
 });
+
+Subject.belongsTo(Course, { foreignKey: 'courseId' });
+Subject.belongsTo(Semester, { foreignKey: 'semester_id' });
+
+Course.hasMany(Subject, { foreignKey: 'courseId' });
+Semester.hasMany(Subject, { foreignKey: 'semester_id' });
 
 
 //student and department
@@ -137,9 +143,9 @@ Teacher.hasMany(Admin,{
 
 // Section belongs to a specific course and semester
 Course.hasMany(Section, { foreignKey: "courseId" });
-Semester.hasMany(Section, { foreignKey: "semesterId" });
+Semester.hasMany(Section, { foreignKey: "semester_id" });
 Section.belongsTo(Course, { foreignKey: "courseId" });
-Section.belongsTo(Semester, { foreignKey: "semesterId" });
+Section.belongsTo(Semester, { foreignKey: "semester_id" });
 
 
 

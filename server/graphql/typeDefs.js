@@ -19,10 +19,22 @@ export const typeDefs = gql`
     emp_email:String
     emp_phone:String
     Subjects:[TeacherSubSec]
+    Subject:[Subject]
+    semester:[semester]
   }
     type TeacherSubSec{
     subjectCode:String!
     section_id:String!
+    }
+
+    type Subject{
+    subjectName:String!
+    course:Course
+    Semester:semester
+    }
+
+    type semester{
+    sem_id:ID!
     }
   type Assessment {
     assmt_id: String!
@@ -44,8 +56,13 @@ export const typeDefs = gql`
     student(registrationNo: BigInt!): Student
   studentByEmail(student_email: String!): Student
     courses: [Course]
+    getCourseBySubCode(subjectCode:String!):Course
     courseById(courseId:ID!):Course
     getSubjects(emp_id:String!):[TeacherSubSec]
+
+    Subject(subjectCode:String!):[Subject]
+    semester(subjectcode:String!):[semester]
+
     getStudentAssessment(registrationNo: BigInt!): [Assessment]
   }
 
