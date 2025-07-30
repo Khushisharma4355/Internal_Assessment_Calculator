@@ -176,7 +176,7 @@ Assessment.belongsTo(Semester, {
 const syncDatabase = async () => {
   try {
     // await TeacherSubjectSection.drop();
-    await sequelize.sync({alter:true}); // create/update tables
+    // await sequelize.sync({alter:true}); // create/update tables
     console.log("All models synced successfully");
   } catch (err) {
     console.error("Error syncing models:", err);
