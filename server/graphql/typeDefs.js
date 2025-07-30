@@ -2,14 +2,14 @@ import { gql } from "graphql-tag";
 export const typeDefs = gql`
   scalar BigInt  # Custom scalar for BigInt numbers
   type Course {
-    id: ID!
-    name: String!
+    courseId: ID!
+    courseName: String!
   }
   type Student {
   id: ID!
   name: String!
   classs: String!
-  courseId: Int
+  courseId: String
   course: Course
   student_email: String!  
 }
