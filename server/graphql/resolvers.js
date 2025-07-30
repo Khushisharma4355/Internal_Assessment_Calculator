@@ -6,30 +6,29 @@ import { where } from "sequelize";
 
 export const resolvers = {
   Query: {
-    // Fetch all students with their courses
-    students: async () => await Student.findAll({ include: Course }),
+    // Fetch all students
+    students: async () => {
+      // Fetch all students from the database
+      // No need to manually map fields — handled by field resolvers below
+      return await Student.findAll();
+    },
 
-    // Fetch a student by registrationNo (BigInt), including course
+    // Fetch a student by registrationNo (BigInt)
     student: async (_, { registrationNo }) =>
-      await Student.findOne({ where: { registrationNo: registrationNo.toString() }, 
-    // include: Course 
-     include: [{ model: Course }]
-  }),
+      await Student.findOne({
+        where: { registrationNo: registrationNo.toString() },
+      }),
 
     // Fetch a student by email
     studentByEmail: async (_, { student_email }) =>
       await Student.findOne({
         where: { student_email },
-        include: Course,
       }),
 
     // Fetch all courses
-    courses: async () => await Course.findAll(),
-    
-    courseById:async(_,{courseId})=>{
-      return await course.findByPk({
-        where:{courseId:courseId.toString()},
-      })
+
+    courses: async () => {
+      return await Course.findAll()
     },
 
     // Fetch assessment records for a student by registrationNo
@@ -50,18 +49,20 @@ export const resolvers = {
     },
   },
 
+  // Field resolvers for custom mappings
   Student: {
-    // Map GraphQL 'name' field to Sequelize's 'student_name'
+    // Map GraphQL 'name' field to Sequelize 'student_name'
     name: (parent) => parent.student_name,
 
-    // Resolve 'course' association by primary key
-    course: async (parent) => await Course.findByPk(parent.courseId),
+    // Resolve 'course' relation using foreign key courseId
+    course: async (parent) => {
+      return await Course.findByPk(parent.courseId);
+    },
   },
 
   Assessment: {
     // Return the included Student and Teacher instances from Sequelize
     student: (parent) => parent.Student,
     teacher: (parent) => parent.Teacher,
-    // course:(parent)=>parent.course
   },
 };
