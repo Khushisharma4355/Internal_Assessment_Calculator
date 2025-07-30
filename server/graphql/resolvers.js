@@ -7,8 +7,12 @@ import TeacherSubjectSection from "../model/TeacherSubSection.js";
 
 export const resolvers = {
   Query: {
-    // Fetch all students with their courses
-    students: async () => await Student.findAll({ include: Course }),
+    // Fetch all students
+    students: async () => {
+      // Fetch all students from the database
+      // No need to manually map fields — handled by field resolvers below
+      return await Student.findAll();
+    },
 
     // Fetch a student by registrationNo (BigInt), including course
     student: async (_, { registrationNo }) => {
@@ -31,7 +35,6 @@ return await Teacher.findOne({where:{emp_id}});
     studentByEmail: async (_, { student_email }) =>
       await Student.findOne({
         where: { student_email },
-        include: Course,
       }),
 
     // Fetch all courses
@@ -61,19 +64,21 @@ return await Teacher.findOne({where:{emp_id}});
     },
   },
 
+  // Field resolvers for custom mappings
   Student: {
-    // Map GraphQL 'name' field to Sequelize's 'student_name'
+    // Map GraphQL 'name' field to Sequelize 'student_name'
     name: (parent) => parent.student_name,
 
-    // Resolve 'course' association by primary key
-    course: async (parent) => await Course.findByPk(parent.courseId),
+    // Resolve 'course' relation using foreign key courseId
+    course: async (parent) => {
+      return await Course.findByPk(parent.courseId);
+    },
   },
 
   Assessment: {
     // Return the included Student and Teacher instances from Sequelize
     student: (parent) => parent.Student,
     teacher: (parent) => parent.Teacher,
-    // course:(parent)=>parent.course
   },
    Teacher: {
     Subjects: async (parent) => {
