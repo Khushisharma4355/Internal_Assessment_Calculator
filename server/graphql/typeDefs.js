@@ -36,6 +36,7 @@ export const typeDefs = gql`
     student(registrationNo: BigInt!): Student
   studentByEmail(student_email: String!): Student
     courses: [Course]
+    courseById(courseId:Int!):Course
     getStudentAssessment(registrationNo: BigInt!): [Assessment]
   }
 `;
