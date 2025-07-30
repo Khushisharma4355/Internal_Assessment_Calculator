@@ -2,6 +2,7 @@ import Assessment from "../model/Assessment.js";
 import Student from "../model/Student.js";
 import Teacher from "../model/Teacher.js";
 import Course from "../model/Course.js";
+import { where } from "sequelize";
 
 export const resolvers = {
   Query: {
@@ -25,8 +26,9 @@ export const resolvers = {
       }),
 
     // Fetch all courses
+
     courses: async () => {
-      return await Course.findAll();
+      return await Course.findAll()
     },
 
     // Fetch assessment records for a student by registrationNo
