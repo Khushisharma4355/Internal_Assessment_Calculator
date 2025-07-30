@@ -1,6 +1,9 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
 import Course from "./Course.js";
+import Semester from './Semester.js';
+
+
 
 const Subject = sequelize.define("Subject", {
   // id: {
@@ -45,4 +48,6 @@ const Subject = sequelize.define("Subject", {
   timestamps: true
 });
 
+Subject.belongsTo(Course, { foreignKey: 'courseId' });
+Subject.belongsTo(Semester, { foreignKey: 'semester_id' });
 export default Subject;
