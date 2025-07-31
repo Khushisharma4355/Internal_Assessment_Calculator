@@ -10,29 +10,37 @@ import Section from "../model/Section.js";
 
 export const resolvers = {
   Query: {
-    // Fetch all students
-    students: async () => await Student.findAll(),
-
-    // Fetch a student by registrationNo (BigInt), including course
-    student: async (_, { registrationNo }) => {
+    // Check if student email exists
+    checkEmail: async (_, { email }) => {
       try {
-        return await Student.findOne({
-          where: { registrationNo: registrationNo.toString() },
-          include: [Course],
-        });
+        const student = await Student.findOne({ where: { student_email: email } });
+        return !!student;
       } catch (err) {
-        throw new Error("Failed to fetch student");
+        console.error("Error checking student email:", err);
+        return false;
       }
     },
 
-    // Fetch subjects for a given teacher
-    getSubjects: async (_, { emp_id }) => {
-      return await TeacherSubjectSection.findAll({ where: { emp_id } });
+    // Check if teacher email exists
+    checkTeacherEmail: async (_, { email }) => {
+      try {
+        const teacher = await Teacher.findOne({ where: { emp_email: email } });
+        return !!teacher;
+      } catch (err) {
+        console.error("Error checking teacher email:", err);
+        return false;
+      }
     },
 
-    // Fetch a single subject by subjectCode
-    Subject: async (_, { subjectCode }) => {
-      return await Subject.findOne({ where: { subjectCode } });
+    // Check if admin email exists
+    checkAdminEmail: async (_, { email }) => {
+      try {
+        const admin = await Admin.findOne({ where: { admin_email: email } });
+        return !!admin;
+      } catch (err) {
+        console.error("Error checking admin email:", err);
+        return false;
+      }
     },
   
     // Fetch semester info for a subject (includes associated semester)
@@ -95,14 +103,9 @@ getTeacherClasses: async (_, { emp_id }) => {
     // Fetch all courses
     courses: async () => await Course.findAll(),
 
-    // Fetch a course by ID
-    courseById: async (_, { courseId }) => {
-      return await Course.findByPk(courseId.toString());
-    },
-
-    // Fetch all assessments for a student
-    getStudentAssessment: async (_, { registrationNo }) => {
-      return await Assessment.findAll({
+    // Fetch all assessments of a student
+    getStudentAssessment: async (_, { registrationNo }) =>
+      await Assessment.findAll({
         where: { registrationNo: registrationNo.toString() },
         include: [
           {
@@ -114,8 +117,7 @@ getTeacherClasses: async (_, { emp_id }) => {
             attributes: ["emp_id", "emp_name"],
           },
         ],
-      });
-    },
+      }),
   },
 
 Mutation:{
@@ -203,55 +205,11 @@ bulkEnterMarks: async (_, { marks }) => {
   // Custom field resolvers
   Student: {
     name: (parent) => parent.student_name,
-    course: async (parent) => {
-      return await Course.findByPk(parent.courseId);
-    },
+    course: async (parent) => await Course.findByPk(parent.courseId),
   },
 
   Assessment: {
     student: (parent) => parent.Student,
     teacher: (parent) => parent.Teacher,
-  },
-
-  Teacher: {
-    Subjects: async (parent) => {
-      return await TeacherSubjectSection.findAll({
-        where: { emp_id: parent.emp_id },
-      });
-    },
-
-    Subject: async (parent) => {
-  const teacherSubs = await TeacherSubjectSection.findAll({
-    where: { emp_id: parent.emp_id },
-  });
-  const subjectCodes = teacherSubs.map((ts) => ts.subjectCode);
-
-  return await Subject.findAll({
-    where: { subjectCode: { [Op.in]: subjectCodes } },
-    include: [Course, Semester], // <- this is what was missing
-  });
-},
-
-    semester: async (parent) => {
-      const teacherSubs = await TeacherSubjectSection.findAll({
-        where: { emp_id: parent.emp_id },
-      });
-      const subjectCodes = teacherSubs.map((ts) => ts.subjectCode);
-
-      const subjects = await Subject.findAll({
-        where: { subjectCode: { [Op.in]: subjectCodes } },
-        include: [Semester],
-      });
-
-      const semesters = subjects
-        .map((s) => s.Semester)
-        .filter(
-          (sem, index, self) =>
-            sem &&
-            index === self.findIndex((s) => s.semester_id === sem.semester_id)
-        );
-
-      return semesters;
-    },
   },
 };

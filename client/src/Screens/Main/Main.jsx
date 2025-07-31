@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { Row, Col, Container, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { MainNav } from "../../Components/Main/MainNav";
