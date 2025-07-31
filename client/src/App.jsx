@@ -16,6 +16,7 @@ import { TeacherLogin } from './Screens/Login/TeacherLogin'
 import { AdminLogin } from './Screens/Login/AdminLogin'
 import { StudentHome } from './Screens/Students/StudentHome'
 import { Attendance } from './Screens/Students/Attendance'
+import EnterMarks from './Screens/Teacher/Entermarks'
 // import {TeacherDashboard} from './Components/Teachers/TeacherDashboard'
 function App() {
   return (
@@ -36,7 +37,7 @@ function App() {
 
 
 
-        <Route path="/teachers/uploadmarks" element={<UploadMarks />} />
+        <Route path="/teachers/uploadmarks" element={<EnterMarks />} />
         <Route path="/teachers/managestudents" element={<Managestu />} />
         <Route path="/teachers/reports" element={<TeaReports />} />
         <Route path="/admin/login" element={<AdminLogin />} />

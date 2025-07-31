@@ -1,115 +1,3 @@
-// import Assessment from "../model/Assessment.js";
-// import Student from "../model/Student.js";
-// import Teacher from "../model/Teacher.js";
-// import Course from "../model/Course.js";
-// import { where } from "sequelize";
-// import TeacherSubjectSection from "../model/TeacherSubSection.js";
-// import Subject from "../model/Subjects.js";
-// import Semester from "../model/Semester.js";
-
-// export const resolvers = {
-//   Query: {
-//     // Fetch all students
-//     students: async () => {
-//       // Fetch all students from the database
-//       // No need to manually map fields — handled by field resolvers below
-//       return await Student.findAll();
-//     },
-
-//     // Fetch a student by registrationNo (BigInt), including course
-//     student: async (_, { registrationNo }) => {
-//   try {
-//     return await Student.findOne({ 
-//       where: { registrationNo: registrationNo.toString() },
-//       include: [Course],
-//     });
-//   } catch (err) {
-//     throw new Error("Failed to fetch student");
-//   }
-// },
-// getSubjects:async(_,{emp_id})=>{
-//   return await TeacherSubjectSection.findAll({where:{emp_id}})
-// },
-// Subject:async(_,{subjectCode})=>{
-// return await Subject.findOne({where:subjectCode})
-// },
-// semester:async(_,{subjectCode})=>{
-// return await Subject.findOne({where:subjectCode});
-// },
-// getTeacher:async(_,{emp_id})=>{
-// return await Teacher.findOne({where:{emp_id}});
-// },
-//     // Fetch a student by email
-//     studentByEmail: async (_, { student_email }) =>
-//       await Student.findOne({
-//         where: { student_email },
-//       }),
-
-//     // Fetch all courses
-//     courses: async () => await Course.findAll(),
-
-//     courseById:async(_,{courseId})=>{
-//       return await Course.findByPk({
-//         where:{courseId:courseId.toString()},
-//       })
-//     },
-
-//     // Fetch assessment records for a student by registrationNo
-//     getStudentAssessment: async (_, { registrationNo }) => {
-//       return await Assessment.findAll({
-//         where: { registrationNo: registrationNo.toString() },
-//         include: [
-//           {
-//             model: Student,
-//             attributes: ["registrationNo", "student_name"], // DB field names
-//           },
-//           {
-//             model: Teacher,
-//             attributes: ["emp_id", "emp_name"],
-//           },
-//         ],
-//       });
-//     },
-//   },
-
-//   // Field resolvers for custom mappings
-//   Student: {
-//     // Map GraphQL 'name' field to Sequelize 'student_name'
-//     name: (parent) => parent.student_name,
-
-//     // Resolve 'course' relation using foreign key courseId
-//     course: async (parent) => {
-//       return await Course.findByPk(parent.courseId);
-//     },
-//   },
-
-//   Assessment: {
-//     // Return the included Student and Teacher instances from Sequelize
-//     student: (parent) => parent.Student,
-//     teacher: (parent) => parent.Teacher,
-//   },
-//    Teacher: {
-//   Subjects: async (parent) => {
-//     return await TeacherSubjectSection.findAll({ where: { emp_id: parent.emp_id } });
-//   },
-//   Subject: async (parent) => {
-//     // Get all subjects assigned to this teacher
-//     const teacherSubs = await TeacherSubjectSection.findAll({ where: { emp_id: parent.emp_id } });
-//     const subjectCodes = teacherSubs.map(ts => ts.subjectCode);
-//     return await Subject.findAll({ where: { subjectCode: subjectCodes } });
-//   },
-//   semester: async (parent) => {
-//     const teacherSubs = await TeacherSubjectSection.findAll({ where: { emp_id: parent.emp_id } });
-//     const subjectCodes = teacherSubs.map(ts => ts.subjectCode);
-//     return await Semester.findAll({ where: { subjectCode: subjectCodes } });
-//   }
-// }
-// };
-
-
-
-
-
 import Assessment from "../model/Assessment.js";
 import Student from "../model/Student.js";
 import Teacher from "../model/Teacher.js";
@@ -118,6 +6,7 @@ import { Op } from "sequelize";
 import TeacherSubjectSection from "../model/TeacherSubSection.js";
 import Subject from "../model/Subjects.js";
 import Semester from "../model/Semester.js";
+import Section from "../model/Section.js";
 
 export const resolvers = {
   Query: {
@@ -145,7 +34,7 @@ export const resolvers = {
     Subject: async (_, { subjectCode }) => {
       return await Subject.findOne({ where: { subjectCode } });
     },
-
+  
     // Fetch semester info for a subject (includes associated semester)
     semester: async (_, { subjectCode }) => {
       const subject = await Subject.findOne({
@@ -154,32 +43,54 @@ export const resolvers = {
       });
       return subject?.semester_id || null;
     },
-
-    // Fetch teacher by ID
-    getTeacher: async (_, { emp_id }) => {
-      return await Teacher.findOne({
-  where: { emp_id },
-  include: [
-    {
-      model: Subject,
-      include: [
-        { model: Semester },  // 👈 this is crucial
-        { model: Course }
-      ]
-    },
-    {
-      model: TeacherSubjectSection
-    }
-  ]
-});
-    },
-
-    // Fetch a student by email
-    studentByEmail: async (_, { student_email }) => {
-      return await Student.findOne({
-        where: { student_email },
+  getStudentsByClass: async (_, { courseId, sem_id, section_id }) => {
+      return await Student.findAll({
+        where: { courseId, sem_id, section_id }
       });
     },
+   
+  courses: async () => {
+    return await Course.findAll();
+  },
+  semesters: async () => {
+    return await Semester.findAll();
+  },
+  sections: async () => {
+    return await Section.findAll();
+  },
+
+getTeacherClasses: async (_, { emp_id }) => {
+  const assignments = await TeacherSubjectSection.findAll({ where: { emp_id } });
+
+  const results = await Promise.all(assignments.map(async (assign) => {
+    const subject = await Subject.findOne({
+      where: { subjectCode: assign.subjectCode },
+      include: [Course, Semester],
+    });
+
+    return {
+      courseId: subject.course?.courseId,
+      courseName: subject.course?.courseName,
+      sem_id: subject.Semester?.sem_id,
+      section_id: assign.section_id,
+      subjectCode: assign.subjectCode,
+      subjectName: subject.subjectName,
+    };
+  }));
+
+  return results;
+}
+,
+
+   
+
+    // Fetch a student by email
+   studentByEmail: async (_, { student_email }) => {
+  return await Student.findOne({
+    where: { student_email },
+    include: [Course], // <-- include the association
+  });
+},
 
     // Fetch all courses
     courses: async () => await Course.findAll(),
@@ -207,6 +118,88 @@ export const resolvers = {
     },
   },
 
+Mutation:{
+enterMarks: async (_, { registrationNo, subjectCode, marks, markType }) => {
+  try {
+    // Validate markType against allowed fields
+    const allowedFields = ["Class_test_1", "Class_test_2", "MTE", "ETE", "attendance"];
+    if (!allowedFields.includes(markType)) {
+      return {
+        success: false,
+        message: "Invalid mark type",
+      };
+    }
+
+    const existing = await Assessment.findOne({
+      where: {
+        registrationNo:registrationNo,
+        subjectCode: subjectCode,
+      },
+    });
+
+    if (existing) {
+      // Update only the specified field
+      await existing.update({
+        [markType]: marks,
+      });
+
+      return {
+        success: true,
+        message: `Updated ${markType} successfully.`,
+      };
+    } else {
+      // Create new record with only one mark field set
+      const newRecord = {
+        student_id: student_id,
+        subjectCode: subjectCode,
+        [markType]: marks,
+      };
+
+      await Assessment.create(newRecord);
+
+      return {
+        success: true,
+        message: `Entered ${markType} successfully.`,
+      };
+    }
+  } catch (err) {
+    console.error("enterMarks error:", err);
+    return {
+      success: false,
+      message: "Error saving marks",
+    };
+  }
+},
+
+bulkEnterMarks: async (_, { marks }) => {
+  try {
+    for (const m of marks) {
+      const existing = await Assessment.findOne({
+        where: {
+          student_id: m.student_id,
+          subjectCode: m.subjectCode,
+        }
+      });
+
+      if (existing) {
+        await existing.update({ [m.markType]: m.marks });
+      } else {
+        await Assessment.create({
+          student_id: m.student_id,
+          subjectCode: m.subjectCode,
+          [m.markType]: m.marks,
+        });
+      }
+    }
+    return { success: true, message: "Marks saved successfully" };
+  } catch (err) {
+    console.error(err);
+    return { success: false, message: "Error saving marks" };
+  }
+}
+
+
+},
   // Custom field resolvers
   Student: {
     name: (parent) => parent.student_name,
