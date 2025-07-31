@@ -2,21 +2,40 @@ import { gql } from "graphql-tag";
 export const typeDefs = gql`
   scalar BigInt  # Custom scalar for BigInt numbers
   type Course {
-    id: ID!
-    name: String!
+    courseId: ID!
+    courseName: String!
   }
   type Student {
   id: ID!
   name: String!
   classs: String!
-  courseId: Int
+  courseId: String
   course: Course
   student_email: String!  
 }
   type Teacher {
     emp_id: String!
-    name: String
+    emp_name: String
+    emp_email:String
+    emp_phone:String
+    Subjects:[TeacherSubSec]
+    Subject:[Subject]
+    semester:[semester]
   }
+    type TeacherSubSec{
+    subjectCode:String!
+    section_id:String!
+    }
+
+    type Subject{
+    subjectName:String!
+    course:Course
+    Semester:semester
+    }
+
+    type semester{
+    sem_id:ID!
+    }
   type Assessment {
     assmt_id: String!
     registrationNo: BigInt!
@@ -37,9 +56,17 @@ export const typeDefs = gql`
   checkAdminEmail(email: String!): Boolean             #for admin email check 
 
     students: [Student]
+    getTeacher(emp_id:String!):Teacher
     student(registrationNo: BigInt!): Student
   studentByEmail(student_email: String!): Student
     courses: [Course]
+    getCourseBySubCode(subjectCode:String!):Course
+    courseById(courseId:ID!):Course
+    getSubjects(emp_id:String!):[TeacherSubSec]
+
+    Subject(subjectCode:String!):[Subject]
+    semester(subjectcode:String!):[semester]
+
     getStudentAssessment(registrationNo: BigInt!): [Assessment]
 
    
