@@ -32,10 +32,18 @@ export const typeDefs = gql`
     teacher: Teacher
   }
   type Query {
+  checkEmail(email: String!): Boolean     #for student email check 
+  checkTeacherEmail(email: String!): Boolean           #for teacher email check 
+  checkAdminEmail(email: String!): Boolean             #for admin email check 
+
     students: [Student]
     student(registrationNo: BigInt!): Student
   studentByEmail(student_email: String!): Student
     courses: [Course]
     getStudentAssessment(registrationNo: BigInt!): [Assessment]
+
+   
+    
   }
+
 `;
