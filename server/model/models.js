@@ -107,6 +107,32 @@ Course.hasMany(Subject, { foreignKey: 'courseId' });
 Semester.hasMany(Subject, { foreignKey: 'semester_id' });
 
 
+
+
+
+
+
+
+
+
+
+
+Subject.belongsTo(Course, { foreignKey: "courseId" });
+Subject.belongsTo(Semester, { foreignKey: "sem_id" });
+
+TeacherSubjectSection.belongsTo(Section, { foreignKey: "section_id" });
+
+
+
+
+
+
+
+
+
+
+
+
 //student and department
 Department.hasMany(Student,{
   foreignKey:"dep_id",
