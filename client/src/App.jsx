@@ -16,11 +16,13 @@ import { TeacherLogin } from './Screens/Login/TeacherLogin'
 import { AdminLogin } from './Screens/Login/AdminLogin'
 import { StudentHome } from './Screens/Students/StudentHome'
 import { Attendance } from './Screens/Students/Attendance'
+// import {TeacherDashboard} from './Components/Teachers/TeacherDashboard'
 function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<MainHome />} />
+        <Route path="/" element={<TeaHome />} />
+        {/* <Route path="/" element={<MainHome />} /> */}
         <Route path="/students/login" element={<StuLogin />} />
         {/* <Route path="/students/" element={<StuHome/>}/> */}
         {/* the below route is home route of student and right now working on /students route */}
@@ -30,6 +32,7 @@ function App() {
         <Route path="/students/reports" element={<Reports />} />
         <Route path="/teachers/login" element={<TeacherLogin />} />
         <Route path="/teachers/" element={<TeaHome />} />
+        {/* <Route path="/teachers/tt" element={<TeacherDashboard/>} /> */}
 
 
 

@@ -1,10 +1,10 @@
 // models/index.js
+import Department from "./Department.js";
 import sequelize from "../config/db.js";
 import Student from "./Student.js";
 import Course from "./Course.js";
 import Subject from "./Subjects.js";
 // import Subject from "./subject.js";
-import Department from "./Department.js";
 import Teacher from "./Teacher.js";
 import Admin from "./Admin.js";
 import Semester from "./Semester.js";
@@ -32,6 +32,7 @@ Student.belongsTo(Course, {
 Teacher.belongsToMany(Subject, {
   through: TeacherSubjectSection,
   foreignKey: "emp_id",
+  otherKey: "subjectCode",
   onDelete: "CASCADE",
   onUpdate: "CASCADE"
 });
@@ -39,10 +40,10 @@ Teacher.belongsToMany(Subject, {
 Subject.belongsToMany(Teacher, {
   through: TeacherSubjectSection,
   foreignKey: "subjectCode",
+  otherKey: "emp_id",
   onDelete: "CASCADE",
   onUpdate: "CASCADE"
 });
-
 // A section can have multiple teachers for different subjects
 Section.belongsToMany(Teacher, {
   through: TeacherSubjectSection,
@@ -82,21 +83,28 @@ Subject.belongsTo(Course, {
   onUpdate: "CASCADE"
 });
 
-
-//course belongs to many semsster and semster belongs to many course
 Course.belongsToMany(Semester, {
-  through: "CourseSemester",
+  through: {
+    model: CourseSemester,
+    unique: false // if you want to allow duplicates
+  },
   foreignKey: "courseId",
-   onDelete: "CASCADE",
+  onDelete: "CASCADE",
   onUpdate: "CASCADE"
 });
 
 Semester.belongsToMany(Course, {
   through: "CourseSemester",
-  foreignKey: "semesterId",
+  foreignKey: "semester_id",
    onDelete: "CASCADE",
   onUpdate: "CASCADE"
 });
+
+Subject.belongsTo(Course, { foreignKey: 'courseId' });
+Subject.belongsTo(Semester, { foreignKey: 'semester_id' });
+
+Course.hasMany(Subject, { foreignKey: 'courseId' });
+Semester.hasMany(Subject, { foreignKey: 'semester_id' });
 
 
 //student and department
@@ -135,9 +143,9 @@ Teacher.hasMany(Admin,{
 
 // Section belongs to a specific course and semester
 Course.hasMany(Section, { foreignKey: "courseId" });
-Semester.hasMany(Section, { foreignKey: "semesterId" });
+Semester.hasMany(Section, { foreignKey: "semester_id" });
 Section.belongsTo(Course, { foreignKey: "courseId" });
-Section.belongsTo(Semester, { foreignKey: "semesterId" });
+Section.belongsTo(Semester, { foreignKey: "semester_id" });
 
 
 
@@ -176,11 +184,38 @@ Assessment.belongsTo(Semester, {
 const syncDatabase = async () => {
   try {
     // await TeacherSubjectSection.drop();
-    await sequelize.sync({alter:true}); // create/update tables
+    // await sequelize.sync({alter:true}); // create/update tables
     console.log("All models synced successfully");
   } catch (err) {
     console.error("Error syncing models:", err);
   }
 };
 
-export { Student, Course, Subject,Teacher,Admin,Department,syncDatabase};
+
+//teacher subject section 
+Teacher.hasMany(TeacherSubjectSection, { foreignKey: 'emp_id' });
+TeacherSubjectSection.belongsTo(Teacher, { foreignKey: 'emp_id' });
+
+
+
+
+function setupAssociations() {
+  Course.belongsTo(Department, { foreignKey: "dep_id" });
+  Department.hasMany(Course, { foreignKey: "dep_id" });
+}
+
+setupAssociations(); // Call this after all imports
+export { 
+  Student, 
+  Course, 
+  Subject,
+  Teacher,
+  Admin,
+  Department,
+  Semester,
+  CourseSemester,
+  Section,
+  TeacherSubjectSection,
+  Assessment,
+  syncDatabase
+};

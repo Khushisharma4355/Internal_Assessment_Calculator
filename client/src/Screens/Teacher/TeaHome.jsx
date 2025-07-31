@@ -6,20 +6,14 @@ import { TeacherDashboard } from "../../Components/Teachers/TeacherDashboard"
 export const TeaHome=()=>{
     return(
         <>
-
-
-
-<TeacherDashboard/>
-
-
-{/* <TeaNav/>
+<TeaNav/>
         <Container className="bg-light">
             <Row >
           <Col className="d-flex  justify-content-center">
-        <h3>Welcome Teachers!!!</h3>
+       <TeacherDashboard/>
                 </Col>
             </Row>
-        </Container> */}
+        </Container>
         </>
     )
 }
