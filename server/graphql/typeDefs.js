@@ -10,7 +10,7 @@ export const typeDefs = gql`
 
   type Student {
     registrationNo: BigInt!          # Used as the unique identifier
-    name: String!                    # Maps to student_name in DB
+    student_name: String!                    # Maps to student_name in DB
     student_email: String!
     courseId: ID
     course: Course
@@ -76,22 +76,9 @@ export const typeDefs = gql`
     teacher: Teacher
   }
 
-    students: [Student]
-    getTeacher(emp_id:String!):Teacher
-    student(registrationNo: BigInt!): Student
-  studentByEmail(student_email: String!): Student
-    courses: [Course]
-    getCourseBySubCode(subjectCode:String!):Course
-    courseById(courseId:ID!):Course
-    getSubjects(emp_id:String!):[TeacherSubSec]
-
-    Subject(subjectCode:String!):[Subject]
-    semester(subjectcode:String!):[semester]
-
-    getStudentAssessment(registrationNo: String!): [Assessment]
-
-   
-    
+  type ResponseMessage {
+    success: Boolean!
+    message: String!
   }
 
   type Query {
