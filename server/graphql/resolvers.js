@@ -69,10 +69,25 @@ export const resolvers = {
     },
 
     getStudentsByClass: async (_, { courseId, semester_id, section_id }) => {
-      return await Student.findAll({
-        where: { courseId, semester_id, section_id },
-      });
-    },
+  try {
+    const students = await Student.findAll({
+      where: { 
+        courseId: parseInt(courseId),  // Ensure proper type
+        semester_id: parseInt(semester_id), 
+        section_id 
+      },
+      attributes: ['registrationNo', 'student_name', 'student_email']  // Only return needed fields
+    });
+    
+    if (!students.length) {
+      console.warn(`No students found for ${courseId}-${semester_id}-${section_id}`);
+    }
+    return students;
+  } catch (err) {
+    console.error("Database error:", err);
+    throw new Error("Failed to fetch students");
+  }
+},
 
     courses: async () => await Course.findAll(),
 

@@ -58,6 +58,14 @@ const Student = sequelize.define("Student", {     //create a table named Student
             key: 'section_id'
         }
     },
+    semester_id: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    references: {
+        model: Semester,
+        key: 'semester_id'
+    }
+},
     dep_id: {
         type: DataTypes.STRING,
         allowNull: true,
