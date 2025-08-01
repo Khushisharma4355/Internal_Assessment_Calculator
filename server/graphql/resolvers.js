@@ -51,54 +51,71 @@ export const resolvers = {
       });
       return subject?.semester_id || null;
     },
-  getStudentsByClass: async (_, { courseId, sem_id, section_id }) => {
-      return await Student.findAll({
-        where: { courseId, sem_id, section_id }
-      });
-    },
+ getStudentsByClass: async (_, { courseId, sem_id, section_id }) => {
+  return await Student.findAll({
+    where: {
+      courseId,
+      semester_id: sem_id,   // map input sem_id to DB column semester_id
+      section_id
+    }
+  });
+},
+
+
    
   courses: async () => {
     return await Course.findAll();
   },
-  semesters: async () => {
-    return await Semester.findAll();
-  },
+ semester: async (_, { subjectCode }) => {
+  const subject = await Subject.findOne({
+    where: { subjectCode },
+    include: [Semester],
+  });
+  return subject?.semester_id || null;  // return FK from Subject
+},
   sections: async () => {
     return await Section.findAll();
   },
 
 getTeacherClasses: async (_, { emp_id }) => {
-  const assignments = await TeacherSubjectSection.findAll({ where: { emp_id } });
+  // Fetch all teacher assignments
+  const assignments = await TeacherSubjectSection.findAll({
+    where: { emp_id }
+  });
 
-  const results = await Promise.all(assignments.map(async (assign) => {
-    const subject = await Subject.findOne({
-      where: { subjectCode: assign.subjectCode },
-      include: [Course, Semester],
-    });
+  // Extract unique subjectCodes from assignments
+  const subjectCodes = [...new Set(assignments.map(a => a.subjectCode))];
+
+  // Fetch all subjects with related Course and Semester in one query
+  const subjects = await Subject.findAll({
+    where: { subjectCode: subjectCodes },
+    include: [
+      { model: Course, attributes: ['courseId', 'courseName'] },
+      { model: Semester, attributes: ['sem_id'] }
+    ],
+    attributes: ['subjectCode', 'subjectName', 'courseId', 'semester_id']
+  });
+
+  // Map subjectCode → Subject object for quick lookup
+  const subjectMap = new Map(subjects.map(s => [s.subjectCode, s]));
+
+  // Build results by combining assignment + subject info
+  const results = assignments.map(assign => {
+    const subject = subjectMap.get(assign.subjectCode);
 
     return {
-      courseId: subject.course?.courseId,
-      courseName: subject.course?.courseName,
-      sem_id: subject.Semester?.sem_id,
+      courseId: subject?.courseId || null,
+      courseName: subject?.Course?.courseName || null,
+      semester_id: subject?.semester_id || null,
       section_id: assign.section_id,
       subjectCode: assign.subjectCode,
-      subjectName: subject.subjectName,
+      subjectName: subject?.subjectName || null,
     };
-  }));
+  });
 
   return results;
 }
 ,
-
-   
-
-    // Fetch a student by email
-   studentByEmail: async (_, { student_email }) => {
-  return await Student.findOne({
-    where: { student_email },
-    include: [Course], // <-- include the association
-  });
-},
 
     // Fetch all courses
     courses: async () => await Course.findAll(),

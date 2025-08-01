@@ -47,12 +47,12 @@ const Assessment = sequelize.define("Assessment", {
     allowNull: true,
     defaultValue: null
   },
-  sem_id: {
+  semester_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
       model: Semester,
-      key: "sem_id"
+      key: "semester_id"
     }
   },
   attendance: {          
@@ -69,12 +69,14 @@ const Assessment = sequelize.define("Assessment", {
     }
   }
 }, {
-  indexes: [
-    {
-      unique: true,
-      fields: ["registrationNo", "subjectCode", "sem_id"]
-    }
-  ],
+ indexes: [
+  {
+    unique: true,
+    name: "uniq_assessment_entry", // custom name
+    fields: ["registrationNo", "subjectCode", "semester_id"]
+  }
+]
+,
   tableName: "Assessments"
 });
 

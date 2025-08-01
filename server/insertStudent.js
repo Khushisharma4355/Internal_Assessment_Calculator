@@ -7,7 +7,7 @@ import Student from './model/Student.js';
 
 const insertStudent = async () => {
   try {
-    await sequelize.sync({ force: true }); // make sure the table exists
+    await sequelize.sync(); // make sure the table exists
 
     await Student.bulkCreate([
       {
@@ -29,7 +29,7 @@ const insertStudent = async () => {
         registrationNo: 20230002,
         student_email: "rohan@example.com",
         parent_Detail: "9988776655",
-        section_id: "S006",
+        section_id: "S001",
         dep_id: "DEP002"
       },
       {
@@ -40,7 +40,7 @@ const insertStudent = async () => {
         registrationNo: 20230003,
         student_email: "ananya@example.com",
         parent_Detail: "9123456789",
-        section_id: "S001",
+        section_id: "S002",
         dep_id: "DEP001"
       },
       {
@@ -51,7 +51,7 @@ const insertStudent = async () => {
         registrationNo: 20230004,
         student_email: "pallavi@example.com",
         parent_Detail: "9012345678",
-        section_id: "S001",
+        section_id: "S002",
         dep_id: "DEP001"
       }
     ]);

@@ -11,26 +11,6 @@ const Section = sequelize.define("Section", {
   section_name: {
     type: DataTypes.STRING,
     allowNull: false
-  },
-  courseId: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    references: {
-      model: "Courses",
-      key: "courseId",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE"
-    }
-  },
-  semesterId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: "Semesters",
-      key: "sem_id",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE"
-    }
   }
 }, {
   tableName: "Sections",
