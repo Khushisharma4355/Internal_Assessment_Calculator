@@ -4,7 +4,7 @@ import Assessment from "./model/Assessment.js";
 const insertAssessment = async () => {
   try {
     // Comment out or remove this line if tables are already created and populated.
-    await sequelize.sync({ force: true });
+    await sequelize.sync();
 
     await Assessment.bulkCreate([
       {
@@ -15,7 +15,7 @@ const insertAssessment = async () => {
         Class_test_2: null,
         MTE: null,
         ETE: null,
-        sem_id: 1,
+        semester_id: 1,
         attendance: null,
         emp_id: "T001"
       },
@@ -27,7 +27,7 @@ const insertAssessment = async () => {
         Class_test_2: null,
         MTE: null,
         ETE: null,
-        sem_id: 1,
+        semester_id: 1,
         attendance: 82,
         emp_id: "T002"
       },
@@ -39,7 +39,7 @@ const insertAssessment = async () => {
         Class_test_2: 18,
         MTE: 39,
         ETE: 72,
-        sem_id: 1,
+        semester_id: 1,
         attendance: 88,
         emp_id: "T001"
       },
@@ -51,7 +51,7 @@ const insertAssessment = async () => {
         Class_test_2: null,
         MTE: null,
         ETE: null,
-        sem_id: 1,
+        semester_id: 1,
         attendance: null,
         emp_id: "T002"
       }
