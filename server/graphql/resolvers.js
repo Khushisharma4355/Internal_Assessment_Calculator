@@ -111,6 +111,15 @@ export const resolvers = {
     },
 
     getStudentAssessment: async (_, { registrationNo }) => {
+      // const assessment=await Assessment.findAll({
+      //   where: { registrationNo: registrationNo.toString() },
+      //   include: [
+      //     { model: Student, attributes: ["registrationNo", "student_name"] },
+      //     { model: Teacher, attributes: ["emp_id", "emp_name"] },
+      //   ],
+      // });
+      // console.log(assessment)
+      // return;
       return await Assessment.findAll({
         where: { registrationNo: registrationNo.toString() },
         include: [
@@ -189,12 +198,12 @@ bulkEnterMarks: async (_, { marks }) => {
   },
 
   Student: {
-    name: (parent) => parent.student_name,
+    // student_name: (parent) => parent.student_name,
     course: async (parent) => await Course.findByPk(parent.courseId),
   },
 
   Assessment: {
-    student: async (parent) => await Student.findByPk(parent.student_id),
-    teacher: async (parent) => await Teacher.findByPk(parent.emp_id),
+    student: (parent) => parent.Student,
+  teacher: (parent) => parent.Teacher
   },
 };
