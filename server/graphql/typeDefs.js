@@ -9,16 +9,17 @@ export const typeDefs = gql`
   }
 
   type Student {
-    id: ID!
-    name: String!
-    class: String!
-    courseId: String
-    course: Course
+    registrationNo: BigInt!          # Used as the unique identifier
+    name: String!                    # Maps to student_name in DB
     student_email: String!
+    courseId: ID
+    course: Course
+    semester_id: ID
+    section_id: String
   }
 
   type Teacher {
-    emp_id: String!
+    emp_id: String
     emp_name: String
     emp_email: String
     emp_phone: String
@@ -33,40 +34,43 @@ export const typeDefs = gql`
   }
 
   type ClassInfo {
-  courseId: String!
-  courseName: String!
-  semester_id: String    # add this line if you want to expose semester
-  section_id: String!
-  subjectCode: String!
-  subjectName: String!
-}
-
+    courseId: ID!
+    courseName: String!
+    semester_id: ID
+    section_id: String!
+    subjectCode: String!
+    subjectName: String!
+  }
 
   type Subject {
+    subjectCode: String!
     subjectName: String!
+    courseId: ID
     course: Course
+    semester_id: ID
     Semester: Semester
   }
 
   type Semester {
     sem_id: ID!
+    semesterName: String
   }
 
   type Section {
-    section_id: String!
+    section_id: ID!
     section_name: String!
   }
 
   type Assessment {
-    assmt_id: String!
-    registrationNo: String!
+    assmt_id: ID!
+    registrationNo: BigInt!
     subjectCode: String
     Class_test_1: Int
     Class_test_2: Int
     MTE: Int
     ETE: Int
     attendance: Int
-    sem_id: Int
+    sem_id: ID
     emp_id: String
     student: Student
     teacher: Teacher
@@ -94,25 +98,25 @@ export const typeDefs = gql`
     courses: [Course]
     semesters: [Semester]
     sections: [Section]
-    getStudentsByClass(courseId: ID!, sem_id: ID!, section_id: String!): [Student]
+    getStudentsByClass(courseId: ID!, semester_id: ID!, section_id: String!): [Student]
     students: [Student]
-    getTeacher(emp_id: String!): Teacher
+    getTeacher(emp_id: ID!): Teacher
     student(registrationNo: BigInt!): Student
     studentByEmail(student_email: String!): Student
     getCourseBySubCode(subjectCode: String!): Course
     courseById(courseId: ID!): Course
-    getSubjects(emp_id: String!): [TeacherSubSec]
+    getSubjects(emp_id: ID!): [TeacherSubSec]
     subject(subjectCode: String!): Subject
     semester(subjectCode: String!): Semester
     getStudentAssessment(registrationNo: BigInt!): [Assessment]
-    getTeacherClasses(emp_id: String!): [ClassInfo!]!
+    getTeacherClasses(emp_id: ID!): [ClassInfo!]!
     checkEmail(email: String!): Boolean!
     checkTeacherEmail(email: String!): Boolean!
     checkAdminEmail(email: String!): Boolean!
   }
 
   input MarksInput {
-    student_id: ID!
+    registrationNo: BigInt!
     subjectCode: String!
     marks: Int!
     markType: String!
@@ -121,7 +125,7 @@ export const typeDefs = gql`
   type Mutation {
     bulkEnterMarks(marks: [MarksInput!]!): ResponseMessage
     enterMarks(
-      registrationNo: ID!
+      registrationNo: BigInt!
       subjectCode: String!
       marks: Int!
       markType: String!

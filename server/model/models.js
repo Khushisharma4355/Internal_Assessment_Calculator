@@ -210,8 +210,8 @@ Assessment.belongsTo(Semester, {
 const syncDatabase = async () => {
   try {
   //   console.log('Disabling foreign key checks...');
-  //   await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
-  //  await CourseSemester.drop();
+    // await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
+   
     // // Drop all tables safely
     // console.log('Dropping all tables...');
     // await sequelize.drop();
@@ -222,12 +222,12 @@ const syncDatabase = async () => {
     // Sync all models
     console.log('Syncing models...');
     await sequelize.sync();
-
+// await Admin.drop();
     console.log("All models synced successfully.");
   } catch (err) {
     console.error("Error syncing models:", err);
   } finally {
-    await sequelize.close(); // Optional: close the DB connection after syncing
+    // await sequelize.close(); // Optional: close the DB connection after syncing
   }
 };
 
@@ -235,10 +235,6 @@ const syncDatabase = async () => {
 //teacher subject section 
 Teacher.hasMany(TeacherSubjectSection, { foreignKey: 'emp_id' });
 TeacherSubjectSection.belongsTo(Teacher, { foreignKey: 'emp_id' });
-
-
-
-
 function setupAssociations() {
   Course.belongsTo(Department, { foreignKey: "dep_id" });
   Department.hasMany(Course, { foreignKey: "dep_id" });

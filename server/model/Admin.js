@@ -17,7 +17,7 @@ emp_id:{
         allowNull:false
     }
 },{
-    tableName:"Admins",
+    tableName:"Admin",
     timestamps:true
 }
 );
