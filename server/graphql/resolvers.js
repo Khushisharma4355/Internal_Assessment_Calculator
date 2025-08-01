@@ -58,6 +58,21 @@ export const resolvers = {
         throw new Error("Failed to fetch teacher data");
       }
     },
+   getAllTeachers: async () => {
+      return await Teacher.findAll({
+        include: [
+          {
+            model: TeacherSubjectSection,
+            include: [
+              {
+                model: Subject,
+                attributes: ["subjectName", "subjectCode"],
+              },
+            ],
+          },
+        ],
+      });
+    },
 
     // get semester info from Subject, return full Semester object (optional)
     semester: async (_, { subjectCode }) => {
@@ -198,5 +213,12 @@ export const resolvers = {
     student: (parent) => parent.Student,
     teacher: (parent) => parent.Teacher,
     subject:(parent)=>parent.Subject
+  },
+    Teacher: {
+    Subjects: (parent) => parent.TeacherSubjectSections, // Sequelize default name
+  },
+
+  TeacherSubSec: {
+    subject: (parent) => parent.Subject, // included from Sequelize
   },
 };
