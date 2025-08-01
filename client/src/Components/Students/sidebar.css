@@ -15,3 +15,8 @@
   color: white;
   font-weight: bold;
 } */
+ .sidebar {
+  min-height: 100vh; /* optional */
+  height: auto;       /* ✅ Allows it to grow with content */
+  position: relative; /* ✅ Prevents fixed position from overlapping footer */
+}
