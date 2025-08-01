@@ -11,10 +11,8 @@ const insertTeacherSubjectSection = async () => {
    const inserted = await TeacherSubjectSection.bulkCreate([
       { emp_id: "T001", subjectCode: "SUB001", section_id: "S001" },
       { emp_id: "T001", subjectCode: "SUB002", section_id: "S002" },
-      { emp_id: "T002", subjectCode: "SUB001", section_id: "S003" },
-      { emp_id: "T002", subjectCode: "SUB002", section_id: "S004" },
-      { emp_id: "T001", subjectCode: "SUB001", section_id: "S005" },
-      { emp_id: "T002", subjectCode: "SUB002", section_id: "S006" }
+      { emp_id: "T002", subjectCode: "SUB001", section_id: "S001" },
+      { emp_id: "T002", subjectCode: "SUB002", section_id: "S002" },
     ], { ignoreDuplicates: true });
 
 
