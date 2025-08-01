@@ -10,7 +10,7 @@ export const typeDefs = gql`
 
   type Student {
     registrationNo: BigInt!          # Used as the unique identifier
-    name: String!                    # Maps to student_name in DB
+    student_name: String!                    # Maps to student_name in DB
     student_email: String!
     courseId: ID
     course: Course

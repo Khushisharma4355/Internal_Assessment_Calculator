@@ -1,9 +1,17 @@
 .sidebar a {
   padding: 10px 0;
   text-decoration: none;
+  color: white;
   transition: background 0.3s;
 }
-.sidebar a:hover {
+.sidebar a:hover,a.active{
   background-color: rgba(255, 255, 255, 0.1);
+  color: white;
   border-radius: 8px;
 }
+/* .sidebar a.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  bor
+  color: white;
+  font-weight: bold;
+} */
