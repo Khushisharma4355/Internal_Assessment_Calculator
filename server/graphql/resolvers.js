@@ -41,23 +41,23 @@ export const resolvers = {
       }
     },
     getTeacher: async (_, { emp_id }) => {
-  try {
-    const teacher = await Teacher.findOne({ 
-      where: { emp_id },
-      attributes: ['emp_id', 'emp_name', 'emp_email', 'emp_phone'] 
-    });
-    
-    if (!teacher) {
-      console.log(`Teacher ${emp_id} not found in database`);
-      return null;
-    }
-    
-    return teacher;
-  } catch (err) {
-    console.error("Error in getTeacher resolver:", err);
-    throw new Error("Failed to fetch teacher data");
-  }
-},
+      try {
+        const teacher = await Teacher.findOne({
+          where: { emp_id },
+          attributes: ['emp_id', 'emp_name', 'emp_email', 'emp_phone']
+        });
+
+        if (!teacher) {
+          console.log(`Teacher ${emp_id} not found in database`);
+          return null;
+        }
+
+        return teacher;
+      } catch (err) {
+        console.error("Error in getTeacher resolver:", err);
+        throw new Error("Failed to fetch teacher data");
+      }
+    },
 
     // get semester info from Subject, return full Semester object (optional)
     semester: async (_, { subjectCode }) => {
@@ -111,20 +111,12 @@ export const resolvers = {
     },
 
     getStudentAssessment: async (_, { registrationNo }) => {
-      // const assessment=await Assessment.findAll({
-      //   where: { registrationNo: registrationNo.toString() },
-      //   include: [
-      //     { model: Student, attributes: ["registrationNo", "student_name"] },
-      //     { model: Teacher, attributes: ["emp_id", "emp_name"] },
-      //   ],
-      // });
-      // console.log(assessment)
-      // return;
       return await Assessment.findAll({
         where: { registrationNo: registrationNo.toString() },
         include: [
           { model: Student, attributes: ["registrationNo", "student_name"] },
           { model: Teacher, attributes: ["emp_id", "emp_name"] },
+          { model: Subject, attributes: ["subjectCode", "subjectName"] }
         ],
       });
     },
@@ -167,34 +159,34 @@ export const resolvers = {
       }
     },
 
-   // inside Mutation:
-bulkEnterMarks: async (_, { marks }) => {
-  try {
-    for (const m of marks) {
-      const existing = await Assessment.findOne({
-        where: {
-          registrationNo: m.registrationNo,
-          subjectCode: m.subjectCode,
-        },
-      });
+    // inside Mutation:
+    bulkEnterMarks: async (_, { marks }) => {
+      try {
+        for (const m of marks) {
+          const existing = await Assessment.findOne({
+            where: {
+              registrationNo: m.registrationNo,
+              subjectCode: m.subjectCode,
+            },
+          });
 
-      if (existing) {
-        await existing.update({ [m.markType]: m.marks });
-      } else {
-        await Assessment.create({
-          registrationNo: m.registrationNo,
-          subjectCode: m.subjectCode,
-          [m.markType]: m.marks,
-        });
+          if (existing) {
+            await existing.update({ [m.markType]: m.marks });
+          } else {
+            await Assessment.create({
+              registrationNo: m.registrationNo,
+              subjectCode: m.subjectCode,
+              [m.markType]: m.marks,
+            });
+          }
+        }
+        return { success: true, message: "Marks saved successfully" };
+      } catch (err) {
+        console.error(err);
+        return { success: false, message: "Error saving marks" };
       }
     }
-    return { success: true, message: "Marks saved successfully" };
-  } catch (err) {
-    console.error(err);
-    return { success: false, message: "Error saving marks" };
-  }
-}
-,
+    ,
   },
 
   Student: {
@@ -204,6 +196,7 @@ bulkEnterMarks: async (_, { marks }) => {
 
   Assessment: {
     student: (parent) => parent.Student,
-  teacher: (parent) => parent.Teacher
+    teacher: (parent) => parent.Teacher,
+    subject:(parent)=>parent.Subject
   },
 };

@@ -73,6 +73,7 @@ export const typeDefs = gql`
     sem_id: ID
     emp_id: String
     student: Student
+    subject:Subject
     teacher: Teacher
   }
 
