@@ -1,0 +1,29 @@
+/* Make the entire page take full height */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Let the main content expand */
+.page-wrapper > .container {
+  flex: 1;
+}
+.centered-view {
+   margin: auto;
+   padding: 20px;
+  width: 100%; /* or set a fixed width like 80%, 600px, etc. */
+  max-width: 900px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* smooth shadow */
+  border-radius: 10px;
+  background-color: white; /* Optional, if needed */
+
+}
+
+/* Footer styles */
+/* .footer {
+  background-color: #f9f9e4;
+  padding: 20px;
+  text-align: center;
+  border-top: 6px solid #1d3557;
+} */
