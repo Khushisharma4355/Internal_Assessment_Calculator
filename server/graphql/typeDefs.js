@@ -59,7 +59,7 @@ export const typeDefs = gql`
 
   type Assessment {
     assmt_id: String!
-    registrationNo: BigInt!
+    registrationNo: String!
     subjectCode: String
     Class_test_1: Int
     Class_test_2: Int
@@ -72,9 +72,22 @@ export const typeDefs = gql`
     teacher: Teacher
   }
 
-  type ResponseMessage {
-    success: Boolean!
-    message: String!
+    students: [Student]
+    getTeacher(emp_id:String!):Teacher
+    student(registrationNo: BigInt!): Student
+  studentByEmail(student_email: String!): Student
+    courses: [Course]
+    getCourseBySubCode(subjectCode:String!):Course
+    courseById(courseId:ID!):Course
+    getSubjects(emp_id:String!):[TeacherSubSec]
+
+    Subject(subjectCode:String!):[Subject]
+    semester(subjectcode:String!):[semester]
+
+    getStudentAssessment(registrationNo: String!): [Assessment]
+
+   
+    
   }
 
   type Query {
