@@ -73,6 +73,15 @@ export const resolvers = {
         ],
       });
     },
+    students: async()=>{
+      return await Student.findAll(
+        {
+          include:[
+            {model:Course},
+          ]
+        }
+      );
+    },
 
     // get semester info from Subject, return full Semester object (optional)
     semester: async (_, { subjectCode }) => {
