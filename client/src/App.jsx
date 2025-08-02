@@ -24,8 +24,8 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<TeaHome />} />
-        {/* <Route path="/" element={<MainHome />} /> */}
+        {/* <Route path="/" element={<TeaHome />} /> */}
+        <Route path="/" element={<MainHome />} />
         <Route path="/students/login" element={<StuLogin />} />
         {/* <Route path="/students/" element={<StuHome/>}/> */}
         {/* the below route is home route of student and right now working on /students route */}
