@@ -124,8 +124,71 @@ export const resolvers = {
         };
       });
     },
+getStudentsByTeacher: async (_, { emp_id }, { models }) => {
+  try {
+    // Get teacher assignments with related Subject and Section details
+    const assignments = await models.TeacherSubjectSection.findAll({
+      where: { emp_id },
+      include: [
+        {
+          model: models.Subject,
+          include: [models.Course, models.Semester]
+        },
+        {
+          model: models.Section
+        }
+      ]
+    });
 
-    getStudentAssessment: async (_, { registrationNo }) => {
+    if (!assignments.length) return [];
+
+    // Map each unique class (courseId, semester_id, section_id)
+    const classes = assignments.map(a => ({
+      courseId: a.Subject.courseId,
+      semester_id: a.Subject.semester_id,
+      section_id: a.section_id,
+      courseName: a.Subject.Course.courseName,
+      subjectCode: a.subjectCode,
+      subjectName: a.Subject.subjectName,
+    }));
+
+    // Fetch students for each class
+    const studentLists = await Promise.all(
+      classes.map(cls =>
+        models.Student.findAll({
+          where: {
+            courseId: cls.courseId,
+            semester_id: cls.semester_id,
+            section_id: cls.section_id
+          },
+          raw: true
+        })
+      )
+    );
+
+    // Flatten student arrays and add class info
+    let results = [];
+    studentLists.forEach((students, idx) => {
+      students.forEach(student => {
+        results.push({
+          ...student,
+          courseName: classes[idx].courseName,
+          subjectCode: classes[idx].subjectCode,
+          subjectName: classes[idx].subjectName
+        });
+      });
+    });
+
+    return results;
+
+  } catch (error) {
+    console.error("Failed to fetch students by teacher:", error);
+    throw new Error("Failed to fetch students");
+  }
+}
+
+,
+getStudentAssessment: async (_, { registrationNo }) => {
       return await Assessment.findAll({
         where: { registrationNo: registrationNo.toString() },
         include: [
