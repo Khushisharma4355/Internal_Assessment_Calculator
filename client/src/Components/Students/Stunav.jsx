@@ -82,9 +82,9 @@ export const Stunav = () => {
         >
           <MdOutlineAssessment /> Assessments
         </Nav.Link>
-        <Nav.Link as={NavLink} to="/students/reports" className={({ isActive }) =>
+        {/* <Nav.Link as={NavLink} to="/students/reports" className={({ isActive }) =>
             isActive ? "active" : ""
-          }><GrScorecard /> Report</Nav.Link>
+          }><GrScorecard /> Report</Nav.Link> */}
         <Nav.Link as={NavLink} to="/students/attendance" className={({ isActive }) =>
             isActive ? "active" : ""
           }><SlCalender /> Attendance</Nav.Link>
