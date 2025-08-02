@@ -17,6 +17,7 @@ export const typeDefs = gql`
     semester_id: ID
     section_id: String
   }
+    
 
   type Teacher {
     emp_id: String
@@ -101,6 +102,7 @@ export const typeDefs = gql`
     checkEmail(email: String!): Boolean!
     checkTeacherEmail(email: String!): Boolean!
     checkAdminEmail(email: String!): Boolean!
+     getStudentsByTeacher(emp_id: ID!): [Student]
   }
 
   input MarksInput {
