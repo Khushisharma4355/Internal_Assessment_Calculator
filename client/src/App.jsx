@@ -16,6 +16,9 @@ import { TeacherLogin } from './Screens/Login/TeacherLogin'
 import { AdminLogin } from './Screens/Login/AdminLogin'
 import { StudentHome } from './Screens/Students/StudentHome'
 import { Attendance } from './Screens/Students/Attendance'
+import EnterMarks from './Screens/Teacher/Entermarks'
+import { TeacherMgmt } from './Screens/Admin/TeacherMgmt'
+import { StudentMgmt } from './Screens/Admin/StudentMgmt'
 // import {TeacherDashboard} from './Components/Teachers/TeacherDashboard'
 function App() {
   return (
@@ -36,11 +39,13 @@ function App() {
 
 
 
-        <Route path="/teachers/uploadmarks" element={<UploadMarks />} />
+        <Route path="/teachers/uploadmarks" element={<EnterMarks />} />
         <Route path="/teachers/managestudents" element={<Managestu />} />
         <Route path="/teachers/reports" element={<TeaReports />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/" element={<AdminHome />} />
+        <Route path="/admin/teachers" element={<TeacherMgmt/>}/>
+        <Route path="/admin/students" element={<StudentMgmt/>}/>
         <Route path="*" element={<h1>404 Not Found</h1>} />
       </Routes>
       {/* <Footer /> */}

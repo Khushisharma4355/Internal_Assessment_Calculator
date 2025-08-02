@@ -3,7 +3,7 @@ import Teacher from "./model/Teacher.js";
 
 const insertDummyTeachers = async () => {
   try {
-    await sequelize.sync({ force: true }); // Ensure table exists
+    await sequelize.sync(); // Ensure table exists
 
     await Teacher.bulkCreate([
       {

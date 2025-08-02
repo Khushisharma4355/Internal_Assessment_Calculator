@@ -3,6 +3,7 @@ import sequelize from "../config/db.js";
 import Department from "./Department.js";
 import Section from "./Section.js";
 import Course from "./Course.js";
+import Semester from "./Semester.js";
 const Student = sequelize.define("Student", {     //create a table named Students in the db
     //       id: {
     //     type: DataTypes.INTEGER,
@@ -57,6 +58,14 @@ const Student = sequelize.define("Student", {     //create a table named Student
             key: 'section_id'
         }
     },
+    semester_id: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    references: {
+        model: Semester,
+        key: 'semester_id'
+    }
+},
     dep_id: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -73,4 +82,9 @@ const Student = sequelize.define("Student", {     //create a table named Student
         timestamps: true
     }
 );
+
+
+Student.belongsTo(Course, { foreignKey: 'courseId' });
+Student.belongsTo(Section, { foreignKey: 'section_id' });
+Student.belongsTo(Semester, { foreignKey: 'semester_id' });
 export default Student

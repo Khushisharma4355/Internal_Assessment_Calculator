@@ -16,12 +16,12 @@ const CourseSemester = sequelize.define("CourseSemester", {
       key: "courseId"
     }
   },
-  semesterId: {
+  semester_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
       model: Semester,
-      key: "sem_id"
+      key: "semester_id"
     }
   }
 }, {

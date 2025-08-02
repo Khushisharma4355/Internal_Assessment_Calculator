@@ -34,11 +34,23 @@ export const GET_STUDENTS = gql`
     }
   }
 `;
-export const GET_STUDENT_BY_EMAIL = gql`
-  query GetStudentByEmail($student_email: String!) {
-    studentByEmail(student_email: $student_email) {
-      registrationNo
+// export const GET_STUDENT_BY_EMAIL = gql`
+//   query GetStudentByEmail($student_email: String!) {
+//     studentByEmail(student_email: $student_email) {
+//       registrationNo
+//       name
+//       course {
+//         name
+//       }
+//     }
+//   }
+// `;
+
+ export const GET_STUDENT_BY_EMAIL = gql`
+  query GetStudentByEmail($email: String!) {
+    studentByEmail(email: $email) {
       name
+      classs
       course {
         name
       }
@@ -48,8 +60,8 @@ export const GET_STUDENT_BY_EMAIL = gql`
 export const GET_COURSES = gql`
   query GetCourses {
     courses {
-      id
-      name
+      courseId
+      courseName
     }
   }
 `;

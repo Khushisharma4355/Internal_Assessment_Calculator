@@ -4,6 +4,7 @@ import Subject from "./Subjects.js";
 import Semester from "./Semester.js";
 import Student from "./Student.js";
 import Teacher from "./Teacher.js";
+import Section from "./Section.js";
 
 const Assessment = sequelize.define("Assessment", {
   assmt_id: {
@@ -47,12 +48,12 @@ const Assessment = sequelize.define("Assessment", {
     allowNull: true,
     defaultValue: null
   },
-  sem_id: {
+  semester_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
       model: Semester,
-      key: "sem_id"
+      key: "semester_id"
     }
   },
   attendance: {          
@@ -67,14 +68,24 @@ const Assessment = sequelize.define("Assessment", {
       model: Teacher,
       key: "emp_id"
     }
+  },
+  section_id:{
+    type:DataTypes.STRING,
+    allowNull:false,
+    references:{
+      model:Section,
+      key:"section_id"
+    }
   }
 }, {
-  indexes: [
-    {
-      unique: true,
-      fields: ["registrationNo", "subjectCode", "sem_id"]
-    }
-  ],
+ indexes: [
+  {
+    unique: true,
+    name: "uniq_assessment_entry", // custom name
+    fields: ["registrationNo", "subjectCode", "semester_id"]
+  }
+]
+,
   tableName: "Assessments"
 });
 
