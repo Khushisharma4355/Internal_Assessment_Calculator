@@ -107,6 +107,32 @@ Course.hasMany(Subject, { foreignKey: 'courseId' });
 Semester.hasMany(Subject, { foreignKey: 'semester_id' });
 
 
+
+
+
+
+
+
+
+
+
+
+Subject.belongsTo(Course, { foreignKey: "courseId" });
+Subject.belongsTo(Semester, { foreignKey: "semester_id" });
+
+TeacherSubjectSection.belongsTo(Section, { foreignKey: "section_id" });
+
+
+
+
+
+
+
+
+
+
+
+
 //student and department
 Department.hasMany(Student,{
   foreignKey:"dep_id",
@@ -175,19 +201,33 @@ Assessment.belongsTo(Teacher, {
 
 // Semester - Assessment
 Semester.hasMany(Assessment, {
-  foreignKey: "sem_id"
+  foreignKey: "semester_id"
 });
 Assessment.belongsTo(Semester, {
-  foreignKey: "sem_id"
+  foreignKey: "semester_id"
 });
 
 const syncDatabase = async () => {
   try {
-    // await TeacherSubjectSection.drop();
-    // await sequelize.sync({alter:true}); // create/update tables
-    console.log("All models synced successfully");
+  //   console.log('Disabling foreign key checks...');
+    // await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
+   
+    // // Drop all tables safely
+    // console.log('Dropping all tables...');
+    // await sequelize.drop();
+
+    // console.log('Re-enabling foreign key checks...');
+    // await sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
+
+    // Sync all models
+    console.log('Syncing models...');
+    await sequelize.sync();
+// await Admin.drop();
+    console.log("All models synced successfully.");
   } catch (err) {
     console.error("Error syncing models:", err);
+  } finally {
+    // await sequelize.close(); // Optional: close the DB connection after syncing
   }
 };
 
@@ -195,10 +235,6 @@ const syncDatabase = async () => {
 //teacher subject section 
 Teacher.hasMany(TeacherSubjectSection, { foreignKey: 'emp_id' });
 TeacherSubjectSection.belongsTo(Teacher, { foreignKey: 'emp_id' });
-
-
-
-
 function setupAssociations() {
   Course.belongsTo(Department, { foreignKey: "dep_id" });
   Department.hasMany(Course, { foreignKey: "dep_id" });

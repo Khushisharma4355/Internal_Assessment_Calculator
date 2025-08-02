@@ -3,7 +3,7 @@ import Subject from "./model/Subjects.js";
 
 const insertSubjects = async () => {
   try {
-    await sequelize.sync({ force: true }); // ensure table exists
+    await sequelize.sync(); // ensure table exists
 
     await Subject.bulkCreate([
       {

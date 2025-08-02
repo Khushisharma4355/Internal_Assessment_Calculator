@@ -40,4 +40,10 @@ const TeacherSubjectSection = sequelize.define("TeacherSubjectSection", {
     }
   ]
 });
+
+
+// Assuming TeacherSubjectSection links teacher, subject, section
+TeacherSubjectSection.belongsTo(Teacher, { foreignKey: 'emp_id' });
+TeacherSubjectSection.belongsTo(Subject, { foreignKey: 'subjectCode' });
+TeacherSubjectSection.belongsTo(Section, { foreignKey: 'section_id' });
 export default TeacherSubjectSection;

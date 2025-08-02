@@ -2,7 +2,7 @@ import sequelize from "./config/db.js";
 import Department from "./model/Department.js";
 const insertDummyDepartments = async () => {
   try {
-    await sequelize.sync({ force: true }); // ensures the table exists (doesn't drop anything)
+    // await sequelize.sync({ force: true }); // ensures the table exists (doesn't drop anything)
 
     await Department.bulkCreate([
       {
