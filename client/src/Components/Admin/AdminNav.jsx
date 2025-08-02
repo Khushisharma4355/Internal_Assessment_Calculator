@@ -128,10 +128,10 @@ export const AdminNav = () => {
                             <img
                                 src="http://192.168.1.12/images/maimt_logo.png"
                                 alt="Logo"
-                                width="35"
+                                width="50"
                                 height="35"
-                                className="me-2"
-                                style={{ borderRadius: '50%' }}
+                                // className="me-2"
+                                style={{ borderRadius: '10%', border:"10"}}
                             />
                             <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white' }}>
                                 <span style={{ color: 'orange' }}>Ur</span>Level

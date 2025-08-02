@@ -1,101 +1,155 @@
 import React from 'react';
-import { Container, Card, Row, Col } from 'react-bootstrap';
+import { Container, Card, Row, Col, Button, ListGroup } from 'react-bootstrap';
 import { AdminNav } from '../../Components/Admin/AdminNav';
-import director from '../../assets/director.jpeg';
+import { FiBook, FiUsers, FiAlertCircle, FiUserPlus, FiUpload, FiMail,FiClipboard } from 'react-icons/fi';
+import { BsPersonCheck } from "react-icons/bs";
 
 export const AdminDashboard = () => {
+  const adminName="Dr Narinder Rana"
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>
       {/* Sidebar */}
-      <div style={{ width: '250px', flexShrink: 0 }}>
+      <div style={{ width: '250px', flexShrink: 0}}>
         <AdminNav />
       </div>
       
       {/* Main Content */}
-      <Container fluid style={{ backgroundColor: '#f8f9fa', padding: '1rem' }}>
-        {/* Profile Card - Split Layout */}
-        <Row className="mb-4">
+      <Container fluid style={{padding:'2rem'}}>
+        <Row className='mb-4'>
           <Col>
-            <Card className="shadow-sm" style={{ border: 'none' }}>
-              {/* <Card.Header className="text-center py-3" style={{ 
-                backgroundColor: '#1d3557',
-                color: 'white',
-                borderBottom: '3px solid orange'
-              }}>
-                <h4 className="mb-0">Admin Profile</h4>
-              </Card.Header> */}
-              <Card.Body className="p-4">
-                <Row className="align-items-center">
-                  {/* Left Column - Information */}
-                  <Col md={7}>
-                    <div className="mb-4">
-                      <h3 style={{ color: '#1d3557' }}>
-                        <strong>Dr. Narender Rana</strong>
-                      </h3>
-                      <p className="text-muted mb-2">
-                        <i className="bi bi-envelope-fill me-2"></i>
-                        director@maimt.com
-                      </p>
-                      <p className="text-muted mb-4">
-                        <i className="bi bi-person-badge-fill me-2"></i>
-                        Administrator
-                      </p>
-                    </div>
-                    
-                    <div className="d-flex gap-3">
-                      <button 
-                        className="btn px-4" 
-                        style={{ 
-                          backgroundColor: '#1d3557', 
-                          color: 'white',
-                          borderRadius: '20px'
-                        }}
-                      >
-                        <i className="bi bi-pencil-fill me-2"></i>Edit Profile
-                      </button>
-                      <button 
-                        className="btn btn-outline-secondary px-4"
-                        style={{ borderRadius: '20px' }}
-                      >
-                        <i className="bi bi-gear-fill me-2"></i>Settings
-                      </button>
-                    </div>
-                  </Col>
-                  
-                  {/* Right Column - Photo */}
-                  <Col md={5} className="text-center">
-                    <div
-                      className="shadow-lg mx-auto "
-                      style={{
-                        width: '150px',
-                        height: '150px',
-                        overflow: 'hidden',
-                        
-                        // border: '4px solid #1d3557',
-                      }}
-                    >
-                      <img
-                        src={director}
-                        alt="Profile"
-                        style={{ 
-                          width: '100%', 
-                          height: '100%', 
-                          objectFit: 'cover' 
-                        }}
-                      />
-                    </div>
-                  </Col>
-                </Row>
+           <h2 style={{color:'#1d3557'}}>Welcome, <span style={{color: 'orange'}}>{adminName}</span></h2>
+            <p className="text-muted">Here's what's happening today</p>
+          </Col>
+        </Row>
+        
+        {/* Stats Cards */}
+        <Row>
+          <Col md={6} lg={3}>
+            <Card className='shadow-sm'>
+              <Card.Body>
+                <div className='d-flex justify-content-between align-items-center'>
+                  <div>
+                    <h6>Teachers</h6>
+                    <h3>40</h3>
+                  </div>
+                  <div style={{fontSize:"2rem", color:"#1d3557"}}>
+                    <FiUsers />
+                  </div>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+          
+          <Col md={6} lg={3}>
+            <Card className='shadow-sm'>
+              <Card.Body>
+                <div className='d-flex justify-content-between align-items-center'>
+                  <div>
+                    <h6>Students</h6>
+                    <h3>400</h3>
+                  </div>
+                  <div style={{fontSize:"2rem", color:"#1d3557"}}>
+                    <BsPersonCheck />
+                  </div>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+          
+          <Col md={6} lg={3}>
+            <Card className='shadow-sm'>
+              <Card.Body>
+                <div className='d-flex justify-content-between align-items-center'>
+                  <div>
+                    <h6>Courses</h6>
+                    <h3>5</h3>
+                  </div>
+                  <div style={{fontSize:"2rem", color:"#1d3557"}}>
+                    <FiBook/>
+                  </div>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+          
+          <Col md={6} lg={3}>
+            <Card className='shadow-sm'>
+              <Card.Body>
+                <div className='d-flex justify-content-between align-items-center'>
+                  <div>
+                    <h6>Pending Actions</h6>
+                    <h3>8</h3>
+                    {/* <small className="text-muted">5 marks to approve</small><br/>
+                    <small className="text-muted">3 messages to review</small> */}
+                  </div>
+                  <div style={{fontSize:"2rem", color:"orange"}}>
+                    <FiAlertCircle />
+                  </div>
+                </div>
               </Card.Body>
             </Card>
           </Col>
         </Row>
         
-        {/* Space for future analytics/content */}
-        <Row>
+        {/* Quick Actions */}
+        <Row className="mt-4">
           <Col>
-            {/* Additional content can be added here */}
+            <div className="d-flex gap-5">
+              <Button style={{backgroundColor:"#1d3557"}}>
+                <FiUserPlus className="me-2" />
+                Add Student
+              </Button>
+              <Button variant="outline-secondary">
+                <FiUpload className="me-2" />
+                Bulk Import
+              </Button>
+              <Button variant="warning">
+                <FiMail className="me-2" />
+                Send Announcement
+              </Button>
+            </div>
           </Col>
+        </Row>
+        
+        {/* Recent Activity */}
+        <Row className="mt-4">
+          <Col lg={8}>
+            <Card className="shadow-sm">
+              <Card.Header>Recent Activity</Card.Header>
+              <Card.Body>
+                <ListGroup variant="flush">
+                  <ListGroup.Item>
+                    <small className="text-muted">Today, 10:30 AM</small><br/>
+                    <strong>Ms. Sharma</strong> submitted Math test marks
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    <small className="text-muted">Yesterday, 3:45 PM</small><br/>
+                    <strong>Mr. Khan</strong> requested course change
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    <small className="text-muted">Yesterday, 11:20 AM</small><br/>
+                    <strong>System</strong> 15 new student accounts created
+                  </ListGroup.Item>
+                </ListGroup>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={6} lg={3}>
+  <Card className='shadow-sm'>
+    <Card.Body>
+      <div className='d-flex justify-content-between align-items-center'>
+        <div>
+          <h6>Today's Attendance</h6>
+          <h3>87%</h3>
+          <small className="text-danger">Low: 9th-B (72%)</small>
+        </div>
+        <div style={{fontSize:"2rem", color:"#1d3557"}}>
+          <FiClipboard />
+        </div>
+      </div>
+    </Card.Body>
+  </Card>
+</Col>
         </Row>
       </Container>
     </div>
