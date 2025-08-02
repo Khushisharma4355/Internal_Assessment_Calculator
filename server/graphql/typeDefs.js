@@ -12,6 +12,7 @@ export const typeDefs = gql`
     registrationNo: BigInt!          # Used as the unique identifier
     student_name: String!                    # Maps to student_name in DB
     student_email: String!
+    rollno:BigInt!
     courseId: ID
     course: Course
     semester_id: ID
