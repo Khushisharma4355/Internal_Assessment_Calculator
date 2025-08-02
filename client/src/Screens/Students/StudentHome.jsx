@@ -5,7 +5,6 @@ export const StudentHome = () => {
   return (
     <div>
         <StudentDashboard/>
-       
     </div>
   )
 }
