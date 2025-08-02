@@ -4,6 +4,7 @@ import Subject from "./Subjects.js";
 import Semester from "./Semester.js";
 import Student from "./Student.js";
 import Teacher from "./Teacher.js";
+import Section from "./Section.js";
 
 const Assessment = sequelize.define("Assessment", {
   assmt_id: {
@@ -66,6 +67,14 @@ const Assessment = sequelize.define("Assessment", {
     references: {
       model: Teacher,
       key: "emp_id"
+    }
+  },
+  section_id:{
+    type:DataTypes.STRING,
+    allowNull:false,
+    references:{
+      model:Section,
+      key:"section_id"
     }
   }
 }, {
