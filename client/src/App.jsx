@@ -35,9 +35,9 @@ function App() {
         <Route path="/students/assesments" element={<Assesments />} />
         <Route path="/students/reports" element={<Reports />} />
         <Route path="/teachers/login" element={<TeacherLogin />} />
-        {/* <Route path="/teachers/" element={<TeaHome />} /> */}
+        <Route path="/teachers/" element={<TeaHome />} />
         {/* <Route path="/teachers/tt" element={<TeacherDashboard/>} /> */}
-
+           
 
 
         <Route path="/teachers/uploadmarks" element={<EnterMarks />} />
