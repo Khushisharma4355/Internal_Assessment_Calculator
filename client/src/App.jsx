@@ -19,13 +19,14 @@ import { Attendance } from './Screens/Students/Attendance'
 import EnterMarks from './Screens/Teacher/Entermarks'
 import { TeacherMgmt } from './Screens/Admin/TeacherMgmt'
 import { StudentMgmt } from './Screens/Admin/StudentMgmt'
+import { StudentLogout } from './Screens/Logout/StudentLogout'
 // import {TeacherDashboard} from './Components/Teachers/TeacherDashboard'
 function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<TeaHome />} />
-        {/* <Route path="/" element={<MainHome />} /> */}
+        {/* <Route path="/" element={<TeaHome />} /> */}
+        <Route path="/" element={<MainHome />} />
         <Route path="/students/login" element={<StuLogin />} />
         {/* <Route path="/students/" element={<StuHome/>}/> */}
         {/* the below route is home route of student and right now working on /students route */}
@@ -47,7 +48,14 @@ function App() {
         <Route path="/admin/teachers" element={<TeacherMgmt/>}/>
         <Route path="/admin/students" element={<StudentMgmt/>}/>
         <Route path="*" element={<h1>404 Not Found</h1>} />
+
+         {/* LOGOUT */}
+
+      <Route path="/student/logout" element={<StudentLogout/>}/>
       </Routes>
+
+
+     
       {/* <Footer /> */}
     </>
   )

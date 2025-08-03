@@ -69,9 +69,9 @@ export const Stunav = () => {
 
 
       <Nav className="flex-column fw-bold fs-5">
-        <Nav.Link as={NavLink} to="/students/"end className={({ isActive }) =>
+        <Nav.Link as={NavLink} to="/students/" end className={({ isActive }) =>
           isActive ? "active" : ""
-  
+
         }><CiHome />Home</Nav.Link>
         <Nav.Link
           as={NavLink}
@@ -83,14 +83,14 @@ export const Stunav = () => {
           <MdOutlineAssessment /> Assessments
         </Nav.Link>
         <Nav.Link as={NavLink} to="/students/reports" className={({ isActive }) =>
-            isActive ? "active" : ""
-          }><GrScorecard /> Report</Nav.Link>
+          isActive ? "active" : ""
+        }><GrScorecard /> Report</Nav.Link>
         <Nav.Link as={NavLink} to="/students/attendance" className={({ isActive }) =>
-            isActive ? "active" : ""
-          }><SlCalender /> Attendance</Nav.Link>
+          isActive ? "active" : ""
+        }><SlCalender /> Attendance</Nav.Link>
         <Nav.Link as={NavLink} to="/student/logout" className={({ isActive }) =>
-            isActive ? "active" : ""
-          }><MdLogout /> Log out</Nav.Link>
+          isActive ? "active" : ""
+        }><MdLogout /> Log out</Nav.Link>
       </Nav>
     </div>
   );
