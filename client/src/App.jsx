@@ -19,6 +19,7 @@ import { Attendance } from './Screens/Students/Attendance'
 import EnterMarks from './Screens/Teacher/Entermarks'
 import { TeacherMgmt } from './Screens/Admin/TeacherMgmt'
 import { StudentMgmt } from './Screens/Admin/StudentMgmt'
+import { StudentLogout } from './Screens/Logout/StudentLogout'
 // import {TeacherDashboard} from './Components/Teachers/TeacherDashboard'
 function App() {
   return (
@@ -34,7 +35,7 @@ function App() {
         <Route path="/students/assesments" element={<Assesments />} />
         <Route path="/students/reports" element={<Reports />} />
         <Route path="/teachers/login" element={<TeacherLogin />} />
-        <Route path="/teachers/" element={<TeaHome />} />
+        {/* <Route path="/teachers/" element={<TeaHome />} /> */}
         {/* <Route path="/teachers/tt" element={<TeacherDashboard/>} /> */}
 
 
@@ -47,7 +48,14 @@ function App() {
         <Route path="/admin/teachers" element={<TeacherMgmt/>}/>
         <Route path="/admin/students" element={<StudentMgmt/>}/>
         <Route path="*" element={<h1>404 Not Found</h1>} />
+
+         {/* LOGOUT */}
+
+      <Route path="/student/logout" element={<StudentLogout/>}/>
       </Routes>
+
+
+     
       {/* <Footer /> */}
     </>
   )
