@@ -1,17 +1,26 @@
 import React, { useState } from 'react';
-import { Offcanvas, Button, Nav } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
-import { FiMenu, FiHome, FiUsers, FiBook, FiMail, FiLogOut } from 'react-icons/fi';
+import { Offcanvas, Button, Nav,Col } from 'react-bootstrap';
+import { NavLink, useLocation } from 'react-router-dom';
+import { 
+  FiMenu, 
+  FiHome, 
+  FiUsers, 
+  FiBook, 
+  FiMail, 
+  FiLogOut 
+} from 'react-icons/fi';
 import './sidebar.css';
 
 export const AdminNav = () => {
     const [show, setShow] = useState(false);
+    const location = useLocation();
+    const isActive = (path) => location.pathname === path;
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const navStyle = ({ isActive }) => ({
-        color: isActive ? 'orange' : 'white',
+    const navStyle = (path) => ({
+        color: isActive(path) ? 'orange' : 'white',
         textDecoration: 'none',
         padding: '12px 16px',
         display: 'flex',
@@ -20,7 +29,10 @@ export const AdminNav = () => {
         borderRadius: '4px',
         marginBottom: '8px',
         transition: 'all 0.3s ease',
-        backgroundColor: isActive ? 'rgba(255, 165, 0, 0.1)' : 'transparent',
+        backgroundColor: isActive(path) ? 'rgba(255, 165, 0, 0.1)' : 'transparent',
+        ':hover': {
+            backgroundColor: 'rgba(255, 255, 255, 0.1)'
+        }
     });
 
     const iconStyle = {
@@ -29,10 +41,20 @@ export const AdminNav = () => {
         color: 'inherit'
     };
 
+    // Common navigation items to avoid duplication
+    const navItems = [
+        { path: '/admin/', icon: <FiHome style={iconStyle} />, label: 'Home' },
+        { path: '/admin/teachers', icon: <FiUsers style={iconStyle} />, label: 'Teachers' },
+        { path: '/admin/students', icon: <FiUsers style={iconStyle} />, label: 'Students' },
+        { path: '/admin/courses', icon: <FiBook style={iconStyle} />, label: 'Courses' },
+        { path: '/admin/sendreports', icon: <FiMail style={iconStyle} />, label: 'Send Reports' }
+    ];
+
     return (
         <>
             {/* Hamburger Button for Small Screens */}
-            <Button 
+            <Col md={12}>
+              <Button 
                 onClick={handleShow} 
                 className="d-lg-none m-2" 
                 style={{ 
@@ -43,12 +65,15 @@ export const AdminNav = () => {
                     left: '10px',
                     zIndex: 1000
                 }}
+                aria-label="Open navigation menu"
             >
                 <FiMenu size={20} />
             </Button>
+            </Col>
+          
 
             {/* Sidebar - Large screens */}
-            <div
+            <nav
                 className="d-none d-lg-flex flex-column justify-content-between p-4"
                 style={{ 
                     width: '250px',
@@ -58,16 +83,16 @@ export const AdminNav = () => {
                     boxShadow: '2px 0 10px rgba(0, 0, 0, 0.1)',
                     zIndex: 100
                 }}
+                aria-label="Main navigation"
             >
                 <div>
                     <div className="mb-5 d-flex align-items-center">
                         <img
                             src="http://192.168.1.12/images/maimt_logo.png"
-                            alt="Logo"
-                            width="40"
-                            height="40"
+                            alt="UrLevel Logo"
+                            width="35"
+                            height="35"
                             className="me-2"
-                            style={{ borderRadius: '50%' }}
                         />
                         <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white' }}>
                             <span style={{ color: 'orange' }}>Ur</span>Level
@@ -75,63 +100,58 @@ export const AdminNav = () => {
                     </div>
 
                     <Nav className="flex-column">
-                        <NavLink to="/admin/" style={navStyle}>
-                            <FiHome style={iconStyle} /> Home
-                        </NavLink>
-                        <NavLink to="/admin/teachers" style={navStyle}>
-                            <FiUsers style={iconStyle} /> Teachers
-                        </NavLink>
-                        <NavLink to="/admin/students" style={navStyle}>
-                            <FiUsers style={iconStyle} /> Students
-                        </NavLink>
-                        <NavLink to="/admin/courses" style={navStyle}>
-                            <FiBook style={iconStyle} /> Courses
-                        </NavLink>
-                        <NavLink to="/admin/sendreports" style={navStyle}>
-                            <FiMail style={iconStyle} /> Send Reports
-                        </NavLink>
+                        {navItems.map((item) => (
+                            <NavLink 
+                                key={item.path}
+                                to={item.path} 
+                                style={navStyle(item.path)}
+                                aria-current={isActive(item.path) ? 'page' : undefined}
+                            >
+                                {item.icon} {item.label}
+                            </NavLink>
+                        ))}
                     </Nav>
                 </div>
 
                 <div>
-                    <NavLink to="/logout" style={navStyle}>
+                    <NavLink 
+                        to="/logout" 
+                        style={navStyle('/logout')}
+                        className="logout-link"
+                    >
                         <FiLogOut style={iconStyle} /> Logout
                     </NavLink>
                     
-                    {/* Admin indicator at bottom */}
-                    <div className="text-center mt-3 p-2" style={{ 
-                        backgroundColor: 'rgba(0, 0, 0, 0.2)',
-                        borderRadius: '4px',
-                        color: 'orange',
-                        fontWeight: '600',
-                        fontSize: '0.9rem'
-                    }}>
+                    <div 
+                        className="text-center mt-3 p-2 admin-indicator"
+                        aria-label="Admin privileges"
+                    >
                         ADMIN
                     </div>
                 </div>
-            </div>
+            </nav>
 
             {/* Offcanvas - Small screens */}
             <Offcanvas 
                 show={show} 
                 onHide={handleClose} 
-                backdrop={true} 
+                backdrop={true}
+                responsive="lg" 
                 style={{ 
                     backgroundColor: '#1d3557',
                     width: '75%',
                     maxWidth: '280px'
                 }}
+                aria-labelledby="offcanvas-nav-label"
             >
                 <Offcanvas.Header closeButton closeVariant="white">
-                    <Offcanvas.Title>
+                    <Offcanvas.Title id="offcanvas-nav-label">
                         <div className="d-flex align-items-center">
                             <img
-                                src="http://192.168.1.12/images/maimt_logo.png"
-                                alt="Logo"
+                                src="/images/maimt_logo.png"
+                                alt="UrLevel Logo"
                                 width="50"
                                 height="35"
-                                // className="me-2"
-                                style={{ borderRadius: '10%', border:"10"}}
                             />
                             <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white' }}>
                                 <span style={{ color: 'orange' }}>Ur</span>Level
@@ -141,36 +161,33 @@ export const AdminNav = () => {
                 </Offcanvas.Header>
                 <Offcanvas.Body className="d-flex flex-column justify-content-between">
                     <Nav className="flex-column">
-                        <NavLink to="/admin/" onClick={handleClose} style={navStyle}>
-                            <FiHome style={iconStyle} /> Home
-                        </NavLink>
-                        <NavLink to="/admin/teachers" onClick={handleClose} style={navStyle}>
-                            <FiUsers style={iconStyle} /> Teachers
-                        </NavLink>
-                        <NavLink to="/admin/students" onClick={handleClose} style={navStyle}>
-                            <FiUsers style={iconStyle} /> Students
-                        </NavLink>
-                        <NavLink to="/admin/courses" onClick={handleClose} style={navStyle}>
-                            <FiBook style={iconStyle} /> Courses
-                        </NavLink>
-                        <NavLink to="/admin/sendreports" onClick={handleClose} style={navStyle}>
-                            <FiMail style={iconStyle} /> Send Reports
-                        </NavLink>
+                        {navItems.map((item) => (
+                            <NavLink 
+                                key={item.path}
+                                to={item.path} 
+                                onClick={handleClose}
+                                style={navStyle(item.path)}
+                                aria-current={isActive(item.path) ? 'page' : undefined}
+                            >
+                                {item.icon} {item.label}
+                            </NavLink>
+                        ))}
                     </Nav>
 
                     <div>
-                        <NavLink to="/logout" onClick={handleClose} style={navStyle}>
+                        <NavLink 
+                            to="/logout" 
+                            onClick={handleClose}
+                            style={navStyle('/logout')}
+                            className="logout-link"
+                        >
                             <FiLogOut style={iconStyle} /> Logout
                         </NavLink>
                         
-                        {/* Admin indicator at bottom for mobile */}
-                        <div className="text-center mt-3 p-2" style={{ 
-                            backgroundColor: 'rgba(0, 0, 0, 0.2)',
-                            borderRadius: '4px',
-                            color: 'orange',
-                            fontWeight: '600',
-                            fontSize: '0.9rem'
-                        }}>
+                        <div 
+                            className="text-center mt-3 p-2 admin-indicator"
+                            aria-label="Admin privileges"
+                        >
                             ADMIN
                         </div>
                     </div>
