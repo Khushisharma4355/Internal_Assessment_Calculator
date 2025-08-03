@@ -104,6 +104,7 @@ export const typeDefs = gql`
     checkEmail(email: String!): Boolean!
     checkTeacherEmail(email: String!): Boolean!
     checkAdminEmail(email: String!): Boolean!
+     getStudentsByTeacher(emp_id: ID!): [Student]
   }
 
   input MarksInput {

@@ -36,6 +36,7 @@ export const Logout = () => {
           style={{ backgroundColor: '#1d3557', border: 'none' }}
         >
           Logout
+          
         </Button>
       )}
     </Container>

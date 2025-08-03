@@ -10,6 +10,7 @@ import Admin from "./Admin.js";
 import Semester from "./Semester.js";
 import CourseSemester from "./CourseSemester.js";
 import Section from "./Section.js";
+// import TeacherSubjectSection from "./TeacherSubSection.js";
 import TeacherSubjectSection from "./TeacherSubSection.js";
 import Assessment from "./Assessment.js";
 //course has many sem 
