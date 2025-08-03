@@ -7,7 +7,11 @@ import { TeacherDashboard } from "../../Components/Teachers/TeacherDashboard.jsx
 export const TeaHome=()=>{
     return(
         <>
-<TeaNav/>
+        <div className="d-flex">
+            <div style={{flexShrink:0, width:"250px"}}>
+           <TeaNav/>
+            </div>
+
         <Container className="bg-light">
             <Row >
           <Col className="d-flex  justify-content-center">
@@ -15,6 +19,7 @@ export const TeaHome=()=>{
                 </Col>
             </Row>
         </Container>
+        </div>
         </>
     )
 }
