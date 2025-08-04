@@ -4,21 +4,28 @@ export default {
   Query: {
     students: async () => await Student.findAll({ include: [Course] }),
 
-    getStudentsByClass: async (_, { courseId, semester_id, section_id }) => {
-      try {
-        return await Student.findAll({
-          where: {
-            courseId: parseInt(courseId),
-            semester_id: parseInt(semester_id),
-            section_id,
-          },
-          attributes: ["registrationNo", "student_name", "student_email"],
-        });
-      } catch (err) {
-        console.error("Database error:", err);
-        throw new Error("Failed to fetch students");
-      }
-    },
+  getStudentsByClass: async (_, { emp_id, courseId, semester_id, section_id }) => {
+  try {
+    // Ensure the teacher is actually assigned to this exact class
+    const assignment = await TeacherSubjectSection.findOne({
+      where: { emp_id, courseId, semester_id, section_id }
+    });
+
+    if (!assignment) {
+      throw new Error("Teacher not assigned to this class");
+    }
+
+    return await Student.findAll({
+      where: { courseId, semester_id, section_id },
+      attributes: ["registrationNo", "student_name", "student_email"]
+    });
+  } catch (err) {
+    console.error("Database error:", err);
+    throw new Error("Failed to fetch students");
+  }
+},
+
+
 
     getStudentsByTeacher: async (_, { emp_id }, { models }) => {
       try {
