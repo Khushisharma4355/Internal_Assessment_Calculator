@@ -88,7 +88,12 @@ export const typeDefs = gql`
     courses: [Course]
     semesters: [Semester]
     sections: [Section]
-    getStudentsByClass(courseId: ID!, semester_id: ID!, section_id: String!): [Student]
+getStudentsByClass(
+  emp_id: ID!,
+  courseId: ID!,
+  semester_id: ID!,
+  section_id: String!
+): [Student]
     students: [Student]
     getTeacher(emp_id: ID!): Teacher
     getAllTeachers:[Teacher]

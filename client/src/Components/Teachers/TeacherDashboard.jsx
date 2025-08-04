@@ -38,13 +38,19 @@ const GET_TEACHER_CLASSES = gql`
 `;
 
 const GET_STUDENTS_BY_CLASS = gql`
-  query GetStudentsByClass($courseId: ID!, $semester_id: ID!, $section_id: String!) {
-    getStudentsByClass(courseId: $courseId, semester_id: $semester_id, section_id: $section_id) {
+  query GetStudentsByClass($emp_id: ID!, $courseId: ID!, $semester_id: ID!, $section_id: String!) {
+    getStudentsByClass(
+      emp_id: $emp_id,
+      courseId: $courseId,
+      semester_id: $semester_id,
+      section_id: $section_id
+    ) {
       registrationNo
       student_name
     }
   }
 `;
+
 
 const BULK_ENTER_MARKS = gql`
   mutation BulkEnterMarks($marks: [MarksInput!]!) {
@@ -57,7 +63,7 @@ const BULK_ENTER_MARKS = gql`
 
 // ==================== Main Component ====================
 export const TeacherDashboard = () => {
-  const empId = "T001";
+  const empId = "T002";
   const [selectedClass, setSelectedClass] = useState(null);
   const [marksMap, setMarksMap] = useState({});
   const [markType, setMarkType] = useState('MTE');
@@ -75,13 +81,15 @@ export const TeacherDashboard = () => {
 
   // Fetch students
   const { loading: loadingStudents, error: errorStudents, data: studentsData } = useQuery(GET_STUDENTS_BY_CLASS, {
-    variables: {
-      courseId: selectedClass?.courseId,
-      semester_id: selectedClass?.semester_id,
-      section_id: selectedClass?.section_id,
-    },
-    skip: !selectedClass,
-  });
+  variables: {
+    emp_id: empId,
+    courseId: selectedClass?.courseId,
+    semester_id: selectedClass?.semester_id,
+    section_id: selectedClass?.section_id,
+  },
+  skip: !selectedClass,
+});
+
 
   // Mutation for bulk entering marks
   const [bulkEnterMarks, { loading: loadingSubmit }] = useMutation(BULK_ENTER_MARKS);
