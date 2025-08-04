@@ -1,8 +1,10 @@
 import express from "express";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
-import { typeDefs } from "./graphql/typeDefs.js";
-import { resolvers } from "./graphql/resolvers.js";
+// import { typeDefs } from "./graphql/typeDefs.js";
+// import { resolvers } from "./graphql/resolvers.js";
+import typeDefs from "./graphql/typeDefs/index.js";
+import resolvers from "./graphql/resolvers/index.js";
 import cors from "cors";
 import dotenv from "dotenv";
 import { syncDatabase } from "./model/models.js";
