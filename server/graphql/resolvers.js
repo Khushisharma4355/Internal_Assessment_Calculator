@@ -9,37 +9,74 @@ import Subject from "../model/Subjects.js";
 import Semester from "../model/Semester.js";
 import Section from "../model/Section.js";
 
+import jwt from "jsonwebtoken";
+import Otp from "../model/Otp.js";
+import { sendOTP } from "../utils/sendOtp.js";
+
+const JWT_SECRET = process.env.JWT_SECRET || "yourSecretKey";
+
 export const resolvers = {
   Query: {
-    checkEmail: async (_, { email }) => {
-      try {
-        const student = await Student.findOne({ where: { student_email: email } });
-        return !!student;
-      } catch (err) {
-        console.error("Error checking student email:", err);
-        return false;
-      }
-    },
+checkEmail: async (_, { email, role }) => {
+  let table;
+  let field;
 
-    checkTeacherEmail: async (_, { email }) => {
-      try {
-        const teacher = await Teacher.findOne({ where: { emp_email: email } });
-        return !!teacher;
-      } catch (err) {
-        console.error("Error checking teacher email:", err);
-        return false;
-      }
-    },
+  switch (role.toLowerCase()) {
+    case 'student':
+      table = Student;
+      field = 'student_email';
+      break;
+    case 'teacher':
+      table = Teacher;
+      field = 'emp_email';
+      break;
+    case 'admin':
+      table = Admin;
+      field = 'admin_email';
+      break;
+    default:
+      throw new Error('Invalid role specified');
+  }
 
-    checkAdminEmail: async (_, { email }) => {
-      try {
-        const admin = await Admin.findOne({ where: { admin_email: email } });
-        return !!admin;
-      } catch (err) {
-        console.error("Error checking admin email:", err);
-        return false;
-      }
-    },
+  try {
+    const result = await table.findOne({ where: { [field]: email } });
+    return !!result; // returns true if email exists, false otherwise
+  } catch (err) {
+    console.error("Error checking email:", err);
+    return false;
+  }
+},
+
+
+    // checkEmail: async (_, { email }) => {
+    //   try {
+    //     const student = await Student.findOne({ where: { student_email: email } });
+    //     return !!student;
+    //   } catch (err) {
+    //     console.error("Error checking student email:", err);
+    //     return false;
+    //   }
+    // },
+
+    // checkTeacherEmail: async (_, { email }) => {
+    //   try {
+    //     const teacher = await Teacher.findOne({ where: { emp_email: email } });
+    //     return !!teacher;
+    //   } catch (err) {
+    //     console.error("Error checking teacher email:", err);
+    //     return false;
+    //   }
+    // },
+
+    // checkAdminEmail: async (_, { email }) => {
+    //   try {
+    //     const admin = await Admin.findOne({ where: { admin_email: email } });
+    //     return !!admin;
+    //   } catch (err) {
+    //     console.error("Error checking admin email:", err);
+    //     return false;
+    //   }
+    // }
     getTeacher: async (_, { emp_id }) => {
       try {
         const teacher = await Teacher.findOne({
@@ -225,6 +262,62 @@ getStudentAssessment: async (_, { registrationNo }) => {
   },
 
   Mutation: {
+     sendLoginOtp: async (_, { email, role }) => {
+    let model;
+    let emailField;
+
+    switch (role) {
+      case 'student':
+        model = Student;
+        emailField = 'student_email';
+        break;
+      case 'teacher':
+        model = Teacher;
+        emailField = 'emp_email';
+        break;
+      case 'admin':
+        model = Admin;
+        emailField = 'admin_email';
+        break;
+      default:
+        throw new Error("Invalid role");
+    }
+
+    const user = await model.findOne({ where: { [emailField]: email } });
+
+    if (!user) return { success: false, message: "Email not found" };
+
+    const otp = await sendOTP(email);
+
+    await Otp.create({
+      email,
+      otp,
+      expiresAt: new Date(Date.now() + 5 * 60000), // 5 minutes expiry
+    });
+
+    return { success: true, message: "OTP sent to email" };
+  },
+
+  verifyLoginOtp: async (_, { email, otp, role }) => {
+    const record = await Otp.findOne({
+      where: {
+        email,
+        otp,
+        expiresAt: { [Op.gt]: new Date() },
+      },
+    });
+
+    if (!record) return { success: false, token: null, message: "Invalid or expired OTP" };
+
+    // Clean up used OTP
+    await Otp.destroy({ where: { email } });
+
+    const payload = { email, role };
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
+
+    return { success: true, token, message: "OTP verified successfully" };
+  },
+    
     enterMarks: async (_, { registrationNo, subjectCode, marks, markType }) => {
       try {
         const allowedFields = ["Class_test_1", "Class_test_2", "MTE", "ETE", "attendance"];

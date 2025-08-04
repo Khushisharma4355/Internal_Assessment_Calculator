@@ -25,5 +25,15 @@ export const UPDATE_ASSESSMENT = gql`
       ETE
       attendance
     }
+    
+  }
+  
+`;
+export const SEND_LOGIN_OTP = gql`
+  mutation SendLoginOtp($email: String!, $role: String!) {
+    sendLoginOtp(email: $email, role: $role) {
+      success
+      message
+    }
   }
 `;

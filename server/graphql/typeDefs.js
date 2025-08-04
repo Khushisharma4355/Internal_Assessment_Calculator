@@ -101,9 +101,10 @@ export const typeDefs = gql`
     semester(subjectCode: String!): Semester
     getStudentAssessment(registrationNo: BigInt!): [Assessment]
     getTeacherClasses(emp_id: ID!): [ClassInfo!]!
-    checkEmail(email: String!): Boolean!
-    checkTeacherEmail(email: String!): Boolean!
-    checkAdminEmail(email: String!): Boolean!
+    checkEmail(email: String!, role: String!): Boolean
+    #checkEmail(email: String!): Boolean!
+    #checkTeacherEmail(email: String!): Boolean!
+    #checkAdminEmail(email: String!): Boolean!
      getStudentsByTeacher(emp_id: ID!): [Student]
   }
 
@@ -115,6 +116,8 @@ export const typeDefs = gql`
   }
 
   type Mutation {
+  sendLoginOtp(email: String!, role: String!): ResponseMessage!
+  verifyLoginOtp(email: String!, otp: String!, role: String!): AuthPayload!
     bulkEnterMarks(marks: [MarksInput!]!): ResponseMessage
     enterMarks(
       registrationNo: BigInt!
@@ -123,4 +126,10 @@ export const typeDefs = gql`
       markType: String!
     ): ResponseMessage
   }
+
+type AuthPayload {
+  success: Boolean!
+  token: String
+  message: String!
+}
 `;
