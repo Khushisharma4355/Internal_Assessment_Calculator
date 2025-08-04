@@ -16,6 +16,7 @@ import { useInView } from "react-intersection-observer";
 import "./MainHome.css";
 import collegeImage from "../../../src/assets/dummy.jpg";
 import directorImage from "../../../src/assets/director.jpeg";
+import { Footer } from "../../Components/Footer/Footer";
 
 export const MainHome = () => {
   const navigate = useNavigate();
@@ -364,7 +365,9 @@ export const MainHome = () => {
           </Row>
         </Container>
       </section>
+      <Footer/>
     </div>
+    
   );
 };
 
