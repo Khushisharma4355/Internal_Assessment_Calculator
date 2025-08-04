@@ -4,7 +4,10 @@ import { AdminNav } from '../../Components/Admin/AdminNav';
 import { FiBook, FiUsers, FiAlertCircle, FiUserPlus, FiUpload, FiMail,FiClipboard } from 'react-icons/fi';
 import { BsPersonCheck } from "react-icons/bs";
 import { useNavigate } from 'react-router-dom';
-
+import { useQuery,gql } from '@apollo/client';
+// const GET_ADMIN=gql`
+      
+// `
 export const AdminDashboard = () => {
   const navigate=useNavigate();
   // const
@@ -47,7 +50,7 @@ export const AdminDashboard = () => {
           </Col>
           
           <Col md={6} lg={3} className='mb-3 mb-lg-0'>
-            <Card className='shadow-sm'>
+            <Card className='shadow-sm' onClick={()=>{navigate("/admin/students")}}>
               <Card.Body>
                 <div className='d-flex justify-content-between align-items-center'>
                   <div>
