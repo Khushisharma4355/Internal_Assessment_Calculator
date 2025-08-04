@@ -25,6 +25,7 @@ const insertStudent = async () => {
     semester_id: "1",   //  Added
     dep_id: "DEP001"
   },
+  
   {
     student_name: "Rohan Mehta",
     classs: "BBA",
