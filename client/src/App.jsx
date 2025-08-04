@@ -1,7 +1,12 @@
 import { Assesments } from './Screens/Students/Assesments'
 import { Reports } from './Screens/Students/Reports'
-import './App.css'
-import { Route, Routes } from "react-router-dom"
+import './App.css';
+import { Route, Routes, BrowserRouter } from "react-router-dom";
+
+// Toast
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { TeaHome } from './Screens/Teacher/TeaHome'
 import { StuHome } from './Screens/Students/StuHome'
 import { UploadMarks } from './Screens/Teacher/UploadMarks'
@@ -20,24 +25,28 @@ import EnterMarks from './Screens/Teacher/Entermarks'
 import { TeacherMgmt } from './Screens/Admin/TeacherMgmt'
 import { StudentMgmt } from './Screens/Admin/StudentMgmt'
 import { StudentLogout } from './Screens/Logout/StudentLogout'
+
+
+
 // import {TeacherDashboard} from './Components/Teachers/TeacherDashboard'
 function App() {
   return (
     <>
+    
       <Routes>
         {/* <Route path="/" element={<TeaHome />} /> */}
         <Route path="/" element={<MainHome />} />
         <Route path="/students/login" element={<StuLogin />} />
-        {/* <Route path="/students/" element={<StuHome/>}/> */}
+         {/* <Route path="/students/" element={<StuHome/>}/> */} 
         {/* the below route is home route of student and right now working on /students route */}
         <Route path="/students/" element={<StudentHome />} />
 
         <Route path="/students/assesments" element={<Assesments />} />
         <Route path="/students/reports" element={<Reports />} />
         <Route path="/teachers/login" element={<TeacherLogin />} />
-        {/* <Route path="/teachers/" element={<TeaHome />} /> */}
+        <Route path="/teachers/" element={<TeaHome />} />
         {/* <Route path="/teachers/tt" element={<TeacherDashboard/>} /> */}
-
+           
 
 
         <Route path="/teachers/uploadmarks" element={<EnterMarks />} />
@@ -54,8 +63,8 @@ function App() {
       <Route path="/student/logout" element={<StudentLogout/>}/>
       </Routes>
 
-
-     
+      <ToastContainer />
+      
       {/* <Footer /> */}
     </>
   )

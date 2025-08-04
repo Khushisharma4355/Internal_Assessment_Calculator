@@ -1,12 +1,14 @@
 import express from "express";
+import dotenv from "dotenv";
+dotenv.config();
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import { typeDefs } from "./graphql/typeDefs.js";
 import { resolvers } from "./graphql/resolvers.js";
 import cors from "cors";
-import dotenv from "dotenv";
+
 import { syncDatabase } from "./model/models.js";
-dotenv.config();
+
 const app = express();
 app.use(cors());
 app.use(express.json()); 
