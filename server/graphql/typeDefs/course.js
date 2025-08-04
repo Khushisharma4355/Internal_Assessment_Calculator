@@ -16,14 +16,7 @@ const courseTypeDef = gql`
     semesterName: String
   }
 
-  type ClassInfo {
-    courseId: ID!
-    courseName: String!
-    semester_id: ID
-    section_id: String!
-    subjectCode: String!
-    subjectName: String!
-  }
+  
 
   extend type Query {
     courses: [Course]

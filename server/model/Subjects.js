@@ -9,7 +9,7 @@ const Subject = sequelize.define("Subject", {
     allowNull: false
   },
   subjectCode: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(20),
     primaryKey: true,
     unique: true,
     allowNull: false

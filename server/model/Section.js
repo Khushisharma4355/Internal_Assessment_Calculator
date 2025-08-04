@@ -4,7 +4,7 @@ import sequelize from "../config/db.js";
 
 const Section = sequelize.define("Section", {
   section_id: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(10),
     primaryKey: true,
     allowNull: false
   },
