@@ -1,0 +1,22 @@
+import { gql } from "graphql-tag";
+import student from "./student.js";
+import teacher from './teacher.js';
+import course from './course.js';
+import subject from './subject.js';
+import assessment from './assessment.js';
+import shared from './shared.js';
+
+const root = gql`
+  type Query
+  type Mutation
+`;
+
+export default [
+  root,
+  student,
+  teacher,
+  course,
+  subject,
+  assessment,
+  shared,
+];
