@@ -1,10 +1,13 @@
 import React from 'react';
-import { Container, Card, Row, Col, Button, ListGroup } from 'react-bootstrap';
+import { Container, Card, Row, Col, Button, ListGroup, NavLink } from 'react-bootstrap';
 import { AdminNav } from '../../Components/Admin/AdminNav';
 import { FiBook, FiUsers, FiAlertCircle, FiUserPlus, FiUpload, FiMail,FiClipboard } from 'react-icons/fi';
 import { BsPersonCheck } from "react-icons/bs";
+import { useNavigate } from 'react-router-dom';
 
 export const AdminDashboard = () => {
+  const navigate=useNavigate();
+  // const
   const adminName="Dr Narinder Rana"
   return (
   <div style={{ display: 'flex', minHeight: '100vh', flexDirection: window.innerWidth < 992 ? 'column' : 'row' }}>
@@ -27,7 +30,7 @@ export const AdminDashboard = () => {
         {/* Stats Cards */}
         <Row>
           <Col md={6} lg={3} className='mb-3 mb-lg-0'>
-            <Card className='shadow-sm'>
+            <Card className='shadow-sm' onClick={()=>{navigate("/admin/teachers")}}>
               <Card.Body>
                 <div className='d-flex justify-content-between align-items-center'>
                   <div>
@@ -40,6 +43,7 @@ export const AdminDashboard = () => {
                 </div>
               </Card.Body>
             </Card>
+            {/* </NavLink> */}
           </Col>
           
           <Col md={6} lg={3} className='mb-3 mb-lg-0'>

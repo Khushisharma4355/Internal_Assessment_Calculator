@@ -37,3 +37,16 @@ export const SEND_LOGIN_OTP = gql`
     }
   }
 `;
+
+
+export const VERIFY_OTP = gql`
+  mutation verifyLoginOtp($email: String!, $otp: String!, $role: String!) {
+    verifyLoginOtp(email: $email, otp: $otp, role: $role) {
+      success
+      message
+      token
+      
+    }
+  }
+`;
+

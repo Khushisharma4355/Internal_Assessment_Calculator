@@ -50,7 +50,7 @@ export const TeacherLogin = () => {
                 {/* <h4 className="text-center mb-3 text-dark fw-bold">Admin Login</h4> */}
 
                 {/* Login Form */}
-                <LoginForm />
+                <LoginForm role="teacher"/>
               </Card>
             </Col>
           </Row>

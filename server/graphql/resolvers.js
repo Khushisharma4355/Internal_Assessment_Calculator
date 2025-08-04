@@ -299,11 +299,13 @@ getStudentAssessment: async (_, { registrationNo }) => {
   },
 
   verifyLoginOtp: async (_, { email, otp, role }) => {
+
+    console.log("Verifying OTP:", email, otp);
     const record = await Otp.findOne({
       where: {
         email,
         otp,
-        expiresAt: { [Op.gt]: new Date() },
+        // expiresAt: { [Op.gt]: new Date() },
       },
     });
 
@@ -315,7 +317,8 @@ getStudentAssessment: async (_, { registrationNo }) => {
     const payload = { email, role };
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
 
-    return { success: true, token, message: "OTP verified successfully" };
+    return { success: true, token, message: "OTP verified successfully", role };
+
   },
     
     enterMarks: async (_, { registrationNo, subjectCode, marks, markType }) => {
