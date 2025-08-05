@@ -3,7 +3,7 @@ import sequelize from "../config/db.js";
 
 const Department = sequelize.define("Department", {
   dep_id: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(20),
     allowNull: false,
     primaryKey: true,
     unique: true
