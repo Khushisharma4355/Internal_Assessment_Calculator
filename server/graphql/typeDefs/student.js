@@ -1,27 +1,30 @@
 import { gql } from "graphql-tag";
 
 const studentTypeDef = gql`
-  type Student {
-    registrationNo: BigInt!
-    student_name: String!
-    student_email: String!
-    rollno: BigInt!
-    courseId: ID
-    course: Course
-    semester_id: Int!       # Integer type
-    section_id: String
-  }
+ type Student {
+  registrationNo: BigInt!
+  student_name: String!
+  student_email: String!
+  rollno: BigInt
+  courseId: ID
+  course: Course
+  semester_id: Int
+  section_id: String
+  subjectCode: String      # <- Add this
+  subjectName: String      # <- Add this
+  courseName: String       # <- Add this
+}
 
   extend type Query {
     # Fetch students for a specific class assigned to a teacher
-    getStudentsByClass(
-      emp_id: ID!,
-      courseId: ID!,
-      semester_id: Int!,    # Integer type to match usage
-      section_id: String!
-        subjectCode: String   # Add this field
+  getStudentsByClass(
+  emp_id: ID!,
+  courseId: ID!,
+  semester_id: Int!,
+  section_id: String!,
+  subjectCode: String
+): [Student]
 
-    ): [Student]
 
     # Fetch all students
     students: [Student]

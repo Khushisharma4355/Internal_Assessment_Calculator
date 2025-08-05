@@ -1,6 +1,6 @@
 import Student from "../../model/Student.js";
 import Course from "../../model/Course.js";
-import TeacherSubjectSection from "../../model/TeacherSubSection.js"; // Ensure you import this
+import TeacherSubjectSection from "../../model/TeacherSubSection.js";
 import Subject from "../../model/Subjects.js";
 import Semester from "../../model/Semester.js";
 import Section from "../../model/Section.js";
@@ -10,48 +10,60 @@ export default {
     // Fetch all students with their course details
     students: async () => await Student.findAll({ include: [Course] }),
 
-getStudentsByClass: async (_, { emp_id, courseId, semester_id, section_id }) => {
-  try {
-    const semesterIdInt = Number(semester_id);
+    // Get students by class (based on teacher's assignment)
+    getStudentsByClass: async (_, { emp_id, courseId, semester_id, section_id }) => {
+      const sectionMap = { A: "S001", B: "S002" };
+      const dbSectionId = sectionMap[section_id] || section_id;
 
-    // Get the assignment with subjectCode included
-    const assignment = await TeacherSubjectSection.findOne({
-      where: { emp_id, courseId, semester_id: semesterIdInt, section_id }
-    });
-
-    if (!assignment) {
-      throw new Error("Access denied: You are not assigned to this class.");
-    }
-
-    // Fetch students of that class
-    const students = await Student.findAll({
-      where: { courseId, semester_id: semesterIdInt, section_id },
-      attributes: ["registrationNo", "student_name", "student_email"]
-    });
-
-    // Attach subjectCode to each student record
-    return students.map((student) => ({
-      ...student.get(),           // convert Sequelize instance to plain object
-      subjectCode: assignment.subjectCode
-    }));
-  } catch (err) {
-    console.error("getStudentsByClass error:", err);
-    throw err;
-  }
-}
-
-,
-
-    // Fetch all students for all classes assigned to a teacher
-    getStudentsByTeacher: async (_, { emp_id }, { models }) => {
       try {
-        const assignments = await models.TeacherSubjectSection.findAll({
-          where: { emp_id },
-          include: [
-            { model: models.Subject, include: [models.Course, models.Semester] },
-            { model: models.Section }
-          ]
+        const semesterIdInt = Number(semester_id);
+
+        const assignment = await TeacherSubjectSection.findOne({
+          where: {
+            emp_id,
+            courseId,
+            semester_id: semesterIdInt,
+            section_id: dbSectionId
+          }
         });
+
+        if (!assignment) {
+          throw new Error("Access denied: You are not assigned to this class.");
+        }
+
+        const students = await Student.findAll({
+          where: {
+            courseId,
+            semester_id: semesterIdInt,
+            section_id: dbSectionId
+          },
+          attributes: ["registrationNo", "student_name", "student_email"]
+        });
+
+        return students.map((student) => ({
+          ...student.get(),
+          subjectCode: assignment.subjectCode
+        }));
+      } catch (err) {
+        console.error("getStudentsByClass error:", err);
+        throw err;
+      }
+    },
+
+    // Get all students for the teacher across all assigned classes
+    getStudentsByTeacher: async (_, { emp_id }) => {
+      try {
+       const assignments = await TeacherSubjectSection.findAll({
+  where: { emp_id },
+  include: [
+    { model: Subject, include: [Course, Semester] },
+    { 
+      model: Section,
+      attributes: ['section_id', 'section_name', 'createdAt', 'updatedAt']
+    }
+  ]
+});
+
 
         const classes = assignments.map((a) => ({
           courseId: a.Subject.courseId,
@@ -64,10 +76,10 @@ getStudentsByClass: async (_, { emp_id, courseId, semester_id, section_id }) => 
 
         const studentLists = await Promise.all(
           classes.map((cls) =>
-            models.Student.findAll({
+            Student.findAll({
               where: {
                 courseId: cls.courseId,
-                semester_id: cls.semester_id, // already an int from DB
+                semester_id: cls.semester_id,
                 section_id: cls.section_id
               },
               raw: true
@@ -95,6 +107,7 @@ getStudentsByClass: async (_, { emp_id, courseId, semester_id, section_id }) => 
     }
   },
 
+  // Student type resolvers (placed outside Query)
   Student: {
     course: async (parent) => await Course.findByPk(parent.courseId)
   }
