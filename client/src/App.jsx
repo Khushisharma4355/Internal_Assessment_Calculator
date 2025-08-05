@@ -7,7 +7,7 @@ import { StuHome } from './Screens/Students/StuHome'
 // import { UploadMarks } from './Screens/Teacher/UploadMarks'
 import { UploadMarks } from './Screens/Teacher/UploadMarks'
 import { Managestu } from './Screens/Teacher/ManageStudents'
-import { TeaReports } from './Screens/Teacher/Result'
+// import { TeaReports } from './Screens/Teacher/Result'
 import { Footer } from './Components/Footer/Footer'
 import { AdminHome } from './Screens/Admin/AdminHome'
 import { MainHome } from './Screens/Main/Main'
@@ -43,7 +43,7 @@ function App() {
 
         <Route path="/teachers/uploadmarks" element={<UploadMarks />} />
         <Route path="/teachers/managestudents" element={<Managestu />} />
-        <Route path="/teachers/reports" element={<TeaReports />} />
+        {/* <Route path="/teachers/reports" element={<TeaReports />} /> */}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/" element={<AdminHome />} />
         <Route path="/admin/teachers" element={<TeacherMgmt/>}/>
