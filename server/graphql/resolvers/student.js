@@ -50,6 +50,20 @@ export default {
       }
     },
 
+    //student by email
+     studentByEmail: async (_, { student_email }) => {
+    try {
+      return await Student.findOne({
+        where: { student_email },
+        include: [Course]
+      });
+    } catch (err) {
+      console.error("Failed to fetch student by email:", err);
+      throw new Error("Student not found");
+    }
+  },
+
+
     // Get all students for the teacher across all assigned classes
     getStudentsByTeacher: async (_, { emp_id }) => {
       try {
