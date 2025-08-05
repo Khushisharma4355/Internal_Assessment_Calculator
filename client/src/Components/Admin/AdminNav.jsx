@@ -115,16 +115,18 @@ export const AdminNav = () => {
 
                 <div>
                     <NavLink 
-                        to="/logout" 
+                        to="/" 
                         style={navStyle('/logout')}
                         className="logout-link"
+
                     >
                         <FiLogOut style={iconStyle} /> Logout
                     </NavLink>
                     
                     <div 
-                        className="text-center mt-3 p-2 admin-indicator"
+                        className="text-center mt-3 p-2 admin-indicator fw-bold"
                         aria-label="Admin privileges"
+                        style={{ color: 'orange' }}
                     >
                         ADMIN
                     </div>
@@ -187,6 +189,7 @@ export const AdminNav = () => {
                         <div 
                             className="text-center mt-3 p-2 admin-indicator"
                             aria-label="Admin privileges"
+                            style={{ color: 'orange' }}
                         >
                             ADMIN
                         </div>

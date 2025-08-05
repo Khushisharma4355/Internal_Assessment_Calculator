@@ -4,7 +4,7 @@ import Department from "./Department.js"; // This import is used for association
 
 const Teacher = sequelize.define("Teacher", {
   emp_id: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(20),
     primaryKey: true,
     allowNull: false,
     unique: true
