@@ -4,6 +4,7 @@ import './App.css'
 import { Route, Routes } from "react-router-dom"
 import { TeaHome } from './Screens/Teacher/TeaHome'
 import { StuHome } from './Screens/Students/StuHome'
+// import { UploadMarks } from './Screens/Teacher/UploadMarks'
 import { UploadMarks } from './Screens/Teacher/UploadMarks'
 import { Managestu } from './Screens/Teacher/ManageStudents'
 import { TeaReports } from './Screens/Teacher/Result'
@@ -16,7 +17,7 @@ import { TeacherLogin } from './Screens/Login/TeacherLogin'
 import { AdminLogin } from './Screens/Login/AdminLogin'
 import { StudentHome } from './Screens/Students/StudentHome'
 import { Attendance } from './Screens/Students/Attendance'
-import EnterMarks from './Screens/Teacher/Entermarks'
+// import EnterMarks from './Screens/Teacher/Entermarks'
 import { TeacherMgmt } from './Screens/Admin/TeacherMgmt'
 import { StudentMgmt } from './Screens/Admin/StudentMgmt'
 import { StudentLogout } from './Screens/Logout/StudentLogout'
@@ -40,7 +41,7 @@ function App() {
            
 
 
-        <Route path="/teachers/uploadmarks" element={<EnterMarks />} />
+        <Route path="/teachers/uploadmarks" element={<UploadMarks />} />
         <Route path="/teachers/managestudents" element={<Managestu />} />
         <Route path="/teachers/reports" element={<TeaReports />} />
         <Route path="/admin/login" element={<AdminLogin />} />

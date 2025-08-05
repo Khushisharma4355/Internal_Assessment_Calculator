@@ -62,7 +62,7 @@ const BULK_ENTER_MARKS = gql`
 
 // ==================== Main Component ====================
 export const TeacherDashboard = () => {
-  const empId = "T002";
+  const empId = "T001";
   const [selectedClass, setSelectedClass] = useState(null);
   const [marksMap, setMarksMap] = useState({});
   const [markType, setMarkType] = useState('MTE');
