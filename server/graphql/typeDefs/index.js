@@ -1,5 +1,6 @@
 import { gql } from "graphql-tag";
 import student from "./student.js";
+import adminTypeDef from "./admin.js";
 import teacher from './teacher.js';
 import course from './course.js';
 import subject from './subject.js';
@@ -18,5 +19,6 @@ export default [
   course,
   subject,
   assessment,
+  adminTypeDef,
   shared,
 ];

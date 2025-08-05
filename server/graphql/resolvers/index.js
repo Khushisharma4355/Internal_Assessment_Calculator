@@ -4,7 +4,7 @@ import course from "./course.js";
 import subject from "./subject.js";
 import assessment from "./assessment.js";
 import shared from "./shared.js";
-
+import admin from "./admin.js";
 const mergeResolvers = (...resolvers) => {
   return resolvers.reduce((acc, curr) => {
     for (const key in curr) {
@@ -21,5 +21,6 @@ export default mergeResolvers(
   course,
   subject,
   assessment,
+  admin,
   shared
 );
