@@ -1,5 +1,6 @@
 import { Assesments } from './Screens/Students/Assesments'
-import { Reports } from './Screens/Students/Reports'
+
+// import { Reports } from './Screens/Students/Reports'
 import './App.css'
 import { Route, Routes } from "react-router-dom"
 import { TeaHome } from './Screens/Teacher/TeaHome'
@@ -15,7 +16,7 @@ import { LoginForm } from './Components/Login/login'
 import { StuLogin } from './Screens/Login/stuLogin'
 import { TeacherLogin } from './Screens/Login/TeacherLogin'
 import { AdminLogin } from './Screens/Login/AdminLogin'
-import { StudentHome } from './Screens/Students/StudentHome'
+// import { StudentHome } from './Screens/Students/StudentHome'
 import { Attendance } from './Screens/Students/Attendance'
 // import EnterMarks from './Screens/Teacher/Entermarks'
 import { TeacherMgmt } from './Screens/Admin/TeacherMgmt'
@@ -26,15 +27,13 @@ function App() {
   return (
     <>
       <Routes>
-        {/* <Route path="/" element={<TeaHome />} /> */}
         <Route path="/" element={<MainHome />} />
         <Route path="/students/login" element={<StuLogin />} />
-        {/* <Route path="/students/" element={<StuHome/>}/> */}
         {/* the below route is home route of student and right now working on /students route */}
         <Route path="/students/" element={<StuHome />} />
 
         <Route path="/students/assesments" element={<Assesments />} />
-        <Route path="/students/reports" element={<Reports />} />
+        {/* <Route path="/students/reports" element={<Reports />} /> */}
         <Route path="/teachers/login" element={<TeacherLogin />} />
         <Route path="/teachers/" element={<TeaHome />} />
         {/* <Route path="/teachers/tt" element={<TeacherDashboard/>} /> */}
