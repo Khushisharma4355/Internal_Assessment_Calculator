@@ -187,7 +187,7 @@ export const AdminNav = () => {
                         </NavLink>
                         
                         <div 
-                            className="text-center mt-3 p-2 admin-indicator"
+                            className="text-center mt-3 p-2 admin-indicator fw-bold"
                             aria-label="Admin privileges"
                             style={{ color: 'orange' }}
                         >

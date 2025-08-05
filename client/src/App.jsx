@@ -31,7 +31,7 @@ function App() {
         <Route path="/students/login" element={<StuLogin />} />
         {/* <Route path="/students/" element={<StuHome/>}/> */}
         {/* the below route is home route of student and right now working on /students route */}
-        <Route path="/students/" element={<StudentHome />} />
+        <Route path="/students/" element={<StuHome />} />
 
         <Route path="/students/assesments" element={<Assesments />} />
         <Route path="/students/reports" element={<Reports />} />

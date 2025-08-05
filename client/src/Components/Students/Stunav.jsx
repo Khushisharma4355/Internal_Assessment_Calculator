@@ -1,99 +1,201 @@
-// import { Navbar, Nav, Container, NavDropdown,Dropdown } from "react-bootstrap"
-// import "./navbar.css"
-// import { Link } from "react-router-dom"
-// export const Stunav = () => {
-//     return (
-//         <>
-//             <Navbar
-//                 variant="dark"
-//                 sticky="top" expand="lg" style={{
-//                     backgroundColor: "#1d3557"
-//                 }} className="m-0 p-3" sticky-top>
-//                 <Container fluid className="m-0 p-0 justify-content-start">
-
-//                     <Navbar.Brand as={Link} to="/">
-//                         <img
-//                             src="http://192.168.1.12/images/maimt_logo.png"
-//                             width="40"
-//                             height="40"
-//                             className="d-inline-block align-top"
-//                             alt="Maimt"
-//                         />
-//                         <span style={{ fontWeight: 'bold', fontSize: '1.6rem', color: 'white' }}><span style={{color:"orange"}}>Ur</span>Level</span>
-//                     </Navbar.Brand>
-//                     <Navbar.Toggle aria-controls="basic-navbar-nav " className="ms-auto" />
-//                     <Navbar.Collapse id="basic-navbar-nav">
-//                         <Nav className="me-auto fw-bold fs-5">
-//                             <Nav.Link as={Link} to="/students/">Home</Nav.Link>
-//                             <Nav.Link as={Link} to="/students/assesments">Assesments</Nav.Link>
-//                             <Nav.Link as={Link} to="/students/reports">Report</Nav.Link>
-//                         </Nav>
-//                         <Nav className="fw-bold fs-5">
-//                             <Nav.Link as={Link} to="/logout">Logout</Nav.Link>
-//                         </Nav>
-//                     </Navbar.Collapse>
-//                 </Container>
-//             </Navbar>
-//         </>
-//     )
-// }
-
-
-
-import { Nav } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { NavLink } from "react-router-dom";
-import "./sidebar.css"; // Create/Use a CSS file for sidebar styles
-import { MdOutlineAssessment } from "react-icons/md";
-import { SlCalender } from "react-icons/sl";
-import { GrScorecard } from "react-icons/gr";
-import { CiHome } from "react-icons/ci";
-import { MdLogout } from "react-icons/md";
-
+import React, { useState } from 'react';
+import { Offcanvas, Button, Nav,Col } from 'react-bootstrap';
+import { NavLink, useLocation } from 'react-router-dom';
+import { 
+  FiMenu, 
+  FiHome, 
+  FiUsers, 
+  FiBook, 
+  FiMail, 
+  FiLogOut 
+} from 'react-icons/fi';
+import './sidebar.css';
 
 export const Stunav = () => {
-  return (
-    <div className="sidebar d-flex flex-column p-3 text-white " style={{ width: "250px", height: "100vh", position: "fixed", top: 0, left: 0, backgroundColor: "#1d3557" }}>
-      <div className="d-flex align-items-center mb-4">
-        <img
-          src="http://192.168.1.12/images/maimt_logo.png"
-          width="40"
-          height="40"
-          className="me-2"
-          alt="Maimt"
-        />
-        <span style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
-          <span style={{ color: "orange" }}>Ur</span>Level
-        </span>
-      </div>
+    const [show, setShow] = useState(false);
+    const location = useLocation();
+    const isActive = (path) => location.pathname === path;
 
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
-      <Nav className="flex-column fw-bold fs-5">
-        <Nav.Link as={NavLink} to="/students/" end className={({ isActive }) =>
-          isActive ? "active" : ""
+    const navStyle = (path) => ({
+        color: isActive(path) ? 'orange' : 'white',
+        textDecoration: 'none',
+        padding: '12px 16px',
+        display: 'flex',
+        alignItems: 'center',
+        fontWeight: '500',
+        borderRadius: '4px',
+        marginBottom: '8px',
+        transition: 'all 0.3s ease',
+        backgroundColor: isActive(path) ? 'rgba(255, 165, 0, 0.1)' : 'transparent',
+        ':hover': {
+            backgroundColor: 'rgba(255, 255, 255, 0.1)'
+        }
+    });
 
-        }><CiHome />Home</Nav.Link>
-        <Nav.Link
-          as={NavLink}
-          to="/students/assesments"
-          className={({ isActive }) =>
-            isActive ? "active" : ""
-          }
-        >
-          <MdOutlineAssessment /> Assessments
-        </Nav.Link>
-        <Nav.Link as={NavLink} to="/students/reports" className={({ isActive }) =>
-          isActive ? "active" : ""
-        }><GrScorecard /> Report</Nav.Link>
-        <Nav.Link as={NavLink} to="/students/attendance" className={({ isActive }) =>
-          isActive ? "active" : ""
-        }><SlCalender /> Attendance</Nav.Link>
-        <Nav.Link as={NavLink} to="/student/logout" className={({ isActive }) =>
-          isActive ? "active" : ""
-        }><MdLogout /> Log out</Nav.Link>
-      </Nav>
-    </div>
-  );
+    const iconStyle = {
+        marginRight: '12px',
+        fontSize: '1.1rem',
+        color: 'inherit'
+    };
+
+    // Common navigation items to avoid duplication
+    const navItems = [
+        { path: '/students/', icon: <FiHome style={iconStyle} />, label: 'Home' },
+        { path: '/student/assessments', icon: <FiUsers style={iconStyle} />, label: 'Assessment' },
+        { path: '/students/attendance', icon: <FiUsers style={iconStyle} />, label: 'Attendance' },
+        // { path: '/student/', icon: <FiBook style={iconStyle} />, label: 'Logout' },
+        // { path: '/admin/sendreports', icon: <FiMail style={iconStyle} />, label: 'Send Reports' }
+    ];
+
+    return (
+        <>
+            {/* Hamburger Button for Small Screens */}
+            <Col md={12}>
+              <Button 
+                onClick={handleShow} 
+                className="d-lg-none m-2" 
+                style={{ 
+                    backgroundColor: '#1d3557',
+                    border: 'none',
+                    position: 'fixed',
+                    top: '10px',
+                    left: '10px',
+                    zIndex: 1000
+                }}
+                aria-label="Open navigation menu"
+            >
+                <FiMenu size={20} />
+            </Button>
+            </Col>
+          
+
+            {/* Sidebar - Large screens */}
+            <nav
+                className="d-none d-lg-flex flex-column justify-content-between p-4"
+                style={{ 
+                    width: '250px',
+                    height: '100vh',
+                    position: 'fixed',
+                    backgroundColor: '#1d3557',
+                    boxShadow: '2px 0 10px rgba(0, 0, 0, 0.1)',
+                    zIndex: 100
+                }}
+                aria-label="Main navigation"
+            >
+                <div>
+                    <div className="mb-5 d-flex align-items-center">
+                        <img
+                            src="http://192.168.1.12/images/maimt_logo.png"
+                            alt="UrLevel Logo"
+                            width="35"
+                            height="35"
+                            className="me-2"
+                        />
+                        <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white' }}>
+                            <span style={{ color: 'orange' }}>Ur</span>Level
+                        </span>
+                    </div>
+
+                    <Nav className="flex-column">
+                        {navItems.map((item) => (
+                            <NavLink 
+                                key={item.path}
+                                to={item.path} 
+                                style={navStyle(item.path)}
+                                aria-current={isActive(item.path) ? 'page' : undefined}
+                            >
+                                {item.icon} {item.label}
+                            </NavLink>
+                        ))}
+                    </Nav>
+                </div>
+
+                <div>
+                    <NavLink 
+                        to="/" 
+                        style={navStyle('/logout')}
+                        className="logout-link"
+
+                    >
+                        <FiLogOut style={iconStyle} /> Logout
+                    </NavLink>
+                    
+                    <div 
+                        className="text-center mt-3 p-2 admin-indicator fw-bold"
+                        aria-label="Admin privileges"
+                        style={{ color: 'orange' }}
+                    >
+                        Student
+                    </div>
+                </div>
+            </nav>
+
+            {/* Offcanvas - Small screens */}
+            <Offcanvas 
+                show={show} 
+                onHide={handleClose} 
+                backdrop={true}
+                responsive="lg" 
+                style={{ 
+                    backgroundColor: '#1d3557',
+                    width: '75%',
+                    maxWidth: '280px'
+                }}
+                aria-labelledby="offcanvas-nav-label"
+            >
+                <Offcanvas.Header closeButton closeVariant="white">
+                    <Offcanvas.Title id="offcanvas-nav-label">
+                        <div className="d-flex align-items-center">
+                            <img
+                                src="/images/maimt_logo.png"
+                                alt="UrLevel Logo"
+                                width="50"
+                                height="35"
+                            />
+                            <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white' }}>
+                                <span style={{ color: 'orange' }}>Ur</span>Level
+                            </span>
+                        </div>
+                    </Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body className="d-flex flex-column justify-content-between">
+                    <Nav className="flex-column">
+                        {navItems.map((item) => (
+                            <NavLink 
+                                key={item.path}
+                                to={item.path} 
+                                onClick={handleClose}
+                                style={navStyle(item.path)}
+                                aria-current={isActive(item.path) ? 'page' : undefined}
+                            >
+                                {item.icon} {item.label}
+                            </NavLink>
+                        ))}
+                    </Nav>
+
+                    <div>
+                        <NavLink 
+                            to="/logout" 
+                            onClick={handleClose}
+                            style={navStyle('/logout')}
+                            className="logout-link"
+                        >
+                            <FiLogOut style={iconStyle} /> Logout
+                        </NavLink>
+                        
+                        <div 
+                            className="text-center mt-3 p-2 admin-indicator fw-bold"
+                            aria-label="Admin privileges"
+                            style={{ color: 'orange' }}
+                        >
+                            Student
+                        </div>
+                    </div>
+                </Offcanvas.Body>
+            </Offcanvas>
+        </>
+    );
 };
-
-
