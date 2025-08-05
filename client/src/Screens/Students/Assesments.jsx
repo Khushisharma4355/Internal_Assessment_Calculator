@@ -9,7 +9,6 @@ import { CiHome } from "react-icons/ci";
 import { MdOutlineAssessment } from "react-icons/md";
 import { SlCalender } from "react-icons/sl";
 import { GrScorecard } from "react-icons/gr";
-
 import { MdLogout } from "react-icons/md";
 import "./assessment.css"
 import { ViewAssessment } from "../../Components/Students/ViewAssessment"
