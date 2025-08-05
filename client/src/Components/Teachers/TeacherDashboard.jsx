@@ -38,8 +38,13 @@ const GET_TEACHER_CLASSES = gql`
 `;
 
 const GET_STUDENTS_BY_CLASS = gql`
-  query GetStudentsByClass($courseId: ID!, $semester_id: ID!, $section_id: String!) {
-    getStudentsByClass(courseId: $courseId, semester_id: $semester_id, section_id: $section_id) {
+  query GetStudentsByClass($emp_id: ID!, $courseId: ID!, $semester_id: ID!, $section_id: String!) {
+    getStudentsByClass(
+      emp_id: $emp_id,
+      courseId: $courseId,
+      semester_id: $semester_id,
+      section_id: $section_id
+    ) {
       registrationNo
       student_name
     }
@@ -57,10 +62,11 @@ const BULK_ENTER_MARKS = gql`
 
 // ==================== Main Component ====================
 export const TeacherDashboard = () => {
-  const empId = "T001";
+  const empId = "T002";
   const [selectedClass, setSelectedClass] = useState(null);
   const [marksMap, setMarksMap] = useState({});
   const [markType, setMarkType] = useState('MTE');
+  const [totalMarks, setTotalMarks] = useState(100);
   const [alert, setAlert] = useState({ show: false, variant: 'success', message: '' });
 
   // Fetch teacher info
@@ -76,6 +82,7 @@ export const TeacherDashboard = () => {
   // Fetch students
   const { loading: loadingStudents, error: errorStudents, data: studentsData } = useQuery(GET_STUDENTS_BY_CLASS, {
     variables: {
+      emp_id: empId,
       courseId: selectedClass?.courseId,
       semester_id: selectedClass?.semester_id,
       section_id: selectedClass?.section_id,
@@ -87,9 +94,18 @@ export const TeacherDashboard = () => {
   const [bulkEnterMarks, { loading: loadingSubmit }] = useMutation(BULK_ENTER_MARKS);
 
   const handleMarkChange = (registrationNo, value) => {
+    if (value === '') {
+      setMarksMap(prev => ({ ...prev, [registrationNo]: '' }));
+      return;
+    }
+    
+    let val = Number(value);
+    if (val < 0) val = 0;
+    if (val > totalMarks) val = totalMarks;
+
     setMarksMap(prev => ({
       ...prev,
-      [registrationNo]: value === '' ? '' : Number(value),
+      [registrationNo]: val,
     }));
   };
 
@@ -215,7 +231,11 @@ export const TeacherDashboard = () => {
                 <Col key={idx}>
                   <Card 
                     className={`h-100 cursor-pointer ${selectedClass?.subjectCode === cls.subjectCode && selectedClass?.section_id === cls.section_id ? 'border-primary' : ''}`}
-                    onClick={() => setSelectedClass(cls)}
+                    onClick={() => {
+                      setSelectedClass(cls);
+                      setMarksMap({}); // reset marks when changing class
+                      setTotalMarks(100); // reset total marks to default
+                    }}
                   >
                     <Card.Body>
                       <Card.Title className="text-primary">
@@ -253,6 +273,39 @@ export const TeacherDashboard = () => {
               Enter Marks for {selectedClass.subjectName}
             </Card.Title>
 
+            <Row className="mb-3">
+              <Col md={4}>
+                <Form.Group>
+                  <Form.Label>Select Mark Type:</Form.Label>
+                  <Form.Select 
+                    value={markType}
+                    onChange={(e) => setMarkType(e.target.value)}
+                  >
+                    <option value="MTE">MTE</option>
+                    <option value="Class_test_1">Class Test 1</option>
+                    <option value="Class_test_2">Class Test 2</option>
+                    <option value="ETE">ETE</option>
+                    <option value="attendance">Attendance</option>
+                  </Form.Select>
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group>
+                  <Form.Label>Total Marks:</Form.Label>
+                  <Form.Control
+                    type="number"
+                    min="1"
+                    max="1000"
+                    value={totalMarks}
+                    onChange={(e) => {
+                      const val = Number(e.target.value);
+                      if (val > 0) setTotalMarks(val);
+                    }}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+
             {loadingStudents ? (
               <div className="text-center">
                 <Spinner animation="border" variant="primary" />
@@ -263,31 +316,13 @@ export const TeacherDashboard = () => {
               </Alert>
             ) : studentsData?.getStudentsByClass?.length > 0 ? (
               <>
-                <Row className="mb-3">
-                  <Col md={4}>
-                    <Form.Group>
-                      <Form.Label>Select Mark Type:</Form.Label>
-                      <Form.Select 
-                        value={markType}
-                        onChange={(e) => setMarkType(e.target.value)}
-                      >
-                        <option value="MTE">MTE</option>
-                        <option value="Class_test_1">Class Test 1</option>
-                        <option value="Class_test_2">Class Test 2</option>
-                        <option value="ETE">ETE</option>
-                        <option value="attendance">Attendance</option>
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
-                </Row>
-
                 <div className="table-responsive">
                   <Table striped bordered hover>
                     <thead className="table-dark">
                       <tr>
                         <th>Roll No</th>
                         <th>Name</th>
-                        <th>Marks ({markType})</th>
+                        <th>Marks (out of {totalMarks})</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -301,7 +336,7 @@ export const TeacherDashboard = () => {
                               value={marksMap[stu.registrationNo] ?? ''}
                               onChange={(e) => handleMarkChange(stu.registrationNo, e.target.value)}
                               min="0"
-                              max="100"
+                              max={totalMarks}
                               style={{ width: '80px' }}
                             />
                           </td>

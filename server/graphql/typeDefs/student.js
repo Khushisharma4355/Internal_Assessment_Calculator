@@ -13,7 +13,12 @@ const studentTypeDef = gql`
   }
 
   extend type Query {
-    getStudentsByClass(courseId: ID!, semester_id: ID!, section_id: String!): [Student]
+getStudentsByClass(
+  emp_id: ID!,
+  courseId: ID!,
+  semester_id: ID!,
+  section_id: String!
+): [Student]
     students: [Student]
     student(registrationNo: BigInt!): Student
     studentByEmail(student_email: String!): Student
