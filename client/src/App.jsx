@@ -1,6 +1,7 @@
 import { Assesments } from './Screens/Students/Assesments'
 
 // import { Reports } from './Screens/Students/Reports'
+import { Reports } from './Screens/Teacher/Reports'
 import './App.css'
 import { Route, Routes } from "react-router-dom"
 import { TeaHome } from './Screens/Teacher/TeaHome'
@@ -36,7 +37,7 @@ function App() {
         {/* <Route path="/students/reports" element={<Reports />} /> */}
         <Route path="/teachers/login" element={<TeacherLogin />} />
         <Route path="/teachers/" element={<TeaHome />} />
-        {/* <Route path="/teachers/tt" element={<TeacherDashboard/>} /> */}
+        <Route path="/teachers/reports" element={<Reports/>} />
            
 
 
