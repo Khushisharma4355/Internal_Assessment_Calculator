@@ -1,8 +1,16 @@
 import { Assesments } from './Screens/Students/Assesments'
+// import { Reports } from './Screens/Students/Reports'
+import './App.css';
+// import { Route, Routes, BrowserRouter } from "react-router-dom";
+
+// Toast
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 // import { Reports } from './Screens/Students/Reports'
 import { Reports } from './Screens/Teacher/Reports'
-import './App.css'
+// import './App.css'
 import { Route, Routes } from "react-router-dom"
 import { TeaHome } from './Screens/Teacher/TeaHome'
 import { StuHome } from './Screens/Students/StuHome'
@@ -23,10 +31,14 @@ import { Attendance } from './Screens/Students/Attendance'
 import { TeacherMgmt } from './Screens/Admin/TeacherMgmt'
 import { StudentMgmt } from './Screens/Admin/StudentMgmt'
 import { StudentLogout } from './Screens/Logout/StudentLogout'
+
+
+
 // import {TeacherDashboard} from './Components/Teachers/TeacherDashboard'
 function App() {
   return (
     <>
+    
       <Routes>
         <Route path="/" element={<MainHome />} />
         <Route path="/students/login" element={<StuLogin />} />
@@ -55,8 +67,8 @@ function App() {
       <Route path="/student/logout" element={<StudentLogout/>}/>
       </Routes>
 
-
-     
+      <ToastContainer />
+      
       {/* <Footer /> */}
     </>
   )

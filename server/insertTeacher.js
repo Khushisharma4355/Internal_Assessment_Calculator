@@ -15,8 +15,8 @@ const insertDummyTeachers = async () => {
       },
       {
         emp_id: "T002",
-        emp_name: "Ravi Mehta",
-        emp_email: "ravi.mehta@example.com",
+        emp_name: "sarita rana",
+        emp_email: "saritarana7788@gmail.com",
         emp_phone: "9123456789",
         dep_id: "DEP002" // Management Department
       },
