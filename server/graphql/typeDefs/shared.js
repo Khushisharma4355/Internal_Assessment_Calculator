@@ -14,11 +14,9 @@ type ResponseMessage {
     verifyLoginOtp(email: String!, otp: String!, role: String!): AuthPayload!
   }
 
-  
-
   type AuthPayload {
     success: Boolean!
-    #role: String!
+    
     token: String
     message: String!
     
