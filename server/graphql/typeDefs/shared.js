@@ -1,18 +1,26 @@
 import { gql } from "graphql-tag";
 
-const sharedTypeDef = gql`
-  scalar BigInt
-
-  type ResponseMessage {
+export const emailTypedefs = gql`
+type ResponseMessage {
     success: Boolean!
     message: String!
   }
+  type Query {
+    checkEmail(email: String, role: String): ResponseMessage!
+  }
 
-  extend type Query {
-    checkEmail(email: String!): Boolean!
-    checkTeacherEmail(email: String!): Boolean!
-    checkAdminEmail(email: String!): Boolean!
+  type Mutation {
+    sendLoginOtp(email: String!, role: String!): ResponseMessage!
+    verifyLoginOtp(email: String!, otp: String!, role: String!): AuthPayload!
+  }
+
+  
+
+  type AuthPayload {
+    success: Boolean!
+    token: String
+    message: String!
   }
 `;
-
-export default sharedTypeDef;
+// The above code defines the GraphQL schema for the authentication-related operations.
+// It includes a query to check if an email exists for a given role, and mutations to send and verify login OTPs.
