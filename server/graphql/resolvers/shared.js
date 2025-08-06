@@ -123,7 +123,7 @@ export const emailResolvers = {
       return {
         success: true,
         token,
-        
+        // role,
         message: "OTP verified successfully",
       };
     },

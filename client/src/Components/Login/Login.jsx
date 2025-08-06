@@ -102,11 +102,13 @@ export const LoginForm = ({ role }) => {
         localStorage.setItem('token', data.verifyLoginOtp.token);
         // Navigate based on user role
 
-        const userRole = data.verifyLoginOtp.role||role;
+        // const userRole = data.verifyLoginOtp.role||role;
+        const userRole = role; // Use the role passed as a prop
+        console.log('User role:', userRole); // Debugging line
 
         if (userRole === 'student') {
           navigate('/students/');
-        } else if (userRole === 'faculty') {
+        } else if (userRole === 'teacher') {
           navigate('/teachers/');
         } else if (userRole === 'admin') {
           navigate('/admin/');
