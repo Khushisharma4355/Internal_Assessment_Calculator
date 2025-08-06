@@ -6,6 +6,7 @@ import course from './course.js';
 import subject from './subject.js';
 import assessment from './assessment.js';
 import shared from './shared.js';
+import department from "./department.js";
 
 const root = gql`
   type Query
@@ -21,4 +22,5 @@ export default [
   assessment,
   adminTypeDef,
   shared,
+  department
 ];
