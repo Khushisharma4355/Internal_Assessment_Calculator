@@ -26,7 +26,7 @@ export default mergeResolvers(
   subject,
   assessment,
   admin,
-  shared,
+  // shared,
   department,
   emailResolvers
 );

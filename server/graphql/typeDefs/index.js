@@ -24,7 +24,7 @@ export default [
   subject,
   assessment,
   adminTypeDef,
-  shared,
+  // shared,
   department,
   emailTypedefs
 ];
