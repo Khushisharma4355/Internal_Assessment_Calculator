@@ -20,6 +20,7 @@ type ResponseMessage {
     success: Boolean!
     token: String
     message: String!
+    
   }
 `;
 // The above code defines the GraphQL schema for the authentication-related operations.
