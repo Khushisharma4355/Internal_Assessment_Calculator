@@ -379,7 +379,8 @@ export const LoginForm = ({ role }) => {
 
   const [checkEmail] = useLazyQuery(CHECK_EMAIL, {
     onCompleted: (data) => {
-      dispatch(setEmailExists(data.checkEmail));
+      dispatch(setEmailExists(data.checkEmail.success));
+      console.log('Email check response', data);
     },
     onError: () => {
       dispatch(setEmailExists(false));
@@ -409,15 +410,16 @@ export const LoginForm = ({ role }) => {
       try {
         const { data } = await checkEmail({ variables: { email, role } });
 
-        if (data?.checkEmail) {
-          dispatch(setEmailExists(true));
-          await sendOtp({ variables: { email, role } });
-          toast.success('OTP sent to your email!');
-          setOtpSent(true);
-        } else {
-          dispatch(setEmailExists(false));
-          toast.error('Email does not exist!');
-        }
+      if (data?.checkEmail?.success) {
+  dispatch(setEmailExists(true));
+  await sendOtp({ variables: { email, role } });
+  toast.success('OTP sent to your email!');
+  setOtpSent(true);
+} else {
+  dispatch(setEmailExists(false));
+  toast.error(data?.checkEmail?.message || 'Email does not exist!');
+}
+
       } catch (error) {
         console.error('Login Error:', error);
         toast.error('Something went wrong. Please try again.');
@@ -445,12 +447,11 @@ export const LoginForm = ({ role }) => {
       if (data.verifyLoginOtp.success) {
         toast.success(data.verifyLoginOtp.message || 'Login successful!');
 
-        // Save the token in localStorage (optional)
-        localStorage.setItem("token", data.verifyLoginOtp.token);
-
+        
         // You can also dispatch login info if needed
         dispatch(setAuthToken(data.verifyLoginOtp.token)); // ✅ Correct Redux usage
 
+         // Save the token in localStorage (optional)
         // persist the token across page refreshes
         localStorage.setItem('token', data.verifyLoginOtp.token);
         // Navigate based on user role
@@ -479,6 +480,15 @@ export const LoginForm = ({ role }) => {
     setOtp('');
   }, [formik.values.email]);
 
+
+  const handleEmailBlur = (email) => {
+    checkEmail({
+      variables: {
+        email: email.trim(),
+        role: role   // ✅ Important
+      }
+    });
+  };
   return (
     <Container className="mt-5" style={{ maxWidth: '400px' }}>
       <Form onSubmit={formik.handleSubmit}>
@@ -490,6 +500,7 @@ export const LoginForm = ({ role }) => {
             placeholder="Enter email"
             value={formik.values.email}
             onChange={formik.handleChange}
+            onBlur={(e) => handleEmailBlur(e.target.value)}
             required
           />
         </Form.Group>
@@ -505,6 +516,8 @@ export const LoginForm = ({ role }) => {
           type="submit"
           className="w-100"
           style={{ backgroundColor: '#1d3557', border: 'none' }}
+          disabled={formik.isSubmitting}
+          
         >
           Send OTP
         </Button>

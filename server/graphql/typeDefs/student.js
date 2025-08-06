@@ -1,6 +1,8 @@
 import { gql } from "graphql-tag";
 
 const studentTypeDef = gql`
+  scalar BigInt  # Declare the custom scalar BigInt
+
   type Student {
     registrationNo: BigInt!
     student_name: String!
@@ -13,12 +15,13 @@ const studentTypeDef = gql`
   }
 
   extend type Query {
-getStudentsByClass(
-  emp_id: ID!,
-  courseId: ID!,
-  semester_id: ID!,
-  section_id: String!
-): [Student]
+    getStudentsByClass(
+      emp_id: ID!,
+      courseId: ID!,
+      semester_id: ID!,
+      section_id: String!
+    ): [Student]
+
     students: [Student]
     student(registrationNo: BigInt!): Student
     studentByEmail(student_email: String!): Student
