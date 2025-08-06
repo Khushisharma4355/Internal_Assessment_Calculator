@@ -59,7 +59,7 @@ const Student = sequelize.define("Student", {     //create a table named Student
         }
     },
     semester_id: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     allowNull: false,
     references: {
         model: Semester,

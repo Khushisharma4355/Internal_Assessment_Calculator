@@ -13,7 +13,7 @@ const teacherTypeDef = gql`
   type ClassInfo {
     courseId: ID!
     courseName: String!
-    semester_id: ID
+    semester_id: Int        # Change from ID to Int
     section_id: String!
     subjectCode: String!
     subjectName: String!
@@ -36,8 +36,8 @@ const teacherTypeDef = gql`
     # Secure student fetch for assigned classes only
     getStudentsByClass(
       emp_id: ID!,
-      courseId: String!,
-      semester_id: String!,
+      courseId: ID!,
+      semester_id: Int!,      # FIXED here
       section_id: String!
     ): [Student]
   }
