@@ -5,7 +5,7 @@ import Semester from "../../model/Semester.js";
 import Course from "../../model/Course.js";
 import Section from "../../model/Section.js";
 import Student from "../../model/Student.js";
-
+import Department from "../../model/Department.js";
 export default {
   Query: {
     getTeacher: async (_, { emp_id }) => {
@@ -78,6 +78,11 @@ export default {
       }
     },
   },
+   Mutation:{
+       addTeacher:async(_,args)=>{
+        return await Teacher.create(args);
+       }
+   },
 
   Teacher: {
     Subjects: async (parent) => {

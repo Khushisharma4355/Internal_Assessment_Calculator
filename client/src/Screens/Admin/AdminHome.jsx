@@ -234,13 +234,13 @@ export const AdminHome = () => {
                                     }}>
                                         Add Student
                                     </Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
                                     <Modall
                                         show={modalShow}
                                         onHide={() => setModalShow(false)}
                                         formType={activeFormType}
                                     />
-                                </Dropdown.Menu>
-                            </Dropdown>
                             <Dropdown>
                                 <Dropdown.Toggle variant="outline-secondary">
                                     <FiUpload className="me-2" />

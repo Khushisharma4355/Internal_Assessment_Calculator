@@ -8,8 +8,8 @@ const teacherTypeDef = gql`
     emp_phone: String
     Subjects: [TeacherSubSec]
     semester: [Semester]
+    dep_id:Department
   }
-
   type ClassInfo {
     courseId: ID!
     courseName: String!
@@ -26,7 +26,15 @@ const teacherTypeDef = gql`
     section_id: String!
     subject: Subject
   }
-
+  type Mutation {
+    addTeacher(
+      emp_id: String!
+      emp_name: String!
+      emp_email: String!
+      emp_phone: String!
+      dep_id: String!
+    ): Teacher
+  }
   extend type Query {
     getTeacher(emp_id: ID!): Teacher
     getAllTeachers: [Teacher]
