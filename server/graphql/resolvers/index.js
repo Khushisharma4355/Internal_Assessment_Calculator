@@ -3,8 +3,9 @@ import teacher from "./teacher.js";
 import course from "./course.js";
 import subject from "./subject.js";
 import assessment from "./assessment.js";
-import shared from "./shared.js";
-
+// import shared from "./shared.js";
+// import { resolvers } from "./checkEmail.js";
+import {emailResolvers} from "./shared.js"
 const mergeResolvers = (...resolvers) => {
   return resolvers.reduce((acc, curr) => {
     for (const key in curr) {
@@ -21,5 +22,5 @@ export default mergeResolvers(
   course,
   subject,
   assessment,
-  shared
+  emailResolvers
 );
