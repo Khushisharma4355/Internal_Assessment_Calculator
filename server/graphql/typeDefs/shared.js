@@ -18,6 +18,7 @@ type ResponseMessage {
 
   type AuthPayload {
     success: Boolean!
+    #role: String!
     token: String
     message: String!
     
