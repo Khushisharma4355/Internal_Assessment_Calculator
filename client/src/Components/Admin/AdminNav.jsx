@@ -9,6 +9,8 @@ import {
   FiMail, 
   FiLogOut 
 } from 'react-icons/fi';
+// added for announcements
+import { TfiAnnouncement } from "react-icons/tfi";
 import './sidebar.css';
 
 export const AdminNav = () => {
@@ -47,7 +49,9 @@ export const AdminNav = () => {
         { path: '/admin/teachers', icon: <FiUsers style={iconStyle} />, label: 'Teachers' },
         { path: '/admin/students', icon: <FiUsers style={iconStyle} />, label: 'Students' },
         { path: '/admin/courses', icon: <FiBook style={iconStyle} />, label: 'Courses' },
-        { path: '/admin/sendreports', icon: <FiMail style={iconStyle} />, label: 'Send Reports' }
+        { path: '/admin/sendreports', icon: <FiMail style={iconStyle} />, label: 'Send Reports' },
+        // added for announcements
+        { path: '/admin/announcements', icon: <TfiAnnouncement style={iconStyle} />, label: 'Announcements' }
     ];
 
     return (

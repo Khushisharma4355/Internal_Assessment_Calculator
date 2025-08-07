@@ -31,6 +31,7 @@ import { Attendance } from './Screens/Students/Attendance'
 import { TeacherMgmt } from './Screens/Admin/TeacherMgmt'
 import { StudentMgmt } from './Screens/Admin/StudentMgmt'
 import { StudentLogout } from './Screens/Logout/StudentLogout'
+import {AdminAnnouncements} from './Screens/Admin/Announcements'
 
 
 
@@ -60,6 +61,7 @@ function App() {
         <Route path="/admin/" element={<AdminHome />} />
         <Route path="/admin/teachers" element={<TeacherMgmt/>}/>
         <Route path="/admin/students" element={<StudentMgmt/>}/>
+        <Route path="/admin/announcements" element={<AdminAnnouncements/>}/>
         <Route path="*" element={<h1>404 Not Found</h1>} />
 
          {/* LOGOUT */}
