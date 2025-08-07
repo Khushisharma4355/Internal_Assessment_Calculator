@@ -3,23 +3,26 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter } from 'react-router-dom';
+import { ApolloProvider } from '@apollo/client';
+
 //  import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
  import { Provider } from 'react-redux';
  import { store } from './Redux/store';
 import './index.css';
 import App from './App.jsx';
+import { client } from './apollo/client'; // 👈 use the shared client
 
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloProvider,
-  HttpLink,
-} from '@apollo/client';
+// import {
+//   ApolloClient,
+//   InMemoryCache,
+//   ApolloProvider,
+//   HttpLink,
+// } from '@apollo/client';
 
-const client = new ApolloClient({
-  link: new HttpLink({ uri: 'http://localhost:4000/graphql' }),
-  cache: new InMemoryCache(),
-});
+// const client = new ApolloClient({
+//   link: new HttpLink({ uri: 'http://localhost:4000/graphql' }),
+//   cache: new InMemoryCache(),
+// });
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
