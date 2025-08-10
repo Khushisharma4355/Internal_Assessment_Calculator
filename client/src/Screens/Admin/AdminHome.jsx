@@ -9,28 +9,28 @@ import { Modall } from '../../Components/Admin/modal';
 import { useState } from 'react';
 import { Pie, Bar, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, PointElement, LineElement } from 'chart.js';
-
+import { GET_ADMIN_DATA } from '../../GraphQL/Queries';
 // Register ChartJS components
 ChartJS.register(
   ArcElement, Tooltip, Legend, CategoryScale, 
   LinearScale, BarElement, PointElement, LineElement
 );
 
-const GET_ADMIN_DATA = gql`
-  query GetAdmin($empid: String!) {
-    getAdmin(emp_id: $empid) {
-      emp_id
-      teacher {
-        emp_name
-        emp_email
-        emp_phone
-      }
-      teacherCount
-      studentCount
-      courseCount
-    }
-  }
-`;
+// const GET_ADMIN_DATA = gql`
+//   query GetAdmin($empid: String!) {
+//     getAdmin(emp_id: $empid) {
+//       emp_id
+//       teacher {
+//         emp_name
+//         emp_email
+//         emp_phone
+//       }
+//       teacherCount
+//       studentCount
+//       courseCount
+//     }
+//   }
+// `;
 
 export const AdminHome = () => {
     const navigate = useNavigate();

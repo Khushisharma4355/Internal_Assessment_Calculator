@@ -1,32 +1,39 @@
 import { gql } from '@apollo/client';
-
+import { GET_DEPARTMENTS } from '../../GraphQL/Queries';
 // Define your GraphQL queries/mutations here or import them
 export const ADD_TEACHER = gql`
   mutation AddTeacher(
-  $emp_id: String!,
-   $emp_name: String!,
-    $emp_email: String!,
-     $emp_phone: String!, 
-     $dep_id: String!) {
+    $emp_id: String!
+    $emp_name: String!
+    $emp_email: String!
+    $emp_phone: String!
+    $dep_id: String!
+  ) {
     addTeacher(
-    emp_id: $emp_id, 
-    emp_name: $emp_name,
-     emp_email: $emp_email, 
-     emp_phone: $emp_phone, 
-     dep_id: $dep_id) {
-      emp_id
+      emp_id: $emp_id
+      emp_name: $emp_name
+      emp_email: $emp_email
+      emp_phone: $emp_phone
+      dep_id: $dep_id
+    ) {
+      teacher {
+        emp_id
+        emp_name
+      }
+      teacherCount
     }
   }
 `;
 
-export const GET_DEPARTMENTS = gql`
-  query GetDepartments {
-    getDepartment {
-      dep_id
-      dept_name
-    }
-  }
-`;
+
+// export const GET_DEPARTMENTS = gql`
+//   query GetDepartments {
+//     getDepartment {
+//       dep_id
+//       dept_name
+//     }
+//   }
+// `;
 
 export const formSchemas = {
     teacher: {
