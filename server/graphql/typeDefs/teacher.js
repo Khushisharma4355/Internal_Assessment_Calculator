@@ -26,6 +26,10 @@ const teacherTypeDef = gql`
     section_id: String!
     subject: Subject
   }
+    type TeacherResponse {
+      teacher: Teacher
+      teacherCount: Int
+}
   type Mutation {
     addTeacher(
       emp_id: String!
@@ -33,7 +37,7 @@ const teacherTypeDef = gql`
       emp_email: String!
       emp_phone: String!
       dep_id: String!
-    ): Teacher
+    ): TeacherResponse
   }
   extend type Query {
     getTeacher(emp_id: ID!): Teacher

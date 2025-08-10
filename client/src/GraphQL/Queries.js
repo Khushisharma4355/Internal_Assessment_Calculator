@@ -65,3 +65,27 @@ export const GET_COURSES = gql`
     }
   }
 `;
+export const GET_ADMIN_DATA = gql`
+  query GetAdmin($empid: String!) {
+    getAdmin(emp_id: $empid) {
+      emp_id
+      teacher {
+        emp_name
+        emp_email
+        emp_phone
+      }
+      teacherCount
+      studentCount
+      courseCount
+    }
+  }
+`;
+
+export const GET_DEPARTMENTS = gql`
+  query GetDepartments {
+    getDepartment {
+      dep_id
+      dept_name
+    }
+  }
+`;

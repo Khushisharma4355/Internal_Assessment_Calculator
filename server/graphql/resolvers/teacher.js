@@ -78,11 +78,17 @@ export default {
       }
     },
   },
-   Mutation:{
-       addTeacher:async(_,args)=>{
-        return await Teacher.create(args);
-       }
-   },
+  Mutation: {
+    addTeacher: async (_, args) => {
+      const teacher = await Teacher.create(args);
+      const teacherCount = await Teacher.count();
+      return {
+        teacher,
+        teacherCount
+      };
+
+    }
+  },
 
   Teacher: {
     Subjects: async (parent) => {
