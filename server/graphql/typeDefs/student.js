@@ -17,6 +17,38 @@ const studentTypeDef = gql`
     courseName: String
   }
 
+  # Input type for bulk import
+  input StudentBulkInput {
+  registrationNo: BigInt!
+  student_name: String!
+  student_email: String!
+  courseId: String!
+  rollno: BigInt!
+  semester_id: Int!
+  section_id: String
+  dep_id: String
+  parent_Detail: String
+}
+
+type BulkImportResult {
+  success: Boolean!
+  message: String!
+  details: ImportDetails!
+}
+
+type ImportDetails {
+  created: Int!
+  updated: Int!
+  skipped: Int!
+  errors: [ImportError!]
+}
+
+type ImportError {
+  row: Int!
+  registrationNo: BigInt!
+  error: String!
+}
+
   extend type Query {
     # Fetch students for a specific class assigned to a teacher
     getStudentsByClass(
@@ -38,6 +70,11 @@ const studentTypeDef = gql`
 
     # Fetch all students assigned to a teacher
     getStudentsByTeacher(emp_id: ID!): [Student]
+  }
+
+  extend type Mutation {
+    # Bulk import students from Excel/CSV
+    bulkImportStudents(data: [StudentBulkInput!]!): BulkImportResult!
   }
 `;
 

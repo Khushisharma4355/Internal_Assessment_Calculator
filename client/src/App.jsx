@@ -32,8 +32,7 @@ import { TeacherMgmt } from './Screens/Admin/TeacherMgmt'
 import { StudentMgmt } from './Screens/Admin/StudentMgmt'
 import { StudentLogout } from './Screens/Logout/StudentLogout'
 import {AdminAnnouncements} from './Screens/Admin/Announcements'
-
-
+import { BulkStudentImport } from './Components/Admin/bulkimport';
 
 // import {TeacherDashboard} from './Components/Teachers/TeacherDashboard'
 function App() {
@@ -62,6 +61,7 @@ function App() {
         <Route path="/admin/teachers" element={<TeacherMgmt/>}/>
         <Route path="/admin/students" element={<StudentMgmt/>}/>
         <Route path="/admin/announcements" element={<AdminAnnouncements/>}/>
+        <Route path="/admin/bulk-import" element={<BulkStudentImport/>}></Route>
         <Route path="*" element={<h1>404 Not Found</h1>} />
 
          {/* LOGOUT */}

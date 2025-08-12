@@ -14,10 +14,10 @@ const Student = sequelize.define("Student", {     //create a table named Student
         type: DataTypes.STRING,
         allowNull: false
     },
-    classs: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
+    // classs: {
+    //     type: DataTypes.STRING,
+    //     allowNull: true
+    // },
     courseId: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -35,7 +35,12 @@ const Student = sequelize.define("Student", {     //create a table named Student
     registrationNo: {
         type: DataTypes.BIGINT,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            isInt: {
+            msg: "Registration number must be an integer"
+             }
+        }
     },
     student_email: {
         type: DataTypes.STRING,
