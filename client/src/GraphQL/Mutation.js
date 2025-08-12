@@ -50,3 +50,21 @@ export const VERIFY_OTP = gql`
   }
 `;
 
+export const BULK_IMPORT_STUDENTS = gql`
+  mutation BulkImportStudents($data: [StudentBulkInput!]!) {
+    bulkImportStudents(data: $data) {
+      success
+      message
+      details {
+        created
+        updated
+        skipped
+        errors {
+          row
+          registrationNo
+          error
+        }
+      }
+    }
+  }
+`;
