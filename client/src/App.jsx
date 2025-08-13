@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { CourseDetails } from './Screens/Admin/CourseDetails';
 // import { Reports } from './Screens/Students/Reports'
+// import { Reports } from './Screens/Students/Assesments';
 import { Reports } from './Screens/Teacher/Reports'
 // import './App.css'
 import { Route, Routes } from "react-router-dom"

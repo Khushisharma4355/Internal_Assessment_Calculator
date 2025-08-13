@@ -8,12 +8,11 @@ import {
   Button,
   Spinner,
   Alert,
-  Card,
 } from "react-bootstrap";
 import { TeaNav } from "../../Components/Teachers/TeaNav";
-import { useQuery, useMutation, gql } from "@apollo/client";
+import { useQuery, gql } from "@apollo/client";
 
-// ================= GraphQL Queries =================
+// ================= GraphQL Query =================
 const GET_STUDENT_REPORTS = gql`
   query GetStudentReports($courseId: ID!, $semester_id: ID!, $section_id: String!) {
     getStudentReports(courseId: $courseId, semester_id: $semester_id, section_id: $section_id) {
@@ -32,33 +31,36 @@ const GET_STUDENT_REPORTS = gql`
   }
 `;
 
-const SEND_REPORT = gql`
-  mutation SendReportToParent($registrationNo: BigInt!, $mode: String!) {
-    sendReportToParent(registrationNo: $registrationNo, mode: $mode)
-  }
-`;
-
 export const Reports = () => {
   const [courseId, setCourseId] = useState("");
   const [semesterId, setSemesterId] = useState("");
   const [sectionId, setSectionId] = useState("");
   const [sortAsc, setSortAsc] = useState(true);
-  const [selectedStudent, setSelectedStudent] = useState(null);
 
   const { data, loading, error } = useQuery(GET_STUDENT_REPORTS, {
     variables: { courseId, semester_id: semesterId, section_id: sectionId },
     skip: !courseId || !semesterId || !sectionId,
   });
 
-  const [sendReportToParent] = useMutation(SEND_REPORT);
+  // ===== WhatsApp message for a single student =====
+  const sendWhatsappMessage = (student) => {
+    if (!student.parentPhone) return;
+    const phone = student.parentPhone.replace(/\D/g, "");
+    const marksText = student.marks
+      .map((m) => `${m.subjectName}: ${m.marksObtained}/${m.maxMarks}`)
+      .join("\n");
 
-  const handleSend = async (regNo) => {
-    try {
-      await sendReportToParent({ variables: { registrationNo: regNo, mode: "whatsapp" } });
-      alert("Report sent via WhatsApp!");
-    } catch (err) {
-      alert("Failed to send report.",err);
-    }
+    const message = `Hello! Here is the report for ${student.student_name}:\n${marksText}\nTotal: ${student.total}\nPercentage: ${student.percentage}%\nResult: ${student.result}`;
+    const whatsappURL = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappURL, "_blank");
+  };
+
+  // ===== Send all reports at once =====
+  const handleSendAll = () => {
+    if (!data?.getStudentReports?.length) return;
+    data.getStudentReports.forEach((student) => {
+      if (student.parentPhone) sendWhatsappMessage(student);
+    });
   };
 
   const sortedData = data?.getStudentReports?.slice().sort((a, b) =>
@@ -101,9 +103,18 @@ export const Reports = () => {
           </Row>
         </Form>
 
-        {/* Loading / Error State */}
+        {/* Loading / Error */}
         {loading && <Spinner animation="border" />}
         {error && <Alert variant="danger">Failed to load reports.</Alert>}
+
+        {/* Send All Button */}
+        {sortedData?.length > 0 && (
+          <div className="mb-3">
+            <Button variant="primary" onClick={handleSendAll}>
+              Send All Reports via WhatsApp
+            </Button>
+          </div>
+        )}
 
         {/* Report Table */}
         {sortedData?.length > 0 && (
@@ -145,7 +156,7 @@ export const Reports = () => {
                     <Button
                       size="sm"
                       variant="success"
-                      onClick={() => handleSend(student.registrationNo)}
+                      onClick={() => sendWhatsappMessage(student)}
                     >
                       WhatsApp
                     </Button>

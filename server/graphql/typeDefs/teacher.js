@@ -77,6 +77,7 @@ type Query {
   getTeacher(emp_id: String!): Teacher
   getAllTeachers: [Teacher]
   getSubjects(emp_id: String!): [TeacherSubSec]
+  getAssessmentsByTeacher(empId: String!): [Assessment]
   getTeacherClasses(emp_id: String!): [ClassInfo!]!
   getStudentsByClass(
     emp_id: String!
