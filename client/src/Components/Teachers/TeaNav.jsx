@@ -48,6 +48,7 @@ import {
   FiMail, 
   FiLogOut 
 } from 'react-icons/fi';
+import LogoutButton from '../Logout/Logout';
 // import './sidebar.css';
 
 export const TeaNav = () => {
@@ -153,13 +154,7 @@ export const TeaNav = () => {
                 </div>
 
                 <div>
-                    <NavLink 
-                        to="/logout" 
-                        style={navStyle('/logout')}
-                        className="logout-link"
-                    >
-                        <FiLogOut style={iconStyle} /> Logout
-                    </NavLink>
+                    <LogoutButton/>
                     
                     <div 
                         className="text-center mt-3 p-2 admin-indicator fw-bold"
@@ -215,14 +210,7 @@ export const TeaNav = () => {
                     </Nav>
 
                     <div>
-                        <NavLink 
-                            to="/logout" 
-                            onClick={handleClose}
-                            style={navStyle('/logout')}
-                            className="logout-link"
-                        >
-                            <FiLogOut style={iconStyle} /> Logout
-                        </NavLink>
+                       <LogoutButton/>
                         
                         <div 
                             className="text-center mt-3 p-2 admin-indicator"

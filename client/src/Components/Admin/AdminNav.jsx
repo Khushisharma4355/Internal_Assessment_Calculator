@@ -1,16 +1,16 @@
+// components/AdminNav.jsx
 import React, { useState } from 'react';
-import { Offcanvas, Button, Nav,Col } from 'react-bootstrap';
+import { Offcanvas, Button, Nav, Col } from 'react-bootstrap';
 import { NavLink, useLocation } from 'react-router-dom';
 import { 
   FiMenu, 
   FiHome, 
   FiUsers, 
   FiBook, 
-  FiMail, 
-  FiLogOut 
+  FiMail
 } from 'react-icons/fi';
-// added for announcements
 import { TfiAnnouncement } from "react-icons/tfi";
+import LogoutButton  from '../Logout/Logout';
 import './sidebar.css';
 
 export const AdminNav = () => {
@@ -43,14 +43,12 @@ export const AdminNav = () => {
         color: 'inherit'
     };
 
-    // Common navigation items to avoid duplication
     const navItems = [
         { path: '/admin/', icon: <FiHome style={iconStyle} />, label: 'Home' },
         { path: '/admin/teachers', icon: <FiUsers style={iconStyle} />, label: 'Teachers' },
         { path: '/admin/students', icon: <FiUsers style={iconStyle} />, label: 'Students' },
         { path: '/admin/courses', icon: <FiBook style={iconStyle} />, label: 'Courses' },
         { path: '/admin/sendreports', icon: <FiMail style={iconStyle} />, label: 'Send Reports' },
-        // added for announcements
         { path: '/admin/announcements', icon: <TfiAnnouncement style={iconStyle} />, label: 'Announcements' }
     ];
 
@@ -70,12 +68,11 @@ export const AdminNav = () => {
                     zIndex: 1000
                 }}
                 aria-label="Open navigation menu"
-            >
+              >
                 <FiMenu size={20} />
-            </Button>
+              </Button>
             </Col>
           
-
             {/* Sidebar - Large screens */}
             <nav
                 className="d-none d-lg-flex flex-column justify-content-between p-4"
@@ -118,14 +115,7 @@ export const AdminNav = () => {
                 </div>
 
                 <div>
-                    <NavLink 
-                        to="/" 
-                        style={navStyle('/logout')}
-                        className="logout-link"
-
-                    >
-                        <FiLogOut style={iconStyle} /> Logout
-                    </NavLink>
+                     <LogoutButton />
                     
                     <div 
                         className="text-center mt-3 p-2 admin-indicator fw-bold"
@@ -181,14 +171,7 @@ export const AdminNav = () => {
                     </Nav>
 
                     <div>
-                        <NavLink 
-                            to="/logout" 
-                            onClick={handleClose}
-                            style={navStyle('/logout')}
-                            className="logout-link"
-                        >
-                            <FiLogOut style={iconStyle} /> Logout
-                        </NavLink>
+                         <LogoutButton />
                         
                         <div 
                             className="text-center mt-3 p-2 admin-indicator fw-bold"
