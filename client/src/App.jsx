@@ -27,6 +27,7 @@ import { TeacherLogin } from './Screens/Login/TeacherLogin'
 import { AdminLogin } from './Screens/Login/AdminLogin'
 // import { StudentHome } from './Screens/Students/StudentHome'
 import { Attendance } from './Screens/Students/Attendance'
+import { Course } from './Screens/Admin/Courses';
 // import EnterMarks from './Screens/Teacher/Entermarks'
 import { TeacherMgmt } from './Screens/Admin/TeacherMgmt'
 import { StudentMgmt } from './Screens/Admin/StudentMgmt'
@@ -61,6 +62,7 @@ function App() {
         <Route path="/admin/teachers" element={<TeacherMgmt/>}/>
         <Route path="/admin/students" element={<StudentMgmt/>}/>
         <Route path="/admin/announcements" element={<AdminAnnouncements/>}/>
+        <Route path="/admin/courses" element={<Course/>}/>
         <Route path="/admin/bulk-import" element={<BulkStudentImport/>}></Route>
         <Route path="*" element={<h1>404 Not Found</h1>} />
 
