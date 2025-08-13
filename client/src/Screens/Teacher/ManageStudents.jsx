@@ -1,384 +1,240 @@
 import { useState } from 'react';
 import {
   Container, Row, Col, Table, Form, Button, InputGroup,
-  Badge, Alert, Spinner, Card, Dropdown
+  Badge, Alert, Spinner, Card
 } from 'react-bootstrap';
 import { TeaNav } from "../../Components/Teachers/TeaNav";
-import { useQuery, gql } from '@apollo/client';
-import { GET_STUDENTS_BY_TEACHER } from '../../GraphQL/Queries';
+import { useQuery } from '@apollo/client';
+import { GET_STUDENTS_BY_TEACHER, GET_TEACHER_CLASSES } from '../../GraphQL/Queries';
+import { FiUsers, FiMail, FiSearch, FiBook, FiEye, FiArrowLeft, FiUser, FiPhone, FiBookOpen } from 'react-icons/fi';
 
 export const Managestu = () => {
   const empId = localStorage.getItem('emp_id') || "T001";
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedStudents, setSelectedStudents] = useState([]);
-  const [filterOption, setFilterOption] = useState('all');
-  const [classFilter, setClassFilter] = useState('all');
+  const [selectedClass, setSelectedClass] = useState(null);
 
-  const { loading, error, data } = useQuery(GET_STUDENTS_BY_TEACHER, {
-    variables: { emp_id: empId }
+  // Fetch teacher's classes
+  const { loading: classesLoading, error: classesError, data: classesData } = 
+    useQuery(GET_TEACHER_CLASSES, { variables: { emp_id: empId } });
+
+  // Fetch ALL students (not filtered by class initially)
+  const { loading: studentsLoading, error: studentsError, data: studentsData } = 
+    useQuery(GET_STUDENTS_BY_TEACHER, { variables: { emp_id: empId } });
+
+  if (classesLoading || studentsLoading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+        <Spinner animation="border" variant="primary" style={{ width: '3rem', height: '3rem' }} />
+      </div>
+    );
+  }
+
+  if (classesError || studentsError) {
+    return (
+      <Container className="mt-5">
+        <Alert variant="danger" className="shadow">
+          <Alert.Heading>Error loading data</Alert.Heading>
+          <p>{classesError?.message || studentsError?.message}</p>
+          <Button variant="outline-danger" onClick={() => window.location.reload()}>
+            Try Again
+          </Button>
+        </Alert>
+      </Container>
+    );
+  }
+
+  // Process data
+  const teacherClasses = classesData?.getTeacherClasses || [];
+  const allStudents = studentsData?.getStudentsByTeacher || [];
+
+  // Create class data with student counts
+  const classesWithCounts = teacherClasses.map(cls => {
+    const studentCount = allStudents.filter(student => 
+      student.courseId === cls.courseId &&
+      student.semester_id === cls.semester_id &&
+      student.section_id === cls.section_id
+    ).length;
+    
+    return {
+      ...cls,
+      studentCount
+    };
   });
 
-  // Get unique classes for filter dropdown
-  const uniqueClasses = [...new Set(
-    data?.getStudentsByTeacher?.map(s => `Sem ${s.semester_id} - Sec ${s.section_id}`) || []
-  )].sort();
-
-  const filteredStudents = data?.getStudentsByTeacher?.filter(student => {
-    // Search filter
-    const matchesSearch = 
-      student.student_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.registrationNo.toString().includes(searchTerm) ||
-      student.student_email.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    // Semester filter
-    const semesterMatch = 
-      filterOption === 'all' || 
-      (filterOption === 'sem1' && student.semester_id === 1) ||
-      (filterOption === 'sem2' && student.semester_id === 2);
-    
-    // Class filter
-    const classMatch = 
-      classFilter === 'all' || 
-      classFilter === `Sem ${student.semester_id} - Sec ${student.section_id}`;
-    
-    return matchesSearch && semesterMatch && classMatch;
-  }) || [];
-
-  const toggleStudentSelection = (regNo) => {
-    setSelectedStudents(prev =>
-      prev.includes(regNo)
-        ? prev.filter(id => id !== regNo)
-        : [...prev, regNo]
-    );
-  };
-
-  const handleSelectAll = (e) => {
-    if (e.target.checked) {
-      setSelectedStudents(filteredStudents.map(student => student.registrationNo));
-    } else {
-      setSelectedStudents([]);
-    }
-  };
-
-  const handleBulkAction = (action) => {
-    alert(`${action} action performed on ${selectedStudents.length} students`);
-    setSelectedStudents([]);
-  };
-
-  if (loading) return (
-    <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
-      <Spinner animation="border" variant="primary" style={{ width: '3rem', height: '3rem' }} />
-    </div>
-  );
-
-  if (error) return (
-    <Container className="mt-5">
-      <Alert variant="danger" className="shadow">
-        <Alert.Heading>Error loading students</Alert.Heading>
-        <p>{error.message}</p>
-        <Button variant="outline-danger" onClick={() => window.location.reload()}>
-          <i className="bi bi-arrow-clockwise me-2"></i>Try Again
-        </Button>
-      </Alert>
-    </Container>
-  );
+  // Filter students when a class is selected
+  const filteredStudents = selectedClass 
+    ? allStudents.filter(student => 
+        student.courseId === selectedClass.courseId &&
+        student.semester_id === selectedClass.semester_id &&
+        student.section_id === selectedClass.section_id &&
+        (student.student_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+         student.registrationNo.toString().includes(searchTerm) ||
+         student.student_email.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+    : [];
 
   return (
     <div className="d-flex">
-      <div style={{ flexShrink: 0, width: "250px" }}>
+      {/* Sidebar Navigation */}
+      <div style={{ flexShrink: 0, width: "250px", backgroundColor: '#1d3557' }}>
         <TeaNav />
       </div>
 
-      <Container fluid className="px-4 py-3">
-        {/* Page Header */}
-        <Row className="mb-4">
-          <Col>
-            <h2 className="fw-bold text-primary mb-1">
-              <i className="bi bi-people-fill me-2"></i>
-              Student Management
+      {/* Main Content */}
+      <Container fluid className="px-4 py-4" style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
+        {/* Header Section */}
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h2 className="fw-bold mb-1" style={{ color: '#1d3557' }}>
+              {selectedClass ? (
+                <>
+                  <FiBookOpen className="me-2" />
+                  {selectedClass.courseName} - {selectedClass.subjectName}
+                </>
+              ) : (
+                <>
+                  <FiBook className="me-2" />
+                  My Classes
+                </>
+              )}
             </h2>
             <p className="text-muted mb-0">
-              Manage students from your assigned classes ({filteredStudents.length} students found)
+              {selectedClass 
+                ? `Semester ${selectedClass.semester_id} • Section ${selectedClass.section_id} • ${selectedClass.studentCount || 0} students`
+                : `${teacherClasses.length} classes assigned`}
             </p>
-          </Col>
-        </Row>
+          </div>
+          
+          {selectedClass && (
+            <Button 
+              variant="outline-primary" 
+              onClick={() => setSelectedClass(null)}
+              style={{ borderColor: '#1d3557', color: '#1d3557' }}
+            >
+              <FiArrowLeft className="me-1" /> All Classes
+            </Button>
+          )}
+        </div>
 
-        {/* Filters and Search Section */}
-        <Card className="mb-4 shadow-sm">
-          <Card.Body>
-            <Row className="g-3">
-              <Col md={6}>
-                <InputGroup>
-                  <InputGroup.Text className="bg-light">
-                    <i className="bi bi-search"></i>
+        {selectedClass ? (
+          <>
+            {/* Students View */}
+            <Card className="shadow-sm border-0 mb-4">
+              <Card.Body>
+                <InputGroup style={{ maxWidth: '400px' }}>
+                  <InputGroup.Text style={{ backgroundColor: 'white' }}>
+                    <FiSearch />
                   </InputGroup.Text>
                   <Form.Control
                     type="text"
-                    placeholder="Search students by name, email, or registration number"
+                    placeholder={`Search ${selectedClass.studentCount} students...`}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="border-start-0"
+                    style={{ borderLeft: 'none' }}
                   />
                   {searchTerm && (
                     <Button 
-                      variant="outline-secondary" 
+                      variant="light" 
                       onClick={() => setSearchTerm('')}
+                      style={{ border: '1px solid #dee2e6', borderLeft: 'none' }}
                     >
                       Clear
                     </Button>
                   )}
                 </InputGroup>
-              </Col>
-              <Col md={3}>
-                <Dropdown>
-                  <Dropdown.Toggle variant="outline-secondary" id="dropdown-semester" className="w-100">
-                    <i className="bi bi-funnel me-2"></i>
-                    {filterOption === 'all' ? 'All Semesters' : 
-                     filterOption === 'sem1' ? 'Semester 1' : 'Semester 2'}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu className="w-100">
-                    <Dropdown.Item active={filterOption === 'all'} onClick={() => setFilterOption('all')}>
-                      All Semesters
-                    </Dropdown.Item>
-                    <Dropdown.Item active={filterOption === 'sem1'} onClick={() => setFilterOption('sem1')}>
-                      Semester 1
-                    </Dropdown.Item>
-                    <Dropdown.Item active={filterOption === 'sem2'} onClick={() => setFilterOption('sem2')}>
-                      Semester 2
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </Col>
-              <Col md={3}>
-                <Dropdown>
-                  <Dropdown.Toggle variant="outline-secondary" id="dropdown-class" className="w-100">
-                    <i className="bi bi-collection me-2"></i>
-                    {classFilter === 'all' ? 'All Classes' : classFilter}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu className="w-100">
-                    <Dropdown.Item active={classFilter === 'all'} onClick={() => setClassFilter('all')}>
-                      All Classes
-                    </Dropdown.Item>
-                    <Dropdown.Divider />
-                    {uniqueClasses.map(cls => (
-                      <Dropdown.Item 
-                        key={cls}
-                        active={classFilter === cls}
-                        onClick={() => setClassFilter(cls)}
-                      >
-                        {cls}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                </Dropdown>
-              </Col>
-            </Row>
-          </Card.Body>
-        </Card>
-
-        {/* Bulk Actions */}
-        {selectedStudents.length > 0 && (
-          <Card className="mb-4 shadow-sm bg-light">
-            <Card.Body className="py-2">
-              <div className="d-flex justify-content-between align-items-center">
-                <div className="d-flex align-items-center">
-                  <Form.Check
-                    type="checkbox"
-                    checked={selectedStudents.length === filteredStudents.length && filteredStudents.length > 0}
-                    onChange={handleSelectAll}
-                    className="me-3"
-                  />
-                  <span className="fw-medium">
-                    {selectedStudents.length} student{selectedStudents.length !== 1 ? 's' : ''} selected
-                  </span>
-                </div>
-                <div>
-                  <Button
-                    variant="outline-primary"
-                    size="sm"
-                    className="me-2"
-                    onClick={() => handleBulkAction('Message')}
-                  >
-                    <i className="bi bi-envelope me-1"></i> Message
-                  </Button>
-                  <Button
-                    variant="outline-success"
-                    size="sm"
-                    className="me-2"
-                    onClick={() => handleBulkAction('Export')}
-                  >
-                    <i className="bi bi-download me-1"></i> Export
-                  </Button>
-                  <Button
-                    variant="outline-danger"
-                    size="sm"
-                    onClick={() => handleBulkAction('Remove')}
-                  >
-                    <i className="bi bi-trash me-1"></i> Remove
-                  </Button>
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        )}
-
-        {/* Main Content */}
-        <Row>
-          <Col>
-            {/* Summary Cards */}
-            <Row className="mb-4 g-4">
-              <Col md={4}>
-                <Card className="shadow-sm border-primary border-top-0 border-end-0 border-bottom-0 border-3">
-                  <Card.Body>
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div>
-                        <Card.Title className="text-muted mb-2">Total Students</Card.Title>
-                        <h2 className="mb-0 fw-bold text-primary">
-                          {data?.getStudentsByTeacher?.length || 0}
-                        </h2>
-                      </div>
-                      <div className="bg-primary bg-opacity-10 p-3 rounded">
-                        <i className="bi bi-people-fill text-primary fs-3"></i>
-                      </div>
-                    </div>
-                  </Card.Body>
-                </Card>
-              </Col>
-              <Col md={4}>
-                <Card className="shadow-sm border-success border-top-0 border-end-0 border-bottom-0 border-3">
-                  <Card.Body>
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div>
-                        <Card.Title className="text-muted mb-2">Active Classes</Card.Title>
-                        <h2 className="mb-0 fw-bold text-success">
-                          {uniqueClasses.length}
-                        </h2>
-                      </div>
-                      <div className="bg-success bg-opacity-10 p-3 rounded">
-                        <i className="bi bi-collection-play-fill text-success fs-3"></i>
-                      </div>
-                    </div>
-                  </Card.Body>
-                </Card>
-              </Col>
-              <Col md={4}>
-                <Card className="shadow-sm border-warning border-top-0 border-end-0 border-bottom-0 border-3">
-                  <Card.Body>
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div>
-                        <Card.Title className="text-muted mb-2">Selected Students</Card.Title>
-                        <h2 className="mb-0 fw-bold text-warning">
-                          {selectedStudents.length}
-                        </h2>
-                      </div>
-                      <div className="bg-warning bg-opacity-10 p-3 rounded">
-                        <i className="bi bi-check-circle-fill text-warning fs-3"></i>
-                      </div>
-                    </div>
-                  </Card.Body>
-                </Card>
-              </Col>
-            </Row>
+              </Card.Body>
+            </Card>
 
             {/* Students Table */}
-            <Card className="shadow-sm">
+            <Card className="shadow-sm border-0">
               <Card.Body className="p-0">
                 <div className="table-responsive">
                   <Table hover className="mb-0">
-                    <thead className="table-light">
+                    <thead style={{ backgroundColor: '#f1f3f5' }}>
                       <tr>
-                        <th style={{ width: '40px' }}>
-                          <Form.Check
-                            type="checkbox"
-                            checked={selectedStudents.length === filteredStudents.length && filteredStudents.length > 0}
-                            onChange={handleSelectAll}
-                          />
-                        </th>
-                        <th>Registration No</th>
-                        <th>Student</th>
-                        <th>Contact</th>
-                        <th>Course</th>
-                        <th>Class</th>
-                        <th>Subject</th>
-                        <th className="text-end">Actions</th>
+                        <th style={{ padding: '1rem', borderTop: 'none' }}>Student</th>
+                        <th style={{ padding: '1rem', borderTop: 'none' }}>Contact</th>
+                        <th style={{ padding: '1rem', borderTop: 'none', textAlign: 'right' }}>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {filteredStudents.length > 0 ? (
                         filteredStudents.map(student => (
-                          <tr key={student.registrationNo} className={selectedStudents.includes(student.registrationNo) ? 'table-active' : ''}>
-                            <td>
-                              <Form.Check
-                                type="checkbox"
-                                checked={selectedStudents.includes(student.registrationNo)}
-                                onChange={() => toggleStudentSelection(student.registrationNo)}
-                              />
-                            </td>
-                            <td className="fw-semibold">
-                              {student.registrationNo}
-                            </td>
-                            <td>
+                          <tr key={student.registrationNo} style={{ borderBottom: '1px solid #eee' }}>
+                            <td style={{ padding: '1rem' }}>
                               <div className="d-flex align-items-center">
-                                <div className="avatar-sm bg-primary bg-opacity-10 rounded me-2 p-2">
-                                  <i className="bi bi-person-fill text-primary"></i>
+                                <div style={{
+                                  width: '40px',
+                                  height: '40px',
+                                  borderRadius: '50%',
+                                  backgroundColor: '#e9ecef',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  marginRight: '12px',
+                                  color: '#1d3557'
+                                }}>
+                                  <FiUser size={18} />
                                 </div>
                                 <div>
-                                  <h6 className="mb-0">{student.student_name}</h6>
-                                  <small className="text-muted">{student.courseName}</small>
+                                  <h6 className="mb-0" style={{ color: '#1d3557' }}>{student.student_name}</h6>
+                                  <small className="text-muted">ID: {student.registrationNo}</small>
                                 </div>
                               </div>
                             </td>
-                            <td>
-                              <a href={`mailto:${student.student_email}`} className="text-decoration-none">
-                                {student.student_email}
-                              </a>
+                            <td style={{ padding: '1rem' }}>
+                              <div className="d-flex align-items-center">
+                                <FiMail className="me-2" style={{ color: '#6c757d' }} />
+                                <a 
+                                  href={`mailto:${student.student_email}`} 
+                                  style={{ color: '#1d3557', textDecoration: 'none' }}
+                                  onMouseOver={e => e.target.style.textDecoration = 'underline'}
+                                  onMouseOut={e => e.target.style.textDecoration = 'none'}
+                                >
+                                  {student.student_email}
+                                </a>
+                              </div>
+                              {student.phone && (
+                                <div className="d-flex align-items-center mt-1">
+                                  <FiPhone className="me-2" style={{ color: '#6c757d' }} />
+                                  <span style={{ color: '#495057' }}>{student.phone}</span>
+                                </div>
+                              )}
                             </td>
-                            <td>
-                              <Badge bg="info" className="fw-normal">
-                                {student.courseName}
-                              </Badge>
-                            </td>
-                            <td>
-                              <Badge bg="light" text="dark" className="fw-normal">
-                                Sem {student.semester_id} - Sec {student.section_id}
-                              </Badge>
-                            </td>
-                            <td>
-                              <small className="text-muted">{student.subjectCode}</small>
-                              <div className="fw-medium">{student.subjectName}</div>
-                            </td>
-                            <td className="text-end">
-                              <Button variant="outline-primary" size="sm" className="me-1" title="View Profile">
-                                <i className="bi bi-eye"></i>
-                              </Button>
-                              <Button variant="outline-success" size="sm" className="me-1" title="Send Message">
-                                <i className="bi bi-envelope"></i>
-                              </Button>
-                              <Button variant="outline-secondary" size="sm" title="More Options">
-                                <i className="bi bi-three-dots-vertical"></i>
+                            <td style={{ padding: '1rem', textAlign: 'right' }}>
+                              <Button 
+                                variant="outline-primary" 
+                                size="sm"
+                                style={{ 
+                                  borderColor: '#1d3557', 
+                                  color: '#1d3557',
+                                  padding: '0.375rem 0.75rem'
+                                }}
+                              >
+                                <FiEye className="me-1" /> View
                               </Button>
                             </td>
                           </tr>
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="8" className="text-center py-5">
-                            <div className="py-4">
-                              <i className="bi bi-people display-5 text-muted"></i>
-                              <h5 className="mt-3 text-muted">
-                                {searchTerm ? 'No matching students found' : 'No students assigned to your classes'}
-                              </h5>
-                              {searchTerm && (
-                                <Button 
-                                  variant="outline-primary" 
-                                  size="sm" 
-                                  className="mt-2"
-                                  onClick={() => setSearchTerm('')}
-                                >
-                                  Clear search
-                                </Button>
-                              )}
-                            </div>
+                          <td colSpan={3} className="text-center py-5">
+                            <FiUsers size={48} className="text-muted mb-3" />
+                            <h5 className="text-muted">
+                              {searchTerm 
+                                ? 'No matching students found' 
+                                : 'No students enrolled in this class'}
+                            </h5>
+                            {searchTerm && (
+                              <Button 
+                                variant="outline-primary" 
+                                size="sm"
+                                className="mt-3"
+                                onClick={() => setSearchTerm('')}
+                              >
+                                Clear search
+                              </Button>
+                            )}
                           </td>
                         </tr>
                       )}
@@ -387,35 +243,88 @@ export const Managestu = () => {
                 </div>
               </Card.Body>
             </Card>
-
-            {/* Pagination */}
-            {filteredStudents.length > 0 && (
-              <div className="d-flex justify-content-between align-items-center mt-3">
-                <div className="text-muted">
-                  Showing <span className="fw-bold">1</span> to <span className="fw-bold">10</span> of{' '}
-                  <span className="fw-bold">{filteredStudents.length}</span> entries
-                </div>
-                <div>
-                  <nav aria-label="Page navigation">
-                    <ul className="pagination pagination-sm mb-0">
-                      <li className="page-item disabled">
-                        <a className="page-link" href="#" tabIndex="-1" aria-disabled="true">
-                          Previous
-                        </a>
-                      </li>
-                      <li className="page-item active"><a className="page-link" href="#">1</a></li>
-                      <li className="page-item"><a className="page-link" href="#">2</a></li>
-                      <li className="page-item"><a className="page-link" href="#">3</a></li>
-                      <li className="page-item">
-                        <a className="page-link" href="#">Next</a>
-                      </li>
-                    </ul>
-                  </nav>
-                </div>
-              </div>
-            )}
-          </Col>
-        </Row>
+          </>
+        ) : (
+          <>
+            {/* Classes View */}
+            <Row className="g-4">
+              {classesWithCounts.map((cls, index) => (
+                <Col key={index} xs={12} md={6} lg={4}>
+                  <Card 
+                    className="shadow-sm border-0 h-100" 
+                    style={{ 
+                      cursor: 'pointer',
+                      transition: 'transform 0.2s, box-shadow 0.2s',
+                      borderLeft: '4px solid #1d3557'
+                    }}
+                    onClick={() => setSelectedClass(cls)}
+                    onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                    onMouseOut={e => e.currentTarget.style.transform = ''}
+                  >
+                    <Card.Body>
+                      <div className="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                          <h5 style={{ color: '#1d3557' }}>{cls.courseName}</h5>
+                          <Badge 
+                            bg="light" 
+                            text="dark"
+                            style={{ 
+                              backgroundColor: '#e9ecef',
+                              fontWeight: 'normal',
+                              padding: '0.35em 0.65em'
+                            }}
+                          >
+                            {cls.subjectCode}
+                          </Badge>
+                        </div>
+                        <div style={{
+                          width: '40px',
+                          height: '40px',
+                          borderRadius: '50%',
+                          backgroundColor: '#1d3557',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'white'
+                        }}>
+                          <FiBookOpen />
+                        </div>
+                      </div>
+                      
+                      <div className="mb-3">
+                        <div className="d-flex align-items-center mb-1">
+                          <span className="text-muted me-2" style={{ width: '80px' }}>Subject:</span>
+                          <strong>{cls.subjectName}</strong>
+                        </div>
+                        <div className="d-flex align-items-center mb-1">
+                          <span className="text-muted me-2" style={{ width: '80px' }}>Semester:</span>
+                          <strong>{cls.semester_id}</strong>
+                        </div>
+                        <div className="d-flex align-items-center">
+                          <span className="text-muted me-2" style={{ width: '80px' }}>Section:</span>
+                          <strong>{cls.section_id}</strong>
+                        </div>
+                      </div>
+                      
+                      <div className="d-flex justify-content-between align-items-center pt-2 border-top">
+                        <Button 
+                          variant="outline-primary" 
+                          size="sm"
+                          style={{ borderColor: '#1d3557', color: '#1d3557' }}
+                        >
+                          View Students
+                        </Button>
+                        <span className="text-muted">
+                          {cls.studentCount} student{cls.studentCount !== 1 ? 's' : ''}
+                        </span>
+                      </div>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          </>
+        )}
       </Container>
     </div>
   );
