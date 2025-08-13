@@ -4,6 +4,7 @@ const courseTypeDef = gql`
   type Course {
     courseId: ID!
     courseName: String!
+    semesters:[Semester]
   }
 
   type Section {
@@ -12,9 +13,11 @@ const courseTypeDef = gql`
   }
 
   type Semester {
-    sem_id: ID!
-    semesterName: String
-  }
+  semester_id: ID!
+  semester_Name: String
+  subject: [Subject]
+}
+
 
   
 

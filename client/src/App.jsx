@@ -7,7 +7,7 @@ import './App.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
+import { CourseDetails } from './Screens/Admin/CourseDetails';
 // import { Reports } from './Screens/Students/Reports'
 import { Reports } from './Screens/Teacher/Reports'
 // import './App.css'
@@ -63,6 +63,7 @@ function App() {
         <Route path="/admin/students" element={<StudentMgmt/>}/>
         <Route path="/admin/announcements" element={<AdminAnnouncements/>}/>
         <Route path="/admin/courses" element={<Course/>}/>
+        <Route path="/admin/courses/:courseId" element={<CourseDetails/>}/>
         <Route path="/admin/bulk-import" element={<BulkStudentImport/>}></Route>
         <Route path="*" element={<h1>404 Not Found</h1>} />
 
