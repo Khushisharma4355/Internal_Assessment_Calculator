@@ -68,3 +68,21 @@ export const BULK_IMPORT_STUDENTS = gql`
     }
   }
 `;
+export const BULK_IMPORT_TEACHERS = gql`
+  mutation BulkImportTeachers($input: BulkImportTeachersInput!) {
+    bulkImportTeachers(input: $input) {
+      success
+      message
+      details {
+        created
+        updated
+        skipped
+        errors {
+          row
+          emp_id
+          error
+        }
+      }
+    }
+  }
+`;

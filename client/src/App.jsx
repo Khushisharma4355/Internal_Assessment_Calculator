@@ -32,14 +32,14 @@ import { Course } from './Screens/Admin/Courses';
 import { TeacherMgmt } from './Screens/Admin/TeacherMgmt'
 import { StudentMgmt } from './Screens/Admin/StudentMgmt'
 import { StudentLogout } from './Screens/Logout/StudentLogout'
-import {AdminAnnouncements} from './Screens/Admin/Announcements'
-import { BulkStudentImport } from './Components/Admin/bulkimport';
-
+import { AdminAnnouncements } from './Screens/Admin/Announcements'
+import { BulkStudentImport } from './Components/Admin/bulkimportStudent';
+import { BulkTeacherImport } from './Components/Admin/bulkimportTeacher';
 // import {TeacherDashboard} from './Components/Teachers/TeacherDashboard'
 function App() {
   return (
     <>
-    
+
       <Routes>
         <Route path="/" element={<MainHome />} />
         <Route path="/students/login" element={<StuLogin />} />
@@ -50,8 +50,8 @@ function App() {
         {/* <Route path="/students/reports" element={<Reports />} /> */}
         <Route path="/teachers/login" element={<TeacherLogin />} />
         <Route path="/teachers/" element={<TeaHome />} />
-        <Route path="/teachers/reports" element={<Reports/>} />
-           
+        <Route path="/teachers/reports" element={<Reports />} />
+
 
 
         <Route path="/teachers/uploadmarks" element={<UploadMarks />} />
@@ -66,12 +66,14 @@ function App() {
         <Route path="/admin/courses/:courseId" element={<CourseDetails/>}/>
         <Route path="/admin/bulk-import" element={<BulkStudentImport/>}></Route>
         <Route path="*" element ={<h1>404 Not Found</h1>} />
-         {/* LOGOUT */}
-      <Route path="/student/logout" element={<StudentLogout/>}/>
+
+        {/* LOGOUT */}
+
+        <Route path="/student/logout" element={<StudentLogout />} />
       </Routes>
 
       <ToastContainer />
-      
+
       {/* <Footer /> */}
     </>
   )
