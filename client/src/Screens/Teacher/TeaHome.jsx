@@ -1,42 +1,10 @@
-// // import {Navv} from "../../Components/Students/NavBar/Navbar"
-// import { Row,Col,Container } from "react-bootstrap"
-// import { TeaNav } from "../../Components/Teachers/TeaNav"
-// // import { TeacherDashboard } from "../../Components/Teachers/TeacherDashboard"
-// import { TeacherDashboard } from "../../Components/Teachers/TeacherDashboard.jsx"
-
-// export const TeaHome=()=>{
-//     return(
-    //     <>
-    //     <div className="d-flex">
-    //         <div style={{flexShrink:0, width:"250px"}}>
-    //        <TeaNav/>
-    //         </div>
-
-    //     <Container className="bg-light">
-    //         <Row >
-    //       <Col className="d-flex  justify-content-center">
-    //    <TeacherDashboard/>
-    //             </Col>
-    //         </Row>
-    //     </Container>
-    //     </div>
-    //     </>
-//     )
-// }
-
-
-
-
 import React from 'react';
 import { Container, Card, Row, Col, Button, ListGroup, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { FiBookOpen, FiUsers, FiClipboard, FiUpload, FiMail, FiFileText, FiAlertCircle } from 'react-icons/fi';
 import { TeaNav } from '../../Components/Teachers/TeaNav';
-import { useQuery, gql } from '@apollo/client';
-import { GET_TEACHER,GET_TEACHER_CLASSES,GET_STUDENTS_BY_CLASS,GET_STUDENTS_BY_TEACHER } from '../../GraphQL/Queries';
-// ==================== GraphQL Queries ====================
-
-
+import { useQuery } from '@apollo/client';
+import { GET_TEACHER, GET_TEACHER_CLASSES, GET_STUDENTS_BY_TEACHER } from '../../GraphQL/Queries';
 
 export const TeaHome = () => {
   const navigate = useNavigate();
@@ -46,28 +14,16 @@ export const TeaHome = () => {
   const { data: teacherData, loading: teacherLoading } = useQuery(GET_TEACHER, {
     variables: { emp_id },
   });
-  console.log(teacherData)
+
   const { data: classData, loading: classLoading } = useQuery(GET_TEACHER_CLASSES, {
     variables: { emp_id },
   });
 
-  // Derive subjects and students from classData
-  const classes = classData?.getTeacherClasses || [];
+  const { data: studentsData, loading: studentsLoading } = useQuery(GET_STUDENTS_BY_TEACHER, {
+    variables: { emp_id },
+  });
 
-  // Unique subjects
-  const subjectsSet = new Set(classes.map(cls => cls.subjectCode));
-  const totalSubjects = subjectsSet.size;
-
-  // Unique classes for "My Classes"
-  const uniqueClassesSet = new Set(
-    classes.map(cls => `${cls.courseId}-${cls.semester_id}-${cls.section_id}`)
-  );
-  const totalClasses = uniqueClassesSet.size;
-
-  // Simulated student count — in real case you'd want a batch query
-  const estimatedStudents = totalClasses * 30; // assume ~30 per class
-
-  if (teacherLoading || classLoading) {
+  if (teacherLoading || classLoading || studentsLoading) {
     return (
       <div className="text-center mt-5">
         <Spinner animation="border" />
@@ -76,25 +32,31 @@ export const TeaHome = () => {
     );
   }
 
+  // Process data from backend
+  const teacherClasses = classData?.getTeacherClasses || [];
+  const allStudents = studentsData?.getStudentsByTeacher || [];
   const teacherName = teacherData?.getTeacher?.emp_name || "Teacher";
 
+  // Calculate metrics
+  const totalClasses = teacherClasses.length;
+  const totalStudents = allStudents.length;
+  
+  // Get unique subjects
+  const subjectsSet = new Set(teacherClasses.map(cls => cls.subjectCode));
+  const totalSubjects = subjectsSet.size;
+
+  // Count pending marks (example implementation - modify based on your actual data)
+  const pendingMarksCount = allStudents.filter(student => 
+    !student.marksSubmitted // Replace with your actual condition
+  ).length;
+
   return (
-     <>
-        <div className="d-flex">
-            <div style={{flexShrink:0, width:"250px"}}>
-           <TeaNav/>
-            </div>
+    <div className="d-flex">
+      <div style={{ flexShrink: 0, width: "250px" }}>
+        <TeaNav />
+      </div>
 
-        <Container className="bg-light">
-            <Row >
-          <Col className="d-flex  justify-content-center">
-       {/* <TeacherDashboard/> */}
-                
-      
-
-
-      {/* Main Content */}
-      <Container fluid style={{ padding: '2rem' }}>
+      <Container fluid className="px-4 py-4 bg-light">
         {/* Welcome Message */}
         <Row className='mb-4'>
           <Col>
@@ -104,138 +66,180 @@ export const TeaHome = () => {
         </Row>
 
         {/* Stats Cards */}
-        <Row>
-          <Col md={6} lg={3} className='mb-3'>
-            <Card className='shadow-sm' onClick={() => navigate("/teacher/classes")}>
-              <Card.Body>
-                <div className='d-flex justify-content-between align-items-center'>
-                  <div>
-                    <h6>My Classes</h6>
-                    <h3>{totalClasses}</h3>
-                  </div>
-                  <div style={{ fontSize: "2rem", color: "#1d3557" }}>
+        <Row className="g-4 mb-4">
+          <Col md={6} lg={3}>
+            <Card className='shadow-sm border-0 h-100' onClick={() => navigate("/teacher/classes")}>
+              <Card.Body className="d-flex flex-column">
+                <div className='d-flex justify-content-between align-items-center mb-3'>
+                  <h6 className="mb-0">My Classes</h6>
+                  <div style={{ fontSize: "1.5rem", color: "#1d3557" }}>
                     <FiBookOpen />
                   </div>
                 </div>
+                <h3 className="mb-0">{totalClasses}</h3>
+                <small className="text-muted mt-auto">View all classes</small>
               </Card.Body>
             </Card>
           </Col>
 
-          <Col md={6} lg={3} className='mb-3'>
-            <Card className='shadow-sm' onClick={() => navigate("/teacher/students")}>
-              <Card.Body>
-                <div className='d-flex justify-content-between align-items-center'>
-                  <div>
-                    <h6>Students</h6>
-                    <h3>{estimatedStudents}</h3>
-                  </div>
-                  <div style={{ fontSize: "2rem", color: "#1d3557" }}>
+          <Col md={6} lg={3}>
+            <Card className='shadow-sm border-0 h-100' onClick={() => navigate("/teacher/students")}>
+              <Card.Body className="d-flex flex-column">
+                <div className='d-flex justify-content-between align-items-center mb-3'>
+                  <h6 className="mb-0">Students</h6>
+                  <div style={{ fontSize: "1.5rem", color: "#1d3557" }}>
                     <FiUsers />
                   </div>
                 </div>
+                <h3 className="mb-0">{totalStudents}</h3>
+                <small className="text-muted mt-auto">Manage all students</small>
               </Card.Body>
             </Card>
           </Col>
 
-          <Col md={6} lg={3} className='mb-3'>
-            <Card className='shadow-sm'>
-              <Card.Body>
-                <div className='d-flex justify-content-between align-items-center'>
-                  <div>
-                    <h6>Subjects</h6>
-                    <h3>{totalSubjects}</h3>
-                  </div>
-                  <div style={{ fontSize: "2rem", color: "#1d3557" }}>
+          <Col md={6} lg={3}>
+            <Card className='shadow-sm border-0 h-100'>
+              <Card.Body className="d-flex flex-column">
+                <div className='d-flex justify-content-between align-items-center mb-3'>
+                  <h6 className="mb-0">Subjects</h6>
+                  <div style={{ fontSize: "1.5rem", color: "#1d3557" }}>
                     <FiFileText />
                   </div>
                 </div>
+                <h3 className="mb-0">{totalSubjects}</h3>
+                <small className="text-muted mt-auto">Subjects you teach</small>
               </Card.Body>
             </Card>
           </Col>
 
-          <Col md={6} lg={3} className='mb-3'>
-            <Card className='shadow-sm'>
-              <Card.Body>
-                <div className='d-flex justify-content-between align-items-center'>
-                  <div>
-                    <h6>Pending Marks</h6>
-                    <h3>2</h3> {/* Hardcoded for now */}
-                  </div>
-                  <div style={{ fontSize: "2rem", color: "orange" }}>
+          <Col md={6} lg={3}>
+            <Card className='shadow-sm border-0 h-100'>
+              <Card.Body className="d-flex flex-column">
+                <div className='d-flex justify-content-between align-items-center mb-3'>
+                  <h6 className="mb-0">Pending Marks</h6>
+                  <div style={{ fontSize: "1.5rem", color: "orange" }}>
                     <FiAlertCircle />
                   </div>
                 </div>
+                <h3 className="mb-0">{pendingMarksCount}</h3>
+                <small className="text-muted mt-auto">Require your attention</small>
               </Card.Body>
             </Card>
           </Col>
         </Row>
 
         {/* Quick Actions */}
-        <Row className="mt-4">
+        <Row className="mt-4 mb-4">
           <Col>
-            <div className="d-flex gap-4">
-              <Button style={{ backgroundColor: "#1d3557" }} onClick={() => navigate("/teacher/marks-entry")}>
-                <FiClipboard className="me-2" />
-                Enter Marks
-              </Button>
-              <Button variant="outline-secondary">
-                <FiUpload className="me-2" />
-                Bulk Upload
-              </Button>
-              <Button variant="warning">
-                <FiMail className="me-2" />
-                Send Message
-              </Button>
-            </div>
+            <Card className="shadow-sm border-0">
+              <Card.Body>
+                <div className="d-flex flex-wrap gap-3">
+                  <Button 
+                    style={{ backgroundColor: "#1d3557", border: 'none' }} 
+                    onClick={() => navigate("/teacher/marks-entry")}
+                  >
+                    <FiClipboard className="me-2" />
+                    Enter Marks
+                  </Button>
+                  <Button 
+                    variant="outline-secondary" 
+                    onClick={() => navigate("/teacher/bulk-upload")}
+                  >
+                    <FiUpload className="me-2" />
+                    Bulk Upload
+                  </Button>
+                  <Button 
+                    variant="outline-primary" 
+                    onClick={() => navigate("/teacher/messages")}
+                  >
+                    <FiMail className="me-2" />
+                    Send Message
+                  </Button>
+                </div>
+              </Card.Body>
+            </Card>
           </Col>
         </Row>
 
         {/* Recent Activity + Attendance */}
-        <Row className="mt-4">
+        <Row className="g-4">
           <Col lg={8}>
-            <Card className="shadow-sm">
-              <Card.Header>Recent Activity</Card.Header>
+            <Card className="shadow-sm border-0 h-100">
+              <Card.Header style={{ backgroundColor: 'white', borderBottom: '1px solid rgba(0,0,0,.125)' }}>
+                <h5 className="mb-0">Recent Activity</h5>
+              </Card.Header>
               <Card.Body>
                 <ListGroup variant="flush">
-                  <ListGroup.Item>
-                    <small className="text-muted">Today, 9:45 AM</small><br />
-                    You submitted IA marks for <strong>DBMS</strong>
+                  <ListGroup.Item className="border-0 py-3">
+                    <div className="d-flex align-items-center">
+                      <div className="bg-primary bg-opacity-10 p-2 rounded me-3">
+                        <FiClipboard size={20} color="#1d3557" />
+                      </div>
+                      <div>
+                        <small className="text-muted">Today, 9:45 AM</small>
+                        <p className="mb-0">You submitted IA marks for <strong>DBMS</strong></p>
+                      </div>
+                    </div>
                   </ListGroup.Item>
-                  <ListGroup.Item>
-                    <small className="text-muted">Yesterday, 2:30 PM</small><br />
-                    Sent message to <strong>BCA-A</strong> about test
+                  <ListGroup.Item className="border-0 py-3">
+                    <div className="d-flex align-items-center">
+                      <div className="bg-primary bg-opacity-10 p-2 rounded me-3">
+                        <FiMail size={20} color="#1d3557" />
+                      </div>
+                      <div>
+                        <small className="text-muted">Yesterday, 2:30 PM</small>
+                        <p className="mb-0">Sent message to <strong>BCA-A</strong> about test</p>
+                      </div>
+                    </div>
                   </ListGroup.Item>
-                  <ListGroup.Item>
-                    <small className="text-muted">Yesterday, 11:00 AM</small><br />
-                    Checked attendance for <strong>BBA 2nd Sem</strong>
+                  <ListGroup.Item className="border-0 py-3">
+                    <div className="d-flex align-items-center">
+                      <div className="bg-primary bg-opacity-10 p-2 rounded me-3">
+                        <FiUsers size={20} color="#1d3557" />
+                      </div>
+                      <div>
+                        <small className="text-muted">Yesterday, 11:00 AM</small>
+                        <p className="mb-0">Checked attendance for <strong>BBA 2nd Sem</strong></p>
+                      </div>
+                    </div>
                   </ListGroup.Item>
                 </ListGroup>
               </Card.Body>
             </Card>
           </Col>
 
-          <Col md={6} lg={3}>
-            <Card className='shadow-sm'>
+          <Col lg={4}>
+            <Card className='shadow-sm border-0 h-100'>
+              <Card.Header style={{ backgroundColor: 'white', borderBottom: '1px solid rgba(0,0,0,.125)' }}>
+                <h5 className="mb-0">Today's Attendance</h5>
+              </Card.Header>
               <Card.Body>
-                <div className='d-flex justify-content-between align-items-center'>
-                  <div>
-                    <h6>Today's Attendance</h6>
-                    <h3>92%</h3>
-                    <small className="text-danger">Low: MBA-A (78%)</small>
+                <div className="text-center py-3">
+                  <div 
+                    style={{
+                      width: '120px',
+                      height: '120px',
+                      borderRadius: '50%',
+                      backgroundColor: '#e9f5ff',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 20px',
+                      border: '5px solid #1d3557'
+                    }}
+                  >
+                    <h2 className="mb-0" style={{ color: '#1d3557' }}>92%</h2>
                   </div>
-                  <div style={{ fontSize: "2rem", color: "#1d3557" }}>
-                    <FiClipboard />
-                  </div>
+                  <h5 className="mb-1">Overall Attendance</h5>
+                  <small className="text-danger">
+                    <strong>Lowest:</strong> MBA-A (78%)
+                  </small>
                 </div>
               </Card.Body>
             </Card>
           </Col>
         </Row>
       </Container>
-    </Col>
-            </Row>
-        </Container>
-        </div>
-      </>
+    </div>
   );
 };

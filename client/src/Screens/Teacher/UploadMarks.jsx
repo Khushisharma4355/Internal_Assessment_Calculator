@@ -13,45 +13,7 @@ import {
   Badge
 } from 'react-bootstrap';
 import { useQuery, useMutation, gql } from '@apollo/client';
-
-// ==================== GraphQL Queries and Mutations ====================
-const GET_TEACHER = gql`
-  query GetTeacher($emp_id: ID!) {
-    getTeacher(emp_id: $emp_id) {
-      emp_name
-      emp_email
-      emp_phone
-    }
-  }
-`;
-
-const GET_TEACHER_CLASSES = gql`
-  query GetTeacherClasses($emp_id: ID!) {
-    getTeacherClasses(emp_id: $emp_id) {
-      courseId
-      courseName
-      semester_id
-      section_id
-      subjectCode
-      subjectName
-    }
-  }
-`;
-
-const GET_STUDENTS_BY_CLASS = gql`
-  query GetStudentsByClass($emp_id: ID!, $courseId: ID!, $semester_id: ID!, $section_id: String!) {
-    getStudentsByClass(
-      emp_id: $emp_id,
-      courseId: $courseId,
-      semester_id: $semester_id,
-      section_id: $section_id
-    ) {
-      registrationNo
-      student_name
-    }
-  }
-`;
-
+import { GET_TEACHER,GET_TEACHER_CLASSES, GET_STUDENTS_BY_CLASS } from '../../GraphQL/Queries';
 const BULK_ENTER_MARKS = gql`
   mutation BulkEnterMarks($marks: [MarksInput!]!) {
     bulkEnterMarks(marks: $marks) {
