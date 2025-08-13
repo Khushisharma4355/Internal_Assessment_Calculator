@@ -22,8 +22,10 @@ const GET_COURSE_DETAILS = gql`
 
 export const CourseDetails = () => {
   const { courseId } = useParams();
+
   const { loading, error, data } = useQuery(GET_COURSE_DETAILS, {
     variables: { courseId },
+    fetchPolicy: "no-cache", // ensures fresh data
   });
 
   if (loading) {
@@ -42,8 +44,7 @@ export const CourseDetails = () => {
     );
   }
 
-  // FIX: access courseById, not course
-  const course = data.courseById;
+  const course = data?.courseById;
 
   if (!course) {
     return (
@@ -52,6 +53,8 @@ export const CourseDetails = () => {
       </Alert>
     );
   }
+
+  const semesters = course.semesters || [];
 
   return (
     <div className="d-flex">
@@ -66,8 +69,8 @@ export const CourseDetails = () => {
         </Row>
 
         <Row>
-          {course.semesters && course.semesters.length > 0 ? (
-            course.semesters.map((sem) => (
+          {semesters.length > 0 ? (
+            semesters.map((sem) => (
               <Col key={sem.semester_id} md={4} sm={6} xs={12} className="mb-4">
                 <Card className="shadow-sm h-100">
                   <Card.Body>
@@ -75,7 +78,7 @@ export const CourseDetails = () => {
                     <Card.Text>
                       <strong>Subjects:</strong>
                       <ul className="mb-0">
-                        {sem.subjects && sem.subjects.length > 0 ? (
+                        {sem.subjects?.length > 0 ? (
                           sem.subjects.map((sub) => (
                             <li key={sub.subjectCode}>
                               {sub.subjectName || "No Name"} ({sub.subjectCode || "N/A"})
@@ -100,5 +103,3 @@ export const CourseDetails = () => {
     </div>
   );
 };
-
-

@@ -38,6 +38,8 @@ Teacher.belongsToMany(Subject, {
   onUpdate: "CASCADE"
 });
 
+
+
 Subject.belongsToMany(Teacher, {
   through: TeacherSubjectSection,
   foreignKey: "subjectCode",
@@ -84,22 +86,38 @@ Subject.belongsTo(Course, {
   onUpdate: "CASCADE"
 });
 
+// Course.belongsToMany(Semester, {
+//   through: {
+//     model: CourseSemester,
+//     unique: false // if you want to allow duplicates
+//   },
+//   foreignKey: "courseId",
+//   onDelete: "CASCADE",
+//   onUpdate: "CASCADE"
+// });
+
+// Semester.belongsToMany(Course, {
+//   through: "CourseSemester",
+//   foreignKey: "semester_id",
+//    onDelete: "CASCADE",
+//   onUpdate: "CASCADE"
+// });
 Course.belongsToMany(Semester, {
-  through: {
-    model: CourseSemester,
-    unique: false // if you want to allow duplicates
-  },
+  through: CourseSemester,
   foreignKey: "courseId",
+  otherKey: "semester_id",
   onDelete: "CASCADE",
   onUpdate: "CASCADE"
 });
 
 Semester.belongsToMany(Course, {
-  through: "CourseSemester",
+  through: CourseSemester,
   foreignKey: "semester_id",
-   onDelete: "CASCADE",
+  otherKey: "courseId",
+  onDelete: "CASCADE",
   onUpdate: "CASCADE"
 });
+
 
 Subject.belongsTo(Course, { foreignKey: 'courseId' });
 Subject.belongsTo(Semester, { foreignKey: 'semester_id' });

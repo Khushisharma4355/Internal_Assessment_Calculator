@@ -11,54 +11,53 @@ export default {
     // Fetch all sections
     sections: async () => await Section.findAll(),
 
-    // Fetch the semester for a specific subject
+    // Fetch semester by subjectCode
     semester: async (_, { subjectCode }) => {
       const subject = await Subject.findOne({
         where: { subjectCode },
         include: [{ model: Semester }],
       });
-      return subject && subject.Semester ? {
-        semester_id: subject.Semester.semester_id,
-        semester_Name: subject.Semester.semester_Name,
-        subject: [{
-          subjectCode: subject.subjectCode,
-          subjectName: subject.subjectName
-        }]
-      } : null;
+      return subject && subject.Semester
+        ? {
+            semester_id: subject.Semester.semester_id,
+            semester_Name: subject.Semester.semester_Name,
+          }
+        : null;
     },
 
-    // Fetch course by ID with semesters and their subjects
-    courseById: async (_, { courseId }) => {
-      const course = await Course.findByPk(courseId);
-      if (!course) return null;
+    // Fetch a single course with all its semesters and subjects
+   courseById: async (_, { courseId }) => {
+  const course = await Course.findByPk(courseId, {
+    include: [
+      {
+        model: Semester,
+        through: { attributes: [] }, // remove join table fields from result
+        include: [
+          {
+            model: Subject,
+            attributes: ["subjectCode", "subjectName"],
+          },
+        ],
+      },
+    ],
+    order: [[Semester, "semester_id", "ASC"]],
+  });
 
-      // Get all subjects for this course
-      const subjects = await Subject.findAll({ where: { courseId } });
+  if (!course) return null;
 
-      // Group subjects by semester safely
-      const semestersMap = {};
-      for (let sub of subjects) {
-        const semester = await Semester.findByPk(sub.semester_id);
-        if (!semester) continue; // skip if semester does not exist
+  return {
+    courseId: course.courseId,
+    courseName: course.courseName,
+    semesters: course.Semesters.map((sem) => ({
+      semester_id: sem.semester_id,
+      semester_Name: sem.semester_Name,
+      subjects: sem.Subjects.map((sub) => ({
+        subjectCode: sub.subjectCode,
+        subjectName: sub.subjectName,
+      })),
+    })),
+  };
+}
 
-        if (!semestersMap[semester.semester_id]) {
-          semestersMap[semester.semester_id] = {
-            semester_id: semester.semester_id,
-            semester_Name: semester.semester_Name,
-            subject: [],
-          };
-        }
-
-        semestersMap[semester.semester_id].subject.push({
-          subjectCode: sub.subjectCode,
-          subjectName: sub.subjectName,
-        });
-      }
-
-      // Convert map to array
-      course.dataValues.semesters = Object.values(semestersMap);
-
-      return course;
-    },
   },
 };
