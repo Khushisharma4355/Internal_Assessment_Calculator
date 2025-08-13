@@ -31,7 +31,7 @@ import { Course } from './Screens/Admin/Courses';
 // import EnterMarks from './Screens/Teacher/Entermarks'
 import { TeacherMgmt } from './Screens/Admin/TeacherMgmt'
 import { StudentMgmt } from './Screens/Admin/StudentMgmt'
-import { StudentLogout } from './Screens/Logout/StudentLogout'
+// import { StudentLogout } from './Screens/Logout/StudentLogout'
 import { AdminAnnouncements } from './Screens/Admin/Announcements'
 import { BulkStudentImport } from './Components/Admin/bulkimportStudent';
 import { BulkTeacherImport } from './Components/Admin/bulkimportTeacher';
@@ -73,7 +73,7 @@ function App() {
 
         {/* LOGOUT */}
 
-        <Route path="/student/logout" element={<StudentLogout />} />
+        {/* <Route path="/student/logout" element={<StudentLogout />} /> */}
       </Routes>
 
       <ToastContainer />

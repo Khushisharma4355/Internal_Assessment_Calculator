@@ -10,7 +10,7 @@ import {
   FiLogOut 
 } from 'react-icons/fi';
 import './sidebar.css';
-
+import LogoutButton from '../Logout/Logout';
 export const Stunav = () => {
     const [show, setShow] = useState(false);
     const location = useLocation();
@@ -114,15 +114,7 @@ export const Stunav = () => {
                 </div>
 
                 <div>
-                    <NavLink 
-                        to="/" 
-                        style={navStyle('/logout')}
-                        className="logout-link"
-
-                    >
-                        <FiLogOut style={iconStyle} /> Logout
-                    </NavLink>
-                    
+                   <LogoutButton/> 
                     <div 
                         className="text-center mt-3 p-2 admin-indicator fw-bold"
                         aria-label="Admin privileges"
@@ -177,14 +169,7 @@ export const Stunav = () => {
                     </Nav>
 
                     <div>
-                        <NavLink 
-                            to="/logout" 
-                            onClick={handleClose}
-                            style={navStyle('/logout')}
-                            className="logout-link"
-                        >
-                            <FiLogOut style={iconStyle} /> Logout
-                        </NavLink>
+                       <LogoutButton/> 
                         
                         <div 
                             className="text-center mt-3 p-2 admin-indicator fw-bold"
