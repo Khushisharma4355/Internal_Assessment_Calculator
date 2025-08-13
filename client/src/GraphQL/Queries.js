@@ -89,3 +89,56 @@ export const GET_DEPARTMENTS = gql`
     }
   }
 `;
+//teacher>>managestudents
+export const GET_STUDENTS_BY_TEACHER = gql`
+  query GetStudentsByTeacher($emp_id: ID!) {
+    getStudentsByTeacher(emp_id: $emp_id) {
+      registrationNo
+      student_name
+      student_email
+      courseId
+      courseName
+      semester_id
+      section_id
+      subjectCode
+      subjectName
+    }
+  }
+`;
+
+//teaHome
+export const GET_TEACHER = gql`
+  query GetTeacher($emp_id: String!) {
+    getTeacher(emp_id: $emp_id) {
+      emp_name
+      emp_email
+    }
+  }
+`;
+
+export const GET_TEACHER_CLASSES = gql`
+  query GetTeacherClasses($emp_id: String!) {
+    getTeacherClasses(emp_id: $emp_id) {
+      courseId
+      courseName
+      semester_id
+      section_id
+      subjectCode
+      subjectName
+    }
+  }
+`;
+
+export const GET_STUDENTS_BY_CLASS = gql`
+  query GetStudentsByClass($emp_id: String!, $courseId: String!, $semester_id: String!, $section_id: String!) {
+    getStudentsByClass(
+      emp_id: $emp_id,
+      courseId: $courseId,
+      semester_id: $semester_id,
+      section_id: $section_id
+    ) {
+      registrationNo
+      student_name
+    }
+  }
+`;

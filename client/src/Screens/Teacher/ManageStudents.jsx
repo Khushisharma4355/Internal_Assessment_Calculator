@@ -5,22 +5,7 @@ import {
 } from 'react-bootstrap';
 import { TeaNav } from "../../Components/Teachers/TeaNav";
 import { useQuery, gql } from '@apollo/client';
-
-const GET_STUDENTS_BY_TEACHER = gql`
-  query GetStudentsByTeacher($emp_id: ID!) {
-    getStudentsByTeacher(emp_id: $emp_id) {
-      registrationNo
-      student_name
-      student_email
-      courseId
-      courseName
-      semester_id
-      section_id
-      subjectCode
-      subjectName
-    }
-  }
-`;
+import { GET_STUDENTS_BY_TEACHER } from '../../GraphQL/Queries';
 
 export const Managestu = () => {
   const empId = localStorage.getItem('emp_id') || "T001";

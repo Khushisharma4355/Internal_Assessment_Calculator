@@ -33,44 +33,10 @@ import { useNavigate } from 'react-router-dom';
 import { FiBookOpen, FiUsers, FiClipboard, FiUpload, FiMail, FiFileText, FiAlertCircle } from 'react-icons/fi';
 import { TeaNav } from '../../Components/Teachers/TeaNav';
 import { useQuery, gql } from '@apollo/client';
-
+import { GET_TEACHER,GET_TEACHER_CLASSES,GET_STUDENTS_BY_CLASS,GET_STUDENTS_BY_TEACHER } from '../../GraphQL/Queries';
 // ==================== GraphQL Queries ====================
 
-const GET_TEACHER = gql`
-  query GetTeacher($emp_id: ID!) {
-    getTeacher(emp_id: $emp_id) {
-      emp_name
-      emp_email
-    }
-  }
-`;
 
-const GET_TEACHER_CLASSES = gql`
-  query GetTeacherClasses($emp_id: ID!) {
-    getTeacherClasses(emp_id: $emp_id) {
-      courseId
-      courseName
-      semester_id
-      section_id
-      subjectCode
-      subjectName
-    }
-  }
-`;
-
-const GET_STUDENTS_BY_CLASS = gql`
-  query GetStudentsByClass($emp_id: ID!, $courseId: ID!, $semester_id: ID!, $section_id: String!) {
-    getStudentsByClass(
-      emp_id: $emp_id,
-      courseId: $courseId,
-      semester_id: $semester_id,
-      section_id: $section_id
-    ) {
-      registrationNo
-      student_name
-    }
-  }
-`;
 
 export const TeaHome = () => {
   const navigate = useNavigate();
@@ -80,7 +46,7 @@ export const TeaHome = () => {
   const { data: teacherData, loading: teacherLoading } = useQuery(GET_TEACHER, {
     variables: { emp_id },
   });
-
+  console.log(teacherData)
   const { data: classData, loading: classLoading } = useQuery(GET_TEACHER_CLASSES, {
     variables: { emp_id },
   });
