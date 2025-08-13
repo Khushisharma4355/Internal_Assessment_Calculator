@@ -6,6 +6,7 @@ import Course from "../../model/Course.js";
 import Section from "../../model/Section.js";
 import Student from "../../model/Student.js";
 import Department from "../../model/Department.js";
+
 export default {
   Query: {
     getTeacher: async (_, { emp_id }) => {
@@ -39,54 +40,60 @@ export default {
           { model: Section, attributes: ["section_id", "section_name"] },
           { model: Subject, attributes: ["subjectCode", "subjectName"] }
         ],
-        order: [["courseId", "ASC"], ["semester_id", "ASC"]]
+        order: [
+          [Course, "courseId", "ASC"],
+          [Semester, "semester_id", "ASC"]
+        ]
       });
 
       return assignments.map(a => ({
-        courseId: a.courseId,
-        courseName: a.Course?.courseName || null,
-        semester_id: a.semester_id,
-        semester_Name: a.Semester?.semester_Name || null,
-        section_id: a.section_id,
-        section_name: a.Section?.section_name || null,
-        subjectCode: a.subjectCode,
-        subjectName: a.Subject?.subjectName || null
+        courseId: a.Course?.courseId || "N/A",
+        courseName: a.Course?.courseName || "Unknown Course",
+        semester_id: a.Semester?.semester_id || "N/A",
+        semester_Name: a.Semester?.semester_Name || "Unknown Semester",
+        section_id: a.Section?.section_id || "N/A",
+        section_name: a.Section?.section_name || "Unknown Section",
+        subjectCode: a.Subject?.subjectCode || "N/A",
+        subjectName: a.Subject?.subjectName || "Unknown Subject"
       }));
     },
 
     getStudentsByClass: async (_, { emp_id, courseId, semester_id, section_id }) => {
       try {
-        // Check teacher assignment first
+        // Check if teacher is assigned to the class
         const assigned = await TeacherSubjectSection.findOne({
           where: { emp_id, courseId, semester_id, section_id },
         });
 
         if (!assigned) {
-          throw new Error("Access denied: You are not assigned to this class.");
+          console.warn("Teacher not assigned to class:", { emp_id, courseId, semester_id, section_id });
+          return [];
         }
 
-        // Fetch students if teacher assigned
+        // Fetch students
         const students = await Student.findAll({
           where: { courseId, semester_id, section_id },
           attributes: ['registrationNo', 'student_name', 'student_email'],
         });
 
-        return students;
+        return students.map(s => ({
+          registrationNo: s.registrationNo || "N/A",
+          student_name: s.student_name || "Unknown Name",
+          student_email: s.student_email || "Unknown Email"
+        }));
+
       } catch (err) {
         console.error("getStudentsByClass error:", err);
-        throw new Error("Failed to fetch students");
+        return [];
       }
     },
   },
+
   Mutation: {
     addTeacher: async (_, args) => {
       const teacher = await Teacher.create(args);
       const teacherCount = await Teacher.count();
-      return {
-        teacher,
-        teacherCount
-      };
-
+      return { teacher, teacherCount };
     }
   },
 

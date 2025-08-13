@@ -135,7 +135,7 @@ export const Course = () => {
           <Col xs="auto">
             <Button 
               variant="primary" 
-              onClick={() => navigate("/courses/new")}
+              onClick={() => navigate("/admin/courses/new")}
               className="d-flex align-items-center"
             >
               <FiPlus className="me-2" /> Add Course
@@ -147,7 +147,7 @@ export const Course = () => {
           {data.courses.map((course) => (
             <Col key={course.courseId} xl={3} lg={4} md={6} sm={12}>
               <Card 
-                onClick={() => navigate(`/courses/${course.courseId}`)}
+                onClick={() => navigate(`/admin/courses/${course.courseId}`)}
                 className="h-100 shadow-sm hover-shadow"
                 style={{ 
                   cursor: "pointer",
@@ -167,7 +167,7 @@ export const Course = () => {
                     size="sm"
                     onClick={(e) => {
                       e.stopPropagation();
-                      navigate(`/courses/${course.courseId}`);
+                      navigate(`/admin/courses/${course.courseId}`);
                     }}
                   >
                     View Details
