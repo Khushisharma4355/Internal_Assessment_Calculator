@@ -66,9 +66,7 @@ function App() {
         <Route path="/admin/courses/:courseId" element={<CourseDetails/>}/>
         <Route path="/admin/bulk-import" element={<BulkStudentImport/>}></Route>
         <Route path="*" element ={<h1>404 Not Found</h1>} />
-
          {/* LOGOUT */}
-
       <Route path="/student/logout" element={<StudentLogout/>}/>
       </Routes>
 
