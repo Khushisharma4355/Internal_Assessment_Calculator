@@ -1,44 +1,65 @@
+// components/LogoutButton.jsx
 import React, { useState } from 'react';
-import { Container, Button, Alert } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
-import { setEmail, setEmailExists } from '../../Redux/loginSlice';
+import { resetAuthState } from '../../Redux/loginSlice'; // Import the new action
 import { useNavigate } from 'react-router-dom';
+import { FiLogOut } from 'react-icons/fi';
 
-export const Logout = () => {
+const LogoutButton = ({ variant = 'link', className = '', icon = true }) => {
+    const [showConfirm, setShowConfirm] = useState(false);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-  const navigate=useNavigate();
-  const dispatch = useDispatch();
-  const [loggedOut, setLoggedOut] = useState(false);
+    const handleLogout = () => {
+        dispatch(resetAuthState()); // Use the new action
+        navigate('/');
+    };
 
-  const handleLogout = () => {
-    // Clear login-related states
-    dispatch(setEmail(''));
-    dispatch(setEmailExists(null));
-    setLoggedOut(true);
-    navigate('/')
+    return (
+        <>
+            <Button
+                onClick={() => setShowConfirm(true)}
+                variant={variant}
+                className={`d-flex align-items-center ${className}`}
+                style={variant === 'link' ? { 
+                    color: 'white', 
+                    padding: '12px 16px',
+                    width: '100%',
+                    textAlign: 'left',
+                    backgroundColor: 'transparent',
+                    border: 'none'
+                } : {}}
+            >
+                {icon && <FiLogOut style={{ marginRight: '12px', fontSize: '1.1rem' }} />}
+                Logout
+            </Button>
 
-    // Optional: You can redirect using react-router-dom here
-    // navigate("/login"); or show a logout message
-  };
-
-  return (
-    <Container className="mt-5" style={{ maxWidth: '400px' }}>
-      <h4 className="mb-3 text-center">Are you sure you want to logout?</h4>
-
-      {loggedOut ? (
-        <Alert variant="success" className="text-center">
-          You have been successfully logged out.
-        </Alert>
-      ) : (
-        <Button
-          onClick={handleLogout}
-          className="w-100"
-          style={{ backgroundColor: '#1d3557', border: 'none' }}
-        >
-          Logout
-          
-        </Button>
-      )}
-    </Container>
-  );
+            <Modal 
+                show={showConfirm} 
+                onHide={() => setShowConfirm(false)} 
+                centered
+                backdrop="static"
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirm Logout</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Are you sure you want to logout?</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowConfirm(false)}>
+                        Cancel
+                    </Button>
+                    <Button 
+                        variant="danger" 
+                        onClick={handleLogout}
+                        data-testid="confirm-logout-button"
+                    >
+                        Logout
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    );
 };
+
+export default LogoutButton;
