@@ -247,10 +247,10 @@ export const AdminHome = () => {
                                     Bulk Import
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item onClick={() => navigate("/admin/bulk-import?type=teachers")}>
+                                    <Dropdown.Item onClick={() => navigate("/admin/bulk-import/teachers")}>
                                         Import Teachers
                                     </Dropdown.Item>
-                                    <Dropdown.Item onClick={() => navigate("/admin/bulk-import?type=students")}>
+                                    <Dropdown.Item onClick={() => navigate("/admin/bulk-import/students")}>
                                         Import Students
                                     </Dropdown.Item>
                                 </Dropdown.Menu>
