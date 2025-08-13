@@ -10,10 +10,13 @@ import {
   Button, 
   Spinner,
   Alert,
-  Badge
+  Badge,
+  InputGroup
 } from 'react-bootstrap';
 import { useQuery, useMutation, gql } from '@apollo/client';
-import { GET_TEACHER,GET_TEACHER_CLASSES, GET_STUDENTS_BY_CLASS } from '../../GraphQL/Queries';
+import { GET_TEACHER, GET_TEACHER_CLASSES, GET_STUDENTS_BY_CLASS } from '../../GraphQL/Queries';
+import { FiBook, FiUsers, FiMail, FiPhone, FiUpload, FiArrowLeft, FiUser } from 'react-icons/fi';
+
 const BULK_ENTER_MARKS = gql`
   mutation BulkEnterMarks($marks: [MarksInput!]!) {
     bulkEnterMarks(marks: $marks) {
@@ -23,7 +26,6 @@ const BULK_ENTER_MARKS = gql`
   }
 `;
 
-// ==================== Main Component ====================
 export const UploadMarks = () => {
   const empId = "T001";
   const [selectedClass, setSelectedClass] = useState(null);
@@ -112,17 +114,21 @@ export const UploadMarks = () => {
   // Loading and error states
   if (loadingTeacher || loadingClasses) {
     return (
-      <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-        <Spinner animation="border" variant="primary" />
-      </Container>
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+        <Spinner animation="border" variant="primary" style={{ width: '3rem', height: '3rem' }} />
+      </div>
     );
   }
 
   if (errorTeacher || errorClasses) {
     return (
-      <Container>
-        <Alert variant="danger">
-          Error loading data: {errorTeacher?.message || errorClasses?.message}
+      <Container className="mt-5">
+        <Alert variant="danger" className="shadow">
+          <Alert.Heading>Error loading data</Alert.Heading>
+          <p>{errorTeacher?.message || errorClasses?.message}</p>
+          <Button variant="outline-danger" onClick={() => window.location.reload()}>
+            Try Again
+          </Button>
         </Alert>
       </Container>
     );
@@ -130,8 +136,11 @@ export const UploadMarks = () => {
 
   if (!dataTeacher?.getTeacher) {
     return (
-      <Container>
-        <Alert variant="danger">Teacher data not found. Check emp_id.</Alert>
+      <Container className="mt-5">
+        <Alert variant="danger" className="shadow">
+          <Alert.Heading>Teacher data not found</Alert.Heading>
+          <p>Please check your employee ID</p>
+        </Alert>
       </Container>
     );
   }
@@ -140,213 +149,293 @@ export const UploadMarks = () => {
   const classes = dataClasses?.getTeacherClasses ?? [];
 
   return (
-    <>
-            <div className="d-flex">
-                <div style={{flexShrink:0, width:"250px"}}>
-               <TeaNav/>
-                </div>
-    
-            <Container className="bg-light">
-                <Row >
-              <Col className="d-flex  justify-content-center">
-         
-    <Container fluid className="py-4">
-      {/* Alert Notification */}
-      {alert.show && (
-        <Alert 
-          variant={alert.variant} 
-          onClose={() => setAlert({...alert, show: false})} 
-          dismissible
-          className="mt-3"
-        >
-          {alert.message}
-        </Alert>
-      )}
+    <div className="d-flex">
+      <div style={{ flexShrink: 0, width: "250px", backgroundColor: '#1d3557' }}>
+        <TeaNav />
+      </div>
 
-      {/* Teacher Info */}
-      <Card className="mb-4 shadow-sm">
-        <Card.Body>
-          <Row className="align-items-center">
-            <Col>
-              <h2 className="mb-1">
-                <strong>{teacher.emp_name}</strong>
-              </h2>
-              <div className="text-muted">
-                <span className="me-3">
-                  <i className="bi bi-envelope me-1"><b>{teacher.emp_email}</b></i> 
-                </span>
-                <span>
-                  <i className="bi bi-telephone me-1"><b>{teacher.emp_phone}</b></i> 
-                </span>
-              </div>
-            </Col>
-            <Col xs="auto">
-              <Badge bg="primary" pill>
-                Teacher
-              </Badge>
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
+      <Container fluid className="px-4 py-4" style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
+        {/* Header Section */}
+        <Row className="mb-4">
+          <Col>
+            <h2 style={{ color: '#1d3557' }} className="fw-bold mb-1">
+              <FiUpload className="me-2" />
+              Upload Marks
+            </h2>
+            <p className="text-muted mb-0">
+              {selectedClass 
+                ? `Entering marks for ${selectedClass.subjectName} (${selectedClass.subjectCode})`
+                : 'Select a class to begin entering marks'}
+            </p>
+          </Col>
+        </Row>
 
-      {/* Assigned Classes */}
-      <Card className="mb-4 shadow-sm">
-        <Card.Body>
-          <Card.Title className="mb-3">
-            <i className="bi bi-book me-2"></i> Your Assigned Classes
-          </Card.Title>
-          
-          {classes.length === 0 ? (
-            <Alert variant="info">No classes assigned to you yet.</Alert>
-          ) : (
-            <Row xs={1} md={2} lg={3} className="g-3">
-              {classes.map((cls, idx) => (
-                <Col key={idx}>
-                  <Card 
-                    className={`h-100 cursor-pointer ${selectedClass?.subjectCode === cls.subjectCode && selectedClass?.section_id === cls.section_id ? 'border-primary' : ''}`}
-                    onClick={() => {
-                      setSelectedClass(cls);
-                      setMarksMap({}); // reset marks when changing class
-                      setTotalMarks(100); // reset total marks to default
-                    }}
-                  >
-                    <Card.Body>
-                      <Card.Title className="text-primary">
-                        {cls.subjectName}
-                      </Card.Title>
-                      <Card.Text>
-                        <small className="text-muted d-block">
-                          <strong>Course:</strong> {cls.courseName}
-                        </small>
-                        <small className="text-muted d-block">
-                          <strong>Semester:</strong> {cls.semester_id}
-                        </small>
-                        <small className="text-muted d-block">
-                          <strong>Section:</strong> {cls.section_id}
-                        </small>
-                        <small className="text-muted d-block">
-                          <strong>Code:</strong> {cls.subjectCode}
-                        </small>
-                      </Card.Text>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              ))}
-            </Row>
-          )}
-        </Card.Body>
-      </Card>
+        {/* Alert Notification */}
+        {alert.show && (
+          <Alert 
+            variant={alert.variant} 
+            onClose={() => setAlert({...alert, show: false})} 
+            dismissible
+            className="shadow-sm mb-4"
+          >
+            {alert.message}
+          </Alert>
+        )}
 
-      {/* Students List and Marks Entry */}
-      {selectedClass && (
-        <Card className="shadow-sm">
+        {/* Teacher Info Card */}
+        <Card className="mb-4 shadow-sm border-0">
           <Card.Body>
-            <Card.Title className="mb-3">
-              <i className="bi bi-people me-2"></i> 
-              Enter Marks for {selectedClass.subjectName}
-            </Card.Title>
-
-            <Row className="mb-3">
-              <Col md={4}>
-                <Form.Group>
-                  <Form.Label>Select Mark Type:</Form.Label>
-                  <Form.Select 
-                    value={markType}
-                    onChange={(e) => setMarkType(e.target.value)}
-                  >
-                    <option value="MTE">MTE</option>
-                    <option value="Class_test_1">Class Test 1</option>
-                    <option value="Class_test_2">Class Test 2</option>
-                    <option value="ETE">ETE</option>
-                    <option value="attendance">Attendance</option>
-                  </Form.Select>
-                </Form.Group>
+            <Row className="align-items-center">
+              <Col>
+                <h5 className="mb-1" style={{ color: '#1d3557' }}>
+                  {teacher.emp_name}
+                </h5>
+                <div className="text-muted">
+                  <div className="d-flex align-items-center mb-1">
+                    <FiMail className="me-2" />
+                    <span>{teacher.emp_email}</span>
+                  </div>
+                  <div className="d-flex align-items-center">
+                    <FiPhone className="me-2" />
+                    <span>{teacher.emp_phone}</span>
+                  </div>
+                </div>
               </Col>
-              <Col md={4}>
-                <Form.Group>
-                  <Form.Label>Total Marks:</Form.Label>
-                  <Form.Control
-                    type="number"
-                    min="1"
-                    max="1000"
-                    value={totalMarks}
-                    onChange={(e) => {
-                      const val = Number(e.target.value);
-                      if (val > 0) setTotalMarks(val);
-                    }}
-                  />
-                </Form.Group>
+              <Col xs="auto">
+                <Badge bg="primary" pill>
+                  Teacher
+                </Badge>
               </Col>
             </Row>
-
-            {loadingStudents ? (
-              <div className="text-center">
-                <Spinner animation="border" variant="primary" />
-              </div>
-            ) : errorStudents ? (
-              <Alert variant="danger">
-                Error loading students: {errorStudents.message}
-              </Alert>
-            ) : studentsData?.getStudentsByClass?.length > 0 ? (
-              <>
-                <div className="table-responsive">
-                  <Table striped bordered hover>
-                    <thead className="table-dark">
-                      <tr>
-                        <th>Roll No</th>
-                        <th>Name</th>
-                        <th>Marks (out of {totalMarks})</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {studentsData.getStudentsByClass.map((stu) => (
-                        <tr key={stu.registrationNo}>
-                          <td>{stu.registrationNo}</td>
-                          <td>{stu.student_name}</td>
-                          <td>
-                            <Form.Control
-                              type="number"
-                              value={marksMap[stu.registrationNo] ?? ''}
-                              onChange={(e) => handleMarkChange(stu.registrationNo, e.target.value)}
-                              min="0"
-                              max={totalMarks}
-                              style={{ width: '80px' }}
-                            />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table>
-                </div>
-
-                <div className="d-flex justify-content-end mt-3">
-                  <Button 
-                    variant="primary" 
-                    onClick={handleSubmit}
-                    disabled={loadingSubmit}
-                  >
-                    {loadingSubmit ? (
-                      <>
-                        <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                        <span className="ms-2">Submitting...</span>
-                      </>
-                    ) : (
-                      'Submit Marks'
-                    )}
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <Alert variant="info">No students found in this class.</Alert>
-            )}
           </Card.Body>
         </Card>
-      )}
-    </Container>
-      </Col>
-                </Row>
-            </Container>
+
+        {!selectedClass ? (
+          <>
+            {/* Classes View */}
+            <Card className="mb-4 shadow-sm border-0">
+              <Card.Body>
+                <h5 className="mb-3" style={{ color: '#1d3557' }}>
+                  <FiBook className="me-2" />
+                  Your Assigned Classes
+                </h5>
+                
+                {classes.length === 0 ? (
+                  <Alert variant="info" className="shadow-sm">
+                    No classes assigned to you yet
+                  </Alert>
+                ) : (
+                  <Row className="g-4">
+                    {classes.map((cls, idx) => (
+                      <Col key={idx} xs={12} md={6} lg={4}>
+                        <Card 
+                          className="shadow-sm h-100 border-0"
+                          style={{ 
+                            cursor: 'pointer',
+                            borderLeft: '4px solid #1d3557',
+                            transition: 'transform 0.2s'
+                          }}
+                          onClick={() => {
+                            setSelectedClass(cls);
+                            setMarksMap({});
+                            setTotalMarks(100);
+                          }}
+                          onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                          onMouseOut={e => e.currentTarget.style.transform = ''}
+                        >
+                          <Card.Body>
+                            <div className="d-flex justify-content-between align-items-start mb-3">
+                              <div>
+                                <h6 style={{ color: '#1d3557' }}>{cls.subjectName}</h6>
+                                <Badge bg="light" text="dark" className="fw-normal">
+                                  {cls.subjectCode}
+                                </Badge>
+                              </div>
+                              <div style={{
+                                width: '40px',
+                                height: '40px',
+                                borderRadius: '50%',
+                                backgroundColor: '#1d3557',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: 'white'
+                              }}>
+                                <FiBook size={18} />
+                              </div>
+                            </div>
+                            
+                            <div className="mb-3">
+                              <div className="d-flex align-items-center mb-1">
+                                <span className="text-muted me-2">Course:</span>
+                                <strong>{cls.courseName}</strong>
+                              </div>
+                              <div className="d-flex align-items-center mb-1">
+                                <span className="text-muted me-2">Semester:</span>
+                                <strong>{cls.semester_id}</strong>
+                              </div>
+                              <div className="d-flex align-items-center">
+                                <span className="text-muted me-2">Section:</span>
+                                <strong>{cls.section_id}</strong>
+                              </div>
+                            </div>
+                          </Card.Body>
+                        </Card>
+                      </Col>
+                    ))}
+                  </Row>
+                )}
+              </Card.Body>
+            </Card>
+          </>
+        ) : (
+          <>
+            {/* Marks Entry View */}
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h5 style={{ color: '#1d3557' }}>
+                <FiUsers className="me-2" />
+                {selectedClass.subjectName} - Marks Entry
+              </h5>
+              <Button 
+                variant="outline-primary" 
+                onClick={() => {
+                  setSelectedClass(null);
+                  setMarksMap({});
+                }}
+                style={{ borderColor: '#1d3557', color: '#1d3557' }}
+              >
+                <FiArrowLeft className="me-1" /> Back to Classes
+              </Button>
             </div>
-       </>
+
+            <Card className="shadow-sm border-0 mb-4">
+              <Card.Body>
+                <Row className="mb-4">
+                  <Col md={4}>
+                    <Form.Group>
+                      <Form.Label>Mark Type</Form.Label>
+                      <Form.Select 
+                        value={markType}
+                        onChange={(e) => setMarkType(e.target.value)}
+                        style={{ borderColor: '#1d3557' }}
+                      >
+                        <option value="MTE">Mid-Term Exam</option>
+                        <option value="Class_test_1">Class Test 1</option>
+                        <option value="Class_test_2">Class Test 2</option>
+                        <option value="ETE">End-Term Exam</option>
+                        <option value="attendance">Attendance</option>
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+                  <Col md={4}>
+                    <Form.Group>
+                      <Form.Label>Total Marks</Form.Label>
+                      <Form.Control
+                        type="number"
+                        min="1"
+                        max="1000"
+                        value={totalMarks}
+                        onChange={(e) => {
+                          const val = Number(e.target.value);
+                          if (val > 0) setTotalMarks(val);
+                        }}
+                        style={{ borderColor: '#1d3557' }}
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+
+                {loadingStudents ? (
+                  <div className="text-center py-5">
+                    <Spinner animation="border" variant="primary" />
+                    <p className="mt-3">Loading students...</p>
+                  </div>
+                ) : errorStudents ? (
+                  <Alert variant="danger" className="shadow-sm">
+                    <Alert.Heading>Error loading students</Alert.Heading>
+                    <p>{errorStudents.message}</p>
+                  </Alert>
+                ) : studentsData?.getStudentsByClass?.length > 0 ? (
+                  <>
+                    <div className="table-responsive">
+                      <Table hover className="mb-0">
+                        <thead style={{ backgroundColor: '#f1f3f5' }}>
+                          <tr>
+                            <th style={{ padding: '1rem', borderTop: 'none' }}>Registration No</th>
+                            <th style={{ padding: '1rem', borderTop: 'none' }}>Student Name</th>
+                            <th style={{ padding: '1rem', borderTop: 'none', width: '150px' }}>Marks (out of {totalMarks})</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {studentsData.getStudentsByClass.map((stu) => (
+                            <tr key={stu.registrationNo}>
+                              <td style={{ padding: '1rem' }}>
+                                <div className="fw-semibold">{stu.registrationNo}</div>
+                              </td>
+                              <td style={{ padding: '1rem' }}>
+                                <div className="d-flex align-items-center">
+                                  <div style={{
+                                    width: '36px',
+                                    height: '36px',
+                                    borderRadius: '50%',
+                                    backgroundColor: '#e9ecef',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    marginRight: '12px',
+                                    color: '#1d3557'
+                                  }}>
+                                    <FiUser size={16} />
+                                  </div>
+                                  <div>
+                                    <div className="fw-medium">{stu.student_name}</div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td style={{ padding: '1rem' }}>
+                                <Form.Control
+                                  type="number"
+                                  value={marksMap[stu.registrationNo] ?? ''}
+                                  onChange={(e) => handleMarkChange(stu.registrationNo, e.target.value)}
+                                  min="0"
+                                  max={totalMarks}
+                                  style={{ width: '100px' }}
+                                />
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </Table>
+                    </div>
+
+                    <div className="d-flex justify-content-end mt-4">
+                      <Button 
+                        variant="primary" 
+                        onClick={handleSubmit}
+                        disabled={loadingSubmit}
+                        style={{ backgroundColor: '#1d3557', border: 'none', minWidth: '150px' }}
+                      >
+                        {loadingSubmit ? (
+                          <>
+                            <Spinner as="span" animation="border" size="sm" className="me-2" />
+                            Submitting...
+                          </>
+                        ) : (
+                          'Submit Marks'
+                        )}
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  <Alert variant="info" className="shadow-sm">
+                    No students found in this class
+                  </Alert>
+                )}
+              </Card.Body>
+            </Card>
+          </>
+        )}
+      </Container>
+    </div>
   );
 };
