@@ -30,7 +30,19 @@ export default {
           },
         ],
       }),
+    
+  getAssessmentsByTeacher: async (_, { empId }) => {
+    return await Assessment.findAll({
+      where: { emp_id: empId },
+      include: [
+        { model: Student, as: "student" },
+        { model: Subject, as: "subject" },
+        { model: Teacher, as: "teacher" },
+      ],
+    });
 
+}
+,
     getTeacherClasses: async (_, { emp_id }) => {
       const assignments = await TeacherSubjectSection.findAll({
         where: { emp_id },
