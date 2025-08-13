@@ -4,22 +4,24 @@ const courseTypeDef = gql`
   type Course {
     courseId: ID!
     courseName: String!
-    semesters:[Semester]
+    semesters: [Semester]
+  }
+
+  type Semester {
+    semester_id: ID!
+    semester_Name: String
+    subjects: [Subject]
+  }
+
+  type Subject {
+    subjectCode: String!
+    subjectName: String!
   }
 
   type Section {
     section_id: ID!
     section_name: String!
   }
-
-  type Semester {
-  semester_id: ID!
-  semester_Name: String
-  subject: [Subject]
-}
-
-
-  
 
   extend type Query {
     courses: [Course]
