@@ -62,6 +62,9 @@ function App() {
         <Route path="/admin/teachers" element={<TeacherMgmt/>}/>
         <Route path="/admin/students" element={<StudentMgmt/>}/>
         <Route path="/admin/announcements" element={<AdminAnnouncements/>}/>
+         <Route path="/admin/bulk-import/teachers" element={<BulkTeacherImport />} />
+        <Route path="/admin/bulk-import/students" element={<BulkStudentImport />} />
+
         <Route path="/admin/courses" element={<Course/>}/>
         <Route path="/admin/courses/:courseId" element={<CourseDetails/>}/>
         <Route path="/admin/bulk-import" element={<BulkStudentImport/>}></Route>
