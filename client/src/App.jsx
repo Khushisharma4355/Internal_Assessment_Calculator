@@ -37,6 +37,7 @@ import { AdminAnnouncements } from './Screens/Admin/Announcements'
 import { BulkStudentImport } from './Components/Admin/bulkimportStudent';
 import { BulkTeacherImport } from './Components/Admin/bulkimportTeacher';
 import NotFoundPage from './Screens/NotFoundPage';
+import { SendAllReports } from './Screens/Admin/SendAllReports';
 // import {TeacherDashboard} from './Components/Teachers/TeacherDashboard'
 function App() {
   return (
@@ -66,7 +67,8 @@ function App() {
         <Route path="/admin/announcements" element={<AdminAnnouncements/>}/>
          <Route path="/admin/bulk-import/teachers" element={<BulkTeacherImport />} />
         <Route path="/admin/bulk-import/students" element={<BulkStudentImport />} />
-
+        <Route path="/admin/sendreports" element={<SendAllReports />} />
+        
         <Route path="/admin/courses" element={<Course/>}/>
         <Route path="/admin/courses/:courseId" element={<CourseDetails/>}/>
         <Route path="/admin/bulk-import" element={<BulkStudentImport/>}></Route>
