@@ -195,14 +195,14 @@ export const BulkTeacherImport = () => {
                 emp_name: 'John Doe',
                 emp_email: 'john@example.com',
                 emp_phone: '9876543210',
-                dep_id: 'D001'
+                dep_id: 'DEP001'
             },
             {
                 emp_id: 'T002',
                 emp_name: 'Jane Smith',
                 emp_email: 'jane@example.com',
                 emp_phone: '9876543211',
-                dep_id: 'D002'
+                dep_id: 'DEP002'
             }
         ];
 

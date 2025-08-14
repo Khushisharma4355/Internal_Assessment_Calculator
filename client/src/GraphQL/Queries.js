@@ -142,3 +142,22 @@ export const GET_STUDENTS_BY_CLASS = gql`
     }
   }
 `;
+
+export const GET_ALL_TEACHERS = gql`
+  query GetAllTeachers {
+    getAllTeachers {
+      emp_id
+      emp_name
+      emp_email
+      emp_phone
+      is_admin
+      Subjects {
+        section_id
+        subjectCode
+        subject {
+          subjectName
+        }
+      }
+    }
+  }
+`;
