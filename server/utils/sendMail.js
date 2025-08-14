@@ -51,7 +51,7 @@ const sendTestMail = async () => {
   try {
     const info = await transporter.sendMail({
       from: `"UrLevel App" <${process.env.MAIL_USER}>`,
-      to: "youremail@example.com", // 🛑 Replace with your test email
+      to: "youremail@example.com", //  Replace with your test email
       subject: "Testing OTP Email",
       text: "This is a test OTP message!",
     });

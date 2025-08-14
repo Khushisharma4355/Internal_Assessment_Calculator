@@ -45,7 +45,7 @@ export const Stunav = () => {
     const navItems = [
         { path: '/students/', icon: <FiHome style={iconStyle} />, label: 'Home' },
         { path: '/students/assesments', icon: <FiUsers style={iconStyle} />, label: 'Assessment' },
-        { path: '/students/attendance', icon: <FiUsers style={iconStyle} />, label: 'Attendance' },
+        // { path: '/students/attendance', icon: <FiUsers style={iconStyle} />, label: 'Attendance' },
         // { path: '/student/', icon: <FiBook style={iconStyle} />, label: 'Logout' },
         // { path: '/admin/sendreports', icon: <FiMail style={iconStyle} />, label: 'Send Reports' }
     ];
