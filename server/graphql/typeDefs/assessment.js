@@ -24,6 +24,7 @@ const assessmentTypeDef = gql`
     markType: String!
   }
 
+<<<<<<< HEAD
   type StudentWithAssessments {
     registrationNo: BigInt!
     studentName: String!
@@ -49,14 +50,30 @@ const assessmentTypeDef = gql`
 
   extend type Mutation {
     bulkEnterMarks(marks: [MarksInput!]!): ResponseMessage!
+=======
+  extend type Query {
+    getStudentAssessment(registrationNo: BigInt!): [Assessment]
+  }
+
+  extend type Mutation {
+    bulkEnterMarks(marks: [MarksInput!]!): ResponseMessage
+>>>>>>> d9ec1fac727b6d87b731acce07ec22df71d6758e
     enterMarks(
       registrationNo: BigInt!
       subjectCode: String!
       marks: Int!
       markType: String!
+<<<<<<< HEAD
     ): ResponseMessage!
     sendReport(parentPhone: String!, message: String!): SendReportResponse!
   }
 `;
 
 export default assessmentTypeDef;
+=======
+    ): ResponseMessage
+  }
+`;
+
+export default assessmentTypeDef;
+>>>>>>> d9ec1fac727b6d87b731acce07ec22df71d6758e

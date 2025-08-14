@@ -90,7 +90,6 @@ export const TeacherMgmt = () => {
         >
           <AdminNav />
         </div>
-
         {/* Main Content */}
         <div className="flex-grow-1 p-3 p-md-4">
           <Container fluid>
@@ -193,7 +192,6 @@ export const TeacherMgmt = () => {
                               </Button>
                             </div>
                           </td>
-
                         </tr>
                       ))
                     ) : (
