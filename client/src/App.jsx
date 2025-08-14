@@ -38,6 +38,7 @@ import { BulkStudentImport } from './Components/Admin/bulkimportStudent';
 import { BulkTeacherImport } from './Components/Admin/bulkimportTeacher';
 import NotFoundPage from './Screens/NotFoundPage';
 import { SendAllReports } from './Screens/Admin/SendAllReports';
+// import { Attendance } from './Screens/Students/Attendance';
 // import {TeacherDashboard} from './Components/Teachers/TeacherDashboard'
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
         <Route path="/students/" element={<StuHome />} />
 
         <Route path="/students/assesments" element={<Assesments />} />
+        <Route path="/students/attendance" element={<Attendance />} />
         {/* <Route path="/students/reports" element={<Reports />} /> */}
         <Route path="/teachers/login" element={<TeacherLogin />} />
         <Route path="/teachers/" element={<TeaHome />} />

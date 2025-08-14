@@ -288,7 +288,7 @@ export const StuHome = () => {
         </Row>
 
         {/* Quick Actions */}
-        <Row className="mt-4">
+        {/* <Row className="mt-4">
           <Col>
             <div className="d-flex gap-3 flex-wrap">
               <Button variant="primary">
@@ -305,7 +305,7 @@ export const StuHome = () => {
               </Button>
             </div>
           </Col>
-        </Row>
+        </Row> */}
 
         {/* Charts and Recent Activity Section */}
         <Row className="mt-4">
