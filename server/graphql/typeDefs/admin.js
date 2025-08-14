@@ -11,6 +11,12 @@ const adminTypeDef = gql`
   extend type Query {
     getAdmin(emp_id: String!): Admin
   }
+  extend type Mutation{
+   addAdmin(
+    emp_id:String!
+   ):Admin
+  }
+  
 `;
 
 export default adminTypeDef;

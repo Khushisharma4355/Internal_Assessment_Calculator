@@ -17,6 +17,12 @@ export default {
 }
 
   },
+  Mutation:{
+   addAdmin:async(_,args)=>{
+    const admin=await Admin.create(args);
+    return admin;
+   }
+  },
 
   Admin: {
   teacher: (parent) => parent.Teacher,

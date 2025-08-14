@@ -178,7 +178,7 @@ export const CourseDetails = () => {
                           <Card.Title>{t.emp_name}</Card.Title>
                           <Card.Text>Email: {t.emp_email}</Card.Text>
                           <Card.Text>Phone: {t.emp_phone}</Card.Text>
-                          <Button variant="primary">Assign to Class</Button>
+                          {/* <Button variant="primary">Assign to Class</Button> */}
                         </Card.Body>
                       </Card>
                     </Col>

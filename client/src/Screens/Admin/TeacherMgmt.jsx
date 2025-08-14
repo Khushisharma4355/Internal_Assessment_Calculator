@@ -1,13 +1,13 @@
 import { useQuery, gql } from "@apollo/client";
-import { 
-  Spinner, 
-  Table, 
-  Alert, 
-  Container, 
-  Row, 
-  Col, 
-  Card, 
-  Button, 
+import {
+  Spinner,
+  Table,
+  Alert,
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
   InputGroup,
   Form,
   Badge,
@@ -18,7 +18,8 @@ import {
 import { AdminNav } from "../../Components/Admin/AdminNav";
 import { useState } from "react";
 import { FaSearch, FaEdit, FaTrash, FaPlus, FaFilter, FaBars } from "react-icons/fa";
-
+import { FaUserShield } from "react-icons/fa";
+// import { GET_ALL_TEACHERS } from "../../GraphQL/Queries";
 const GET_ALL_TEACHERS = gql`
   query GetAllTeachers {
     getAllTeachers {
@@ -63,7 +64,7 @@ export const TeacherMgmt = () => {
     );
   }
 
-  const filteredTeachers = data.getAllTeachers.filter(teacher => 
+  const filteredTeachers = data.getAllTeachers.filter(teacher =>
     teacher.emp_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     teacher.emp_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     teacher.emp_email?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -81,21 +82,21 @@ export const TeacherMgmt = () => {
         >
           <FaBars />
         </Button> */}
-        
+
         {/* Sidebar - Hidden on mobile when collapsed */}
-        <div 
-          className={`${isMobileNavOpen ? 'd-block' : 'd-none d-md-block'}`} 
+        <div
+          className={`${isMobileNavOpen ? 'd-block' : 'd-none d-md-block'}`}
           style={{ width: '250px', flexShrink: 0 }}
         >
           <AdminNav />
         </div>
-        
+
         {/* Main Content */}
         <div className="flex-grow-1 p-3 p-md-4">
           <Container fluid>
             <Row className="mb-4 align-items-center">
               <Col xs={12} md={6} className="mb-3 mb-md-0">
-                <h2 className="mb-0" style={{color:'#1d3557', fontWeight: '600'}}>
+                <h2 className="mb-0" style={{ color: '#1d3557', fontWeight: '600' }}>
                   Teacher Management
                 </h2>
                 <p className="text-muted mb-0 mt-1">
@@ -116,7 +117,7 @@ export const TeacherMgmt = () => {
                   </InputGroup>
                   <Dropdown>
                     <Dropdown.Toggle variant="outline-secondary" id="dropdown-filter" size="sm">
-                      <FaFilter className="me-1" /> 
+                      <FaFilter className="me-1" />
                       <span className="d-none d-md-inline">Filter</span>
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
@@ -126,7 +127,7 @@ export const TeacherMgmt = () => {
                     </Dropdown.Menu>
                   </Dropdown>
                   <Button variant="primary" size="sm" className="flex-shrink-0">
-                    <FaPlus className="me-1" /> 
+                    <FaPlus className="me-1" />
                     <span className="d-none d-md-inline">Add Teacher</span>
                   </Button>
                 </Stack>
@@ -177,14 +178,22 @@ export const TeacherMgmt = () => {
                           </td>
                           <td>
                             <div className="d-flex gap-2">
-                              <Button variant="outline-primary" size="sm">
+                              <Button variant="outline-primary" size="sm" title="Edit">
                                 <FaEdit />
                               </Button>
-                              <Button variant="outline-danger" size="sm">
+                              <Button
+                                variant="outline-success"
+                                size="sm"
+                                title="Make Admin"
+                              >
+                                <FaUserShield />
+                              </Button>
+                              <Button variant="outline-danger" size="sm" title="Delete">
                                 <FaTrash />
                               </Button>
                             </div>
                           </td>
+
                         </tr>
                       ))
                     ) : (

@@ -14,7 +14,8 @@ emp_id:{
 },
    password:{
         type:DataTypes.STRING,
-        allowNull:false
+        allowNull:true,
+        defaultValue: null
     }
 },{
     tableName:"Admin",
