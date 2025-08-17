@@ -240,7 +240,7 @@ const syncDatabase = async () => {
 
     // Sync all models
     console.log('Syncing models...');
-    // await sequelize.sync();
+    await sequelize.sync();
 // await Admin.drop();
     console.log("All models synced successfully.");
   } catch (err) {
