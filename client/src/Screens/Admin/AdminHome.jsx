@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { Pie, Bar, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, PointElement, LineElement } from 'chart.js';
 import { GET_ADMIN_DATA } from '../../GraphQL/Queries';
+import { RingLoader } from '../../Components/Spinner/RingLoader';
 // Register ChartJS components
 ChartJS.register(
   ArcElement, Tooltip, Legend, CategoryScale, 
@@ -44,11 +45,11 @@ export const AdminHome = () => {
         variables: { empid },
     });
 
-    if (loading) return (
-        <div className='d-flex justify-content-center align-items-center' style={{ minHeight: '50vh' }}>
-            <Spinner animation='border' variant='primary' />
-        </div>
-    );
+   if (loading) return (
+  <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "50vh" }}>
+    <RingLoader />
+  </div>
+);
 
     if (error) {
         return (

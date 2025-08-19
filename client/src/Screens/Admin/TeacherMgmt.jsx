@@ -19,6 +19,7 @@ import { AdminNav } from "../../Components/Admin/AdminNav";
 import { useState } from "react";
 import { FaSearch, FaEdit, FaTrash, FaPlus, FaFilter, FaBars } from "react-icons/fa";
 import { FaUserShield } from "react-icons/fa";
+import { RingLoader } from "../../Components/Spinner/RingLoader";
 // import { GET_ALL_TEACHERS } from "../../GraphQL/Queries";
 const GET_ALL_TEACHERS = gql`
   query GetAllTeachers {
@@ -43,14 +44,11 @@ export const TeacherMgmt = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
-  if (loading) {
-    return (
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '50vh' }}>
-        <Spinner animation="border" variant="primary" />
-        <span className="ms-2 d-none d-sm-inline">Loading teachers...</span>
-      </div>
-    );
-  }
+ if (loading) {
+     return (
+      <RingLoader/>
+     );
+   }
 
   if (error) {
     return (

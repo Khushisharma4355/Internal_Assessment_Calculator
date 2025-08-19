@@ -22,6 +22,7 @@ import { Managestu } from './Screens/Teacher/ManageStudents'
 import { Footer } from './Components/Footer/Footer'
 import { AdminHome } from './Screens/Admin/AdminHome'
 import { MainHome } from './Screens/Main/Main'
+import { FeaturesPage } from './Screens/Main/FeaturePage';
 import { LoginForm } from './Components/Login/login'
 import { StuLogin } from './Screens/Login/stuLogin'
 import { TeacherLogin } from './Screens/Login/TeacherLogin'
@@ -45,7 +46,9 @@ function App() {
     <>
 
       <Routes>
-        <Route path="/" element={<MainHome />} />
+         <Route path="/" element={<MainHome />} />
+        <Route path="/features" element={<FeaturesPage />} />
+        {/* <Route path="/developers" element={<DevelopersPage />} /> */}
         <Route path="/students/login" element={<StuLogin />} />
         {/* the below route is home route of student and right now working on /students route */}
         <Route path="/students/" element={<StuHome />} />

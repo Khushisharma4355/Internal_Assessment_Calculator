@@ -94,39 +94,41 @@ export const MainHome = () => {
   return (
     <div className="homepage">
       {/* Navigation Bar */}
-      <Navbar expand="lg" className="navbar-dark bg-dark fixed-top shadow">
-        <Container>
-          <Navbar.Brand href="#">
-            <span style={{ color: 'orange' }}>Ur</span>
-            <span style={{ color: 'white' }}>Level</span>
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-              <Nav.Link onClick={() => scrollToSection('hero-section')}>Home</Nav.Link>
-              <Nav.Link onClick={() => scrollToSection('features-section')}>Features</Nav.Link>
-              <Nav.Link onClick={() => scrollToSection('stats-section')}>Benefits</Nav.Link>
-              <Nav.Link onClick={() => scrollToSection('director-section')}>About</Nav.Link>
-            </Nav>
-            <Dropdown as={Nav.Item}>
-              <Dropdown.Toggle as={Nav.Link} className="d-flex align-items-center">
-                <FaSignInAlt className="me-2" /> Login
-              </Dropdown.Toggle>
-              <Dropdown.Menu className="dropdown-menu-end">
-                <Dropdown.Item onClick={() => handleLogin('admin')}>
-                  <FaUserShield className="me-2" /> Admin Portal
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => handleLogin('teachers')}>
-                  <FaChalkboardTeacher className="me-2" /> Faculty Portal
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => handleLogin('students')}>
-                  <FaUserGraduate className="me-2" /> Student Portal
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+     <Navbar expand="lg" className="navbar-dark bg-dark fixed-top shadow">
+  <Container>
+    <Navbar.Brand href="#">
+      <span style={{ color: 'orange' }}>Ur</span>
+      <span style={{ color: 'white' }}>Level</span>
+    </Navbar.Brand>
+    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+    <Navbar.Collapse id="basic-navbar-nav">
+      <Nav className="me-auto">
+        <Nav.Link onClick={() => scrollToSection('hero-section')}>Home</Nav.Link>
+        <Nav.Link onClick={() => navigate('/features')}>Features</Nav.Link>
+        <Nav.Link onClick={() => scrollToSection('stats-section')}>Benefits</Nav.Link>
+        <Nav.Link onClick={() => scrollToSection('director-section')}>About</Nav.Link>
+        <Nav.Link onClick={() => navigate('/developers')}>Developers</Nav.Link> {/* NEW */}
+      </Nav>
+      <Dropdown as={Nav.Item}>
+        <Dropdown.Toggle as={Nav.Link} className="d-flex align-items-center">
+          <FaSignInAlt className="me-2" /> Login
+        </Dropdown.Toggle>
+        <Dropdown.Menu className="dropdown-menu-end">
+          <Dropdown.Item onClick={() => handleLogin('students')}>
+            <FaUserGraduate className="me-2" /> Student Portal
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => handleLogin('teachers')}>
+            <FaChalkboardTeacher className="me-2" /> Faculty Portal
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => handleLogin('admin')}>
+            <FaUserShield className="me-2" /> Admin Portal
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+    </Navbar.Collapse>
+  </Container>
+</Navbar>
+
 
       {/* Hero Section */}
       <section id="hero-section" className="hero-section py-5" style={{ paddingTop: '80px' }}>

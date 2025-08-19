@@ -11,7 +11,7 @@ import {
 } from "react-bootstrap";
 import { FaWhatsapp, FaPaperPlane } from "react-icons/fa";
 import { AdminNav } from "../../Components/Admin/AdminNav";
-
+import { RingLoader } from "../../Components/Spinner/RingLoader";
 const GET_ALL_STUDENTS_WITH_ASSESSMENTS = gql`
   query GetAllStudentsWithAssessments {
     getAllStudentsWithAssessments {
@@ -99,11 +99,9 @@ export const SendAllReports = () => {
     alert(`Reports sent to ${count} parents!`);
   };
 
-  if (loading) {
+ if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center vh-100">
-        <Spinner animation="border" />
-      </div>
+     <RingLoader/>
     );
   }
   if (error) {

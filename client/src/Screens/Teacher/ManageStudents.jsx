@@ -7,7 +7,7 @@ import { TeaNav } from "../../Components/Teachers/TeaNav";
 import { useQuery } from '@apollo/client';
 import { GET_STUDENTS_BY_TEACHER, GET_TEACHER_CLASSES } from '../../GraphQL/Queries';
 import { FiUsers, FiMail, FiSearch, FiBook, FiEye, FiArrowLeft, FiUser, FiPhone, FiBookOpen } from 'react-icons/fi';
-
+import { RingLoader } from '../../Components/Spinner/RingLoader';
 export const Managestu = () => {
   const empId = localStorage.getItem('emp_id') || "T001";
   const [searchTerm, setSearchTerm] = useState('');
@@ -23,9 +23,7 @@ export const Managestu = () => {
 
   if (classesLoading || studentsLoading) {
     return (
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
-        <Spinner animation="border" variant="primary" style={{ width: '3rem', height: '3rem' }} />
-      </div>
+      <RingLoader/>
     );
   }
 

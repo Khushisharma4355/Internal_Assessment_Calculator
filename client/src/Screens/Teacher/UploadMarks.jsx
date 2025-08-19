@@ -16,7 +16,7 @@ import {
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { GET_TEACHER, GET_TEACHER_CLASSES, GET_STUDENTS_BY_CLASS } from '../../GraphQL/Queries';
 import { FiBook, FiUsers, FiMail, FiPhone, FiUpload, FiArrowLeft, FiUser } from 'react-icons/fi';
-
+import { RingLoader } from '../../Components/Spinner/RingLoader';
 const BULK_ENTER_MARKS = gql`
   mutation BulkEnterMarks($marks: [MarksInput!]!) {
     bulkEnterMarks(marks: $marks) {
@@ -113,11 +113,9 @@ export const UploadMarks = () => {
 
   // Loading and error states
   if (loadingTeacher || loadingClasses) {
-    return (
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
-        <Spinner animation="border" variant="primary" style={{ width: '3rem', height: '3rem' }} />
-      </div>
-    );
+        return (
+         <RingLoader/>
+        );
   }
 
   if (errorTeacher || errorClasses) {

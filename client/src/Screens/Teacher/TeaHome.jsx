@@ -5,7 +5,7 @@ import { FiBookOpen, FiUsers, FiClipboard, FiUpload, FiMail, FiFileText, FiAlert
 import { TeaNav } from '../../Components/Teachers/TeaNav';
 import { useQuery } from '@apollo/client';
 import { GET_TEACHER, GET_TEACHER_CLASSES, GET_STUDENTS_BY_TEACHER } from '../../GraphQL/Queries';
-
+import { RingLoader } from '../../Components/Spinner/RingLoader';
 export const TeaHome = () => {
   const navigate = useNavigate();
   const emp_id = "T001"; // Hardcoded for now, later get from login context
@@ -25,10 +25,7 @@ export const TeaHome = () => {
 
   if (teacherLoading || classLoading || studentsLoading) {
     return (
-      <div className="text-center mt-5">
-        <Spinner animation="border" />
-        <p>Loading dashboard...</p>
-      </div>
+      <RingLoader/>
     );
   }
 
