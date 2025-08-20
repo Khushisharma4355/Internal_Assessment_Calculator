@@ -17,24 +17,29 @@ export default {
 }
 
   },
-  Mutation:{
-   addAdmin:async(_,args)=>{
-    const admin=await Admin.create(args);
-    return admin;
-   }
-  },
+  Mutation: {
+  addAdmin: async (_, args) => {
+    // Create admin
+    const admin = await Admin.create(args);
+
+    // Fetch again with Teacher relation included
+    const adminWithTeacher = await Admin.findByPk(admin.emp_id, {
+      include: [
+        {
+          model: Teacher,
+          attributes: ["emp_id", "emp_name", "emp_email", "emp_phone"]
+        }
+      ]
+    });
+
+    return adminWithTeacher;
+  }
+}
+,
 
   Admin: {
   teacher: (parent) => parent.Teacher,
-   teacherCount: async () => {
-      return await Teacher.count(); // Efficient COUNT query
-    },
-    studentCount:async()=>{
-       return await Student.count();
-    },
-    courseCount:async()=>{
-      return await Course.count();
-    }
+  emp_name: (parent) => parent.Teacher ? parent.Teacher.emp_name : null
 }
   
 };

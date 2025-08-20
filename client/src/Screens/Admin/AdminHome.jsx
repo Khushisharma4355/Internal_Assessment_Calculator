@@ -9,12 +9,12 @@ import { Modall } from '../../Components/Admin/modal';
 import { useState } from 'react';
 import { Pie, Bar, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, PointElement, LineElement } from 'chart.js';
-import { GET_ADMIN_DATA } from '../../GraphQL/Queries';
+import { GET_ADMIN_DATA, GET_COURSE_COUNT, GET_STUDENT_COUNT, GET_TEACHER_COUNT } from '../../GraphQL/Queries';
 import { RingLoader } from '../../Components/Spinner/RingLoader';
 // Register ChartJS components
 ChartJS.register(
-  ArcElement, Tooltip, Legend, CategoryScale, 
-  LinearScale, BarElement, PointElement, LineElement
+    ArcElement, Tooltip, Legend, CategoryScale,
+    LinearScale, BarElement, PointElement, LineElement
 );
 
 // const GET_ADMIN_DATA = gql`
@@ -35,7 +35,7 @@ ChartJS.register(
 
 export const AdminHome = () => {
     const navigate = useNavigate();
-    const empid = "T006"; // This should be dynamically set based on logged-in admin
+    const empid = "T001"; // This should be dynamically set based on logged-in admin
 
     //for add user modal
     const [modalShow, setModalShow] = React.useState(false);
@@ -45,11 +45,18 @@ export const AdminHome = () => {
         variables: { empid },
     });
 
-   if (loading) return (
-  <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "50vh" }}>
-    <RingLoader />
-  </div>
-);
+    const { data: studentCount, loading: studentsLoading } = useQuery(GET_STUDENT_COUNT)
+    const { data: teacherCount, loading: teacherLoading } = useQuery(GET_TEACHER_COUNT)
+    const { data: courseCount, loading: courseLoading } = useQuery(GET_COURSE_COUNT)
+    const totalStudents = studentCount?.getStudentCount;
+    const totalTeachers = teacherCount?.getTeacherCount;
+    const totalCourses = courseCount?.getCourseCount;
+
+    if (loading) return (
+        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "50vh" }}>
+            <RingLoader />
+        </div>
+    );
 
     if (error) {
         return (
@@ -61,51 +68,53 @@ export const AdminHome = () => {
 
     const adminData = data?.getAdmin;
     const adminName = adminData?.teacher?.emp_name || "Admin";
-    const teacherCount = adminData?.teacherCount || 0;
-    const studentCount = adminData?.studentCount || 0;
-    const courseCount = adminData?.courseCount || 0;
+    //  if (teacherLoading || courseLoading || studentsLoading) {
+    //     const teacherCount=0;
+    //     const studentCount=0;
+    //     const courseCount=0;
+    //   }
 
     // Mock data for charts (since your backend doesn't provide this yet)
-   const userDistributionData = {
-    labels: ['BCA Students', 'MCA Students', 'BBA Students', 'MBA Students'],
-    datasets: [
-        {
-            data: [
-                // teacherCount, // Teachers count from your query
-                20, // BCA students (example)
-                10, // MCA students (example)
-                15, // BBA students (example)
-                12  // MBA students (example)
-            ],
-            backgroundColor: [
-                // '#1d3557', // Teachers
-                '#457b9d', // BCA
-                '#a8dadc', // MCA
-                '#f1faee', // BBA
-                '#1d3557'  // MBA
-            ],
-            borderColor: '#fff',
-            borderWidth: 1,
-        },
-    ],
-};
+    const userDistributionData = {
+        labels: ['BCA Students', 'MCA Students', 'BBA Students', 'MBA Students'],
+        datasets: [
+            {
+                data: [
+                    // teacherCount, // Teachers count from your query
+                    20, // BCA students (example)
+                    10, // MCA students (example)
+                    15, // BBA students (example)
+                    12  // MBA students (example)
+                ],
+                backgroundColor: [
+                    // '#1d3557', // Teachers
+                    '#457b9d', // BCA
+                    '#a8dadc', // MCA
+                    '#f1faee', // BBA
+                    '#1d3557'  // MBA
+                ],
+                borderColor: '#fff',
+                borderWidth: 1,
+            },
+        ],
+    };
 
     const passingPercentageData = {
-  labels: ['BCA', 'MCA', 'BBA', 'MBA'],
-  datasets: [
-    {
-      label: 'Passing Percentage',
-      data: [78, 82.5, 70, 75], // % of students passed
-       backgroundColor: [
-                '#457b9d', // BCA
-                '#a8dadc', // MCA
-                '#f1faee', // BBA
-                '#1d3557'  // MBA
-            ],
-      borderWidth: 1,
-    },
-  ],
-};
+        labels: ['BCA', 'MCA', 'BBA', 'MBA'],
+        datasets: [
+            {
+                label: 'Passing Percentage',
+                data: [78, 82.5, 70, 75], // % of students passed
+                backgroundColor: [
+                    '#457b9d', // BCA
+                    '#a8dadc', // MCA
+                    '#f1faee', // BBA
+                    '#1d3557'  // MBA
+                ],
+                borderWidth: 1,
+            },
+        ],
+    };
 
 
     const attendanceTrendData = {
@@ -150,7 +159,7 @@ export const AdminHome = () => {
                                 <div className='d-flex justify-content-between align-items-center'>
                                     <div>
                                         <h6>Teachers</h6>
-                                        <h3>{teacherCount}</h3>
+                                        <h3>{teacherLoading ? "Loading..." : totalTeachers}</h3>
                                         {/* <small className="text-muted">+2 this week</small> */}
                                     </div>
                                     <div style={{ fontSize: "2rem", color: "#1d3557" }}>
@@ -167,7 +176,8 @@ export const AdminHome = () => {
                                 <div className='d-flex justify-content-between align-items-center'>
                                     <div>
                                         <h6>Students</h6>
-                                        <h3>{studentCount}</h3>
+                                        <h3>{studentsLoading ? "Loading..." : totalStudents}</h3>
+                                        
                                         {/* <small className="text-muted">+15 this week</small> */}
                                     </div>
                                     <div style={{ fontSize: "2rem", color: "#1d3557" }}>
@@ -184,7 +194,7 @@ export const AdminHome = () => {
                                 <div className='d-flex justify-content-between align-items-center'>
                                     <div>
                                         <h6>Courses</h6>
-                                        <h3>{courseCount}</h3>
+                                        <h3>{courseLoading ? "Loading..." : totalCourses}</h3>
                                         {/* <small className="text-muted">All active</small> */}
                                     </div>
                                     <div style={{ fontSize: "2rem", color: "#1d3557" }}>
@@ -217,7 +227,7 @@ export const AdminHome = () => {
                 <Row className="mt-4">
                     <Col>
                         <div className="d-flex gap-3 flex-wrap">
-                            <Dropdown>
+                            {/* <Dropdown>
                                 <Dropdown.Toggle style={{ backgroundColor: "#1d3557" }}>
                                     <FiUserPlus className="me-2" />
                                     Add User
@@ -241,7 +251,24 @@ export const AdminHome = () => {
                                         show={modalShow}
                                         onHide={() => setModalShow(false)}
                                         formType={activeFormType}
-                                    />
+                                    /> */}
+                            <Button
+                                style={{ backgroundColor: "#1d3557" }}
+                                onClick={() => {
+                                    setModalShow(true);
+                                    setActiveFormType("teacher");
+                                }}
+                            >
+                                <FiUserPlus className="me-2" />
+                                Add Teacher
+                            </Button>
+
+                            {/* Modal for Add Teacher */}
+                            <Modall
+                                show={modalShow}
+                                onHide={() => setModalShow(false)}
+                                formType={activeFormType}
+                            />
                             <Dropdown>
                                 <Dropdown.Toggle variant="outline-secondary">
                                     <FiUpload className="me-2" />
@@ -275,16 +302,16 @@ export const AdminHome = () => {
                             </Card.Header>
                             <Card.Body>
                                 <div style={{ height: '250px' }}>
-                                    <Pie 
-                                        data={userDistributionData} 
-                                        options={{ 
+                                    <Pie
+                                        data={userDistributionData}
+                                        options={{
                                             maintainAspectRatio: false,
                                             plugins: {
                                                 legend: {
                                                     position: 'bottom'
                                                 }
                                             }
-                                        }} 
+                                        }}
                                     />
                                 </div>
                             </Card.Body>
@@ -300,9 +327,9 @@ export const AdminHome = () => {
                             </Card.Header>
                             <Card.Body>
                                 <div style={{ height: '250px' }}>
-                                    <Line 
-                                        data={attendanceTrendData} 
-                                        options={{ 
+                                    <Line
+                                        data={attendanceTrendData}
+                                        options={{
                                             maintainAspectRatio: false,
                                             scales: {
                                                 y: {
@@ -311,7 +338,7 @@ export const AdminHome = () => {
                                                     max: 100
                                                 }
                                             }
-                                        }} 
+                                        }}
                                     />
                                 </div>
                             </Card.Body>
@@ -355,52 +382,52 @@ export const AdminHome = () => {
                 <Row>
                     {/* Course Distribution */}
                     <Col md={12} lg={6} className="mb-4">
-                       <Card className="shadow-sm h-100">
-  <Card.Header className="d-flex justify-content-between align-items-center">
-    <span>Passing Percentage by Course</span>
-    <FiBarChart2 />
-  </Card.Header>
-  <Card.Body>
-    <div style={{ height: '250px' }}>
-      <Bar 
-        data={passingPercentageData}
-        options={{ 
-          maintainAspectRatio: false,
-          scales: {
-            y: {
-              beginAtZero: true,
-              max: 100,
-              title: {
-                display: true,
-                text: 'Passing Percentage (%)',
-              },
-              ticks: {
-                callback: value => value + '%'
-              }
-            },
-            x: {
-              title: {
-                display: true,
-                text: 'Courses',
-              }
-            }
-          },
-          plugins: {
-            legend: {
-              display: true,
-              position: 'top',
-            },
-            tooltip: {
-              callbacks: {
-                label: (ctx) => `${ctx.parsed.y}% passed`,
-              }
-            }
-          }
-        }} 
-      />
-    </div>
-  </Card.Body>
-</Card>
+                        <Card className="shadow-sm h-100">
+                            <Card.Header className="d-flex justify-content-between align-items-center">
+                                <span>Passing Percentage by Course</span>
+                                <FiBarChart2 />
+                            </Card.Header>
+                            <Card.Body>
+                                <div style={{ height: '250px' }}>
+                                    <Bar
+                                        data={passingPercentageData}
+                                        options={{
+                                            maintainAspectRatio: false,
+                                            scales: {
+                                                y: {
+                                                    beginAtZero: true,
+                                                    max: 100,
+                                                    title: {
+                                                        display: true,
+                                                        text: 'Passing Percentage (%)',
+                                                    },
+                                                    ticks: {
+                                                        callback: value => value + '%'
+                                                    }
+                                                },
+                                                x: {
+                                                    title: {
+                                                        display: true,
+                                                        text: 'Courses',
+                                                    }
+                                                }
+                                            },
+                                            plugins: {
+                                                legend: {
+                                                    display: true,
+                                                    position: 'top',
+                                                },
+                                                tooltip: {
+                                                    callbacks: {
+                                                        label: (ctx) => `${ctx.parsed.y}% passed`,
+                                                    }
+                                                }
+                                            }
+                                        }}
+                                    />
+                                </div>
+                            </Card.Body>
+                        </Card>
 
                     </Col>
 

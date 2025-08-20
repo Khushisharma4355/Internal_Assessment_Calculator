@@ -8,6 +8,7 @@ const teacherTypeDef = gql`
   emp_phone: String!
   Subjects: [TeacherSubSec]
   department: Department
+  isAdmin:Boolean
 }
 
 type ClassInfo {
@@ -76,6 +77,7 @@ type ImportError {
 type Query {
   getTeacher(emp_id: String!): Teacher
   getAllTeachers: [Teacher]
+  getTeacherCount:Int
   getSubjects(emp_id: String!): [TeacherSubSec]
   getAssessmentsByTeacher(empId: String!): [Assessment]
   getTeacherClasses(emp_id: String!): [ClassInfo!]!

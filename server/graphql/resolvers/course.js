@@ -19,45 +19,48 @@ export default {
       });
       return subject && subject.Semester
         ? {
-            semester_id: subject.Semester.semester_id,
-            semester_Name: subject.Semester.semester_Name,
-          }
+          semester_id: subject.Semester.semester_id,
+          semester_Name: subject.Semester.semester_Name,
+        }
         : null;
     },
 
     // Fetch a single course with all its semesters and subjects
-   courseById: async (_, { courseId }) => {
-  const course = await Course.findByPk(courseId, {
-    include: [
-      {
-        model: Semester,
-        through: { attributes: [] }, // remove join table fields from result
+    courseById: async (_, { courseId }) => {
+      const course = await Course.findByPk(courseId, {
         include: [
           {
-            model: Subject,
-            attributes: ["subjectCode", "subjectName"],
+            model: Semester,
+            through: { attributes: [] }, // remove join table fields from result
+            include: [
+              {
+                model: Subject,
+                attributes: ["subjectCode", "subjectName"],
+              },
+            ],
           },
         ],
-      },
-    ],
-    order: [[Semester, "semester_id", "ASC"]],
-  });
+        order: [[Semester, "semester_id", "ASC"]],
+      });
 
-  if (!course) return null;
+      if (!course) return null;
 
-  return {
-    courseId: course.courseId,
-    courseName: course.courseName,
-    semesters: course.Semesters.map((sem) => ({
-      semester_id: sem.semester_id,
-      semester_Name: sem.semester_Name,
-      subjects: sem.Subjects.map((sub) => ({
-        subjectCode: sub.subjectCode,
-        subjectName: sub.subjectName,
-      })),
-    })),
-  };
-}
+      return {
+        courseId: course.courseId,
+        courseName: course.courseName,
+        semesters: course.Semesters.map((sem) => ({
+          semester_id: sem.semester_id,
+          semester_Name: sem.semester_Name,
+          subjects: sem.Subjects.map((sub) => ({
+            subjectCode: sub.subjectCode,
+            subjectName: sub.subjectName,
+          })),
+        })),
+      };
+    },
 
+    getCourseCount:async()=>{
+      return await Course.count();
+    }
   },
 };

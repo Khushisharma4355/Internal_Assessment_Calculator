@@ -46,7 +46,7 @@ export const GET_STUDENTS = gql`
 //   }
 // `;
 
- export const GET_STUDENT_BY_EMAIL = gql`
+export const GET_STUDENT_BY_EMAIL = gql`
   query GetStudentByEmail($email: String!) {
     studentByEmail(email: $email) {
       name
@@ -65,6 +65,8 @@ export const GET_COURSES = gql`
     }
   }
 `;
+
+//admin home
 export const GET_ADMIN_DATA = gql`
   query GetAdmin($empid: String!) {
     getAdmin(emp_id: $empid) {
@@ -74,74 +76,89 @@ export const GET_ADMIN_DATA = gql`
         emp_email
         emp_phone
       }
-      teacherCount
-      studentCount
-      courseCount
     }
   }
 `;
-
+export const GET_COURSE_COUNT = gql`
+  query GetCourseCount{
+    getCourseCount
+  }
+`
+export const GET_STUDENT_COUNT = gql`
+  query GetStudentCount{
+    getStudentCount
+  }
+  `
+export const GET_TEACHER_COUNT=gql`
+  query GetTeacherCount{
+    getTeacherCount
+  }
+`
 export const GET_DEPARTMENTS = gql`
   query GetDepartments {
     getDepartment {
-      dep_id
-      dept_name
-    }
+    dep_id
+    dept_name
   }
+}
 `;
 //teacher>>managestudents
 export const GET_STUDENTS_BY_TEACHER = gql`
   query GetStudentsByTeacher($emp_id: ID!) {
-    getStudentsByTeacher(emp_id: $emp_id) {
-      registrationNo
-      student_name
-      student_email
-      courseId
-      courseName
-      semester_id
-      section_id
-      subjectCode
-      subjectName
-    }
+  getStudentsByTeacher(emp_id: $emp_id) {
+    registrationNo
+    student_name
+    student_email
+    courseId
+    courseName
+    semester_id
+    section_id
+    subjectCode
+    subjectName
   }
+}
 `;
 
 //teaHome
 export const GET_TEACHER = gql`
   query GetTeacher($emp_id: String!) {
-    getTeacher(emp_id: $emp_id) {
-      emp_name
-      emp_email
-    }
+  getTeacher(emp_id: $emp_id) {
+    emp_name
+    emp_email
   }
+}
 `;
 
 export const GET_TEACHER_CLASSES = gql`
   query GetTeacherClasses($emp_id: String!) {
-    getTeacherClasses(emp_id: $emp_id) {
-      courseId
-      courseName
-      semester_id
-      section_id
-      subjectCode
-      subjectName
-    }
+  getTeacherClasses(emp_id: $emp_id) {
+    courseId
+    courseName
+    semester_id
+    section_id
+    subjectCode
+    subjectName
   }
+}
 `;
 
 export const GET_STUDENTS_BY_CLASS = gql`
   query GetStudentsByClass($emp_id: String!, $courseId: String!, $semester_id: String!, $section_id: String!) {
-    getStudentsByClass(
-      emp_id: $emp_id,
-      courseId: $courseId,
-      semester_id: $semester_id,
-      section_id: $section_id
-    ) {
-      registrationNo
-      student_name
-    }
+  getStudentsByClass(
+    emp_id: $emp_id,
+    courseId: $courseId,
+    semester_id: $semester_id,
+    section_id: $section_id
+  ) {
+    registrationNo
+    student_name
   }
+}
 `;
+
+
+
+//teacher mangement
 
 export const GET_ALL_TEACHERS = gql`
   query GetAllTeachers {
@@ -150,7 +167,7 @@ export const GET_ALL_TEACHERS = gql`
       emp_name
       emp_email
       emp_phone
-      is_admin
+      isAdmin
       Subjects {
         section_id
         subjectCode

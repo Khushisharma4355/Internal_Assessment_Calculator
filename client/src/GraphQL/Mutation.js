@@ -86,3 +86,17 @@ export const BULK_IMPORT_TEACHERS = gql`
     }
   }
 `;
+export const ADD_ADMIN = gql`
+  mutation AddAdmin($emp_id: String!) {
+    addAdmin(emp_id: $emp_id) {
+      emp_id
+      emp_name
+      teacher {
+        emp_id
+        emp_name
+        emp_email
+        emp_phone
+      }
+    }
+  }
+`;
