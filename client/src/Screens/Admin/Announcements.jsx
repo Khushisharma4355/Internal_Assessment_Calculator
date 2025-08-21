@@ -380,8 +380,8 @@ export const AdminAnnouncements = () => {
                       </Card.Text>
 
                       {/* Attachment */}
-                      {ann.filePath && (
-                        <a
+                      {/* {ann.filePath && ( */}
+                        {/* <a
                           href={ann.filePath}
                           download
                           target="_blank"
@@ -389,9 +389,19 @@ export const AdminAnnouncements = () => {
                           className="btn btn-sm btn-outline-secondary rounded-2 mt-2"
                         >
                           📎 Download Attachment
-                        </a>
-                      )}
-
+                        </a> */}
+                      {/* )} */}
+{ann.filePath && (
+      <a 
+        href={`http://localhost:5000${ann.filePath}`} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="btn btn-sm btn-primary rounded-3"
+        download
+      >
+        📥 Download Attachment
+      </a>
+    )}
                       {/* Footer Info */}
                       <div className="mt-3 pt-2 border-top small text-muted">
                         👤 <strong>{ann.createdBy.emp_name}</strong> ({ann.createdBy.emp_id})

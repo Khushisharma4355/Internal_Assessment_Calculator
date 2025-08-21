@@ -2,6 +2,8 @@ import { gql } from "apollo-server-express";
 
 const announcementTypeDefs = gql`
 
+scalar Upload
+
 type Announcement {
   id: ID!
   title: String!
@@ -17,7 +19,7 @@ input CreateAnnouncementInput {
   title: String!
   description: String
   type: String!
-  filePath: String
+  filePath: String!
   emp_id: String!   # 👈 so you can link Teacher
 }
 

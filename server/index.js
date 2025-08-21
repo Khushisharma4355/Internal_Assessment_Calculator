@@ -10,6 +10,8 @@ import typeDefs from "./graphql/typeDefs/index.js";
 import resolvers from "./graphql/resolvers/index.js";
 import bodyParser from "body-parser";
 import cors from "cors";
+import path from "path";
+// import { graphqlUploadExpress } from "graphql-upload";
 // server.js or app.js
 
 import { syncDatabase } from "./model/models.js";
@@ -23,6 +25,9 @@ const server = new ApolloServer({
   resolvers,
   
 });
+// graphql-upload middleware
+// app.use(graphqlUploadExpress());
+// app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 //await server.start();
 
 // Start Apollo Server

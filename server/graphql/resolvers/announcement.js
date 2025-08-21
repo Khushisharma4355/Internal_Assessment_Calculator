@@ -3,6 +3,7 @@
 import Announcement from "../../model/Announcement.js";
 import Teacher from "../../model/Teacher.js";
 
+
 export const announcementResolvers = {
   Query: {
     getAnnouncements: async () => {
