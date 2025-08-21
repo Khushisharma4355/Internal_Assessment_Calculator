@@ -1,0 +1,41 @@
+.announcement-card {
+  border: none;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  background:white;
+}
+
+.announcement-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.title-text {
+  font-size: 1.1rem;
+  color: #2c3e50;
+}
+
+.description-text {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #555;
+  min-height: 70px;
+}
+
+.badge {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-outline-primary {
+  border-width: 2px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-outline-primary:hover {
+  background-color: #0d6efd;
+  color: #fff;
+  border-color: #0d6efd;
+}

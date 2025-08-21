@@ -11,6 +11,7 @@ import {
 } from 'react-icons/fi';
 import './sidebar.css';
 import LogoutButton from '../Logout/Logout';
+import { TfiAnnouncement } from "react-icons/tfi";
 export const Stunav = () => {
     const [show, setShow] = useState(false);
     const location = useLocation();
@@ -45,6 +46,7 @@ export const Stunav = () => {
     const navItems = [
         { path: '/students/', icon: <FiHome style={iconStyle} />, label: 'Home' },
         { path: '/students/assesments', icon: <FiUsers style={iconStyle} />, label: 'Assessment' },
+        { path: '/students/announcements', icon: <TfiAnnouncement style={iconStyle} />, label: 'Announcements' }
         // { path: '/students/attendance', icon: <FiUsers style={iconStyle} />, label: 'Attendance' },
         // { path: '/student/', icon: <FiBook style={iconStyle} />, label: 'Logout' },
         // { path: '/admin/sendreports', icon: <FiMail style={iconStyle} />, label: 'Send Reports' }

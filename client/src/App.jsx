@@ -34,7 +34,11 @@ import { Course } from './Screens/Admin/Courses';
 import { TeacherMgmt } from './Screens/Admin/TeacherMgmt'
 import { StudentMgmt } from './Screens/Admin/StudentMgmt'
 // import { StudentLogout } from './Screens/Logout/StudentLogout'
+
+
 import { AdminAnnouncements } from './Screens/Admin/Announcements'
+import  TeacherAnnouncements  from './Screens/Teacher/Announcement'
+import  StudentAnnouncements  from './Screens/Students/Announcement'
 import { BulkStudentImport } from './Components/Admin/bulkimportStudent';
 import { BulkTeacherImport } from './Components/Admin/bulkimportTeacher';
 import NotFoundPage from './Screens/NotFoundPage';
@@ -69,7 +73,12 @@ function App() {
         <Route path="/admin/" element={<AdminHome />} />
         <Route path="/admin/teachers" element={<TeacherMgmt/>}/>
         <Route path="/admin/students" element={<StudentMgmt/>}/>
+
+        {/* ANNOUNCEMENT */}
         <Route path="/admin/announcements" element={<AdminAnnouncements/>}/>
+        <Route path="/students/announcements" element={<StudentAnnouncements />} />
+        <Route path="/teachers/announcements" element={<TeacherAnnouncements />} />
+
          <Route path="/admin/bulk-import/teachers" element={<BulkTeacherImport />} />
         <Route path="/admin/bulk-import/students" element={<BulkStudentImport />} />
         <Route path="/admin/sendreports" element={<SendAllReports />} />

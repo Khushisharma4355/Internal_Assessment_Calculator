@@ -10,7 +10,7 @@ import department from "./department.js";
 // import shared from './shared.js';
 import {emailTypedefs} from "./shared.js"
 // import { typeDefs } from "./checkEmail.js";
-
+import announcementTypeDefs from "./announcement.js";
 const root = gql`
   type Query
   type Mutation
@@ -26,5 +26,6 @@ export default [
   adminTypeDef,
   // shared,
   department,
-  emailTypedefs
+  emailTypedefs,
+  announcementTypeDefs
 ];

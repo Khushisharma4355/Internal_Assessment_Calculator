@@ -49,6 +49,7 @@ import {
   FiLogOut 
 } from 'react-icons/fi';
 import LogoutButton from '../Logout/Logout';
+import { TfiAnnouncement } from "react-icons/tfi";
 // import './sidebar.css';
 
 export const TeaNav = () => {
@@ -87,6 +88,7 @@ export const TeaNav = () => {
         { path: '/teachers/managestudents', icon: <FiUsers style={iconStyle} />, label: 'Manage Students' },
         { path: '/teachers/uploadmarks', icon: <FiUsers style={iconStyle} />, label: 'Upload marks' },
         { path: '/teachers/reports', icon: <FiBook style={iconStyle} />, label: 'Reports' },
+        { path: '/teachers/announcements', icon: <TfiAnnouncement style={iconStyle} />, label: 'Announcements' }
         // { path: '/admin/sendreports', icon: <FiMail style={iconStyle} />, label: 'Send Reports' }
     ];
 

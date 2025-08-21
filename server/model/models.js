@@ -10,6 +10,7 @@ import Admin from "./Admin.js";
 import Semester from "./Semester.js";
 import CourseSemester from "./CourseSemester.js";
 import Section from "./Section.js";
+import Announcement from "./Announcement.js";
 // import TeacherSubjectSection from "./TeacherSubSection.js";
 import TeacherSubjectSection from "./TeacherSubSection.js";
 import Assessment from "./Assessment.js";
@@ -243,7 +244,7 @@ const syncDatabase = async () => {
     // Sync all models
     console.log('Syncing models...');
     await sequelize.sync();
-// await Admin.drop();
+// await Announcement.drop();
     console.log("All models synced successfully.");
   } catch (err) {
     console.error("Error syncing models:", err);
@@ -274,5 +275,6 @@ export {
   Section,
   TeacherSubjectSection,
   Assessment,
-  syncDatabase
+  syncDatabase,
+  Announcement
 };
