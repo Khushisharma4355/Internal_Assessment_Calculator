@@ -49,9 +49,10 @@ export const AdminNav = ({ onSelect }) => {
 
     return (
         <div
-            className="h-100 d-flex flex-column justify-content-between p-4"
+            className="d-flex flex-column justify-content-between p-4"
             style={{ 
                 backgroundColor: '#1d3557',
+                minHeight: '100vh',   // ✅ Fix height same as viewport
             }}
         >
             <div>
