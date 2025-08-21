@@ -100,3 +100,8 @@ export const ADD_ADMIN = gql`
     }
   }
 `;
+export const REMOVE_ADMIN=gql`
+  mutation RemoveAdmin($emp_id:String!){
+     removeAdmin(emp_id: $emp_id)
+  }
+`
