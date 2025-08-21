@@ -117,6 +117,9 @@ export default {
         console.error("Failed to fetch students by teacher:", err);
         throw new Error("Failed to fetch students");
       }
+    },
+    getStudentCount:async()=>{
+      return await Student.count();
     }
   },
 

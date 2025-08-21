@@ -86,7 +86,7 @@ import {
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { FiBook, FiPlus } from "react-icons/fi";
-
+import { RingLoader } from "../../Components/Spinner/RingLoader";
 const GET_COURSES = gql`
   query GetCourses {
     courses {
@@ -100,11 +100,9 @@ export const Course = () => {
   const navigate = useNavigate();
   const { loading, error, data } = useQuery(GET_COURSES);
 
-  if (loading) {
+ if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
-        <Spinner animation="border" variant="primary" />
-      </div>
+     <RingLoader/>
     );
   }
 

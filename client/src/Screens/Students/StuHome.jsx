@@ -6,7 +6,7 @@ import { FiUser, FiBook, FiAward, FiHash, FiCalendar, FiBarChart2, FiPieChart, F
 import { BsPersonCheck } from "react-icons/bs";
 import { Pie, Bar, Doughnut, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title, PointElement, LineElement } from 'chart.js';
-
+import { RingLoader } from '../../Components/Spinner/RingLoader';
 // Register ChartJS components
 ChartJS.register(
   ArcElement, Tooltip, Legend, CategoryScale, 
@@ -92,9 +92,7 @@ export const StuHome = () => {
   });
 
   if (loadingStudent || loadingAssess) return (
-    <div className='d-flex justify-content-center align-items-center' style={{ minHeight: '50vh' }}>
-      <Spinner animation='border' variant='primary' />
-    </div>
+    <RingLoader/>
   );
 
   if (errorStudent) {

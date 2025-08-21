@@ -18,7 +18,7 @@ import {
 import { AdminNav } from "../../Components/Admin/AdminNav";
 import { useState } from "react";
 import { FaSearch, FaEdit, FaTrash, FaPlus, FaFilter, FaBars } from "react-icons/fa";
-
+import { RingLoader } from "../../Components/Spinner/RingLoader";
 const GET_ALL_STUDENTS = gql`
   query GetAllStudents {
      students {
@@ -41,10 +41,7 @@ export const StudentMgmt = () => {
 
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '50vh' }}>
-        <Spinner animation="border" variant="primary" />
-        <span className="ms-2 d-none d-sm-inline">Loading students...</span>
-      </div>
+     <RingLoader/>
     );
   }
 

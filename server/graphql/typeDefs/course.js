@@ -24,6 +24,7 @@ const courseTypeDef = gql`
   }
 
   extend type Query {
+    getCourseCount:Int
     courses: [Course]
     courseById(courseId: ID!): Course
     semesters: [Semester]

@@ -11,7 +11,7 @@ import {
 } from "react-bootstrap";
 import { TeaNav } from "../../Components/Teachers/TeaNav";
 import { useQuery, gql } from "@apollo/client";
-
+import { RingLoader } from "../../Components/Spinner/RingLoader";
 // ================= GraphQL Query =================
 const GET_STUDENT_REPORTS = gql`
   query GetStudentReports($courseId: ID!, $semester_id: ID!, $section_id: String!) {

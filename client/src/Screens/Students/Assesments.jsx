@@ -15,7 +15,7 @@ import {
 } from 'react-bootstrap';
 
 import { GeneratePDF } from '../../Components/Pdf/PdfDownload';
-
+import { RingLoader } from '../../Components/Spinner/RingLoader';
 const GET_ASSESSMENT = gql`
   query GetAssessment($regno: BigInt!) {
     getStudentAssessment(registrationNo: $regno) {
@@ -59,9 +59,7 @@ export const Assesments=()=>{
         });
     
         if (loading) return (
-            <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '50vh' }}>
-                <Spinner animation="border" variant="primary" />
-            </div>
+            <RingLoader/>
         );
         if (error)
             return (

@@ -7,8 +7,12 @@ import Section from "../../model/Section.js";
 import Student from "../../model/Student.js";
 import Department from "../../model/Department.js";
 import sequelize from "../../config/db.js";
+import Admin from "../../model/Admin.js";
+import { where } from "sequelize";
 export default {
   Query: {
+
+    
     getTeacher: async (_, { emp_id }) => {
       return await Teacher.findOne({
         where: { emp_id },
@@ -16,8 +20,8 @@ export default {
       });
     },
 
-    getAllTeachers: async () =>
-      await Teacher.findAll({
+    getAllTeachers: async () => {
+      return await Teacher.findAll({
         include: [
           {
             model: TeacherSubjectSection,
@@ -28,21 +32,28 @@ export default {
               },
             ],
           },
+          {
+            model: Admin,
+            attributes: ["emp_id"],
+            required: false
+          }
         ],
-      }),
-    
-  getAssessmentsByTeacher: async (_, { empId }) => {
-    return await Assessment.findAll({
-      where: { emp_id: empId },
-      include: [
-        { model: Student, as: "student" },
-        { model: Subject, as: "subject" },
-        { model: Teacher, as: "teacher" },
-      ],
-    });
+      });
+    },
 
-}
-,
+
+    getAssessmentsByTeacher: async (_, { empId }) => {
+      return await Assessment.findAll({
+        where: { emp_id: empId },
+        include: [
+          { model: Student, as: "student" },
+          { model: Subject, as: "subject" },
+          { model: Teacher, as: "teacher" },
+        ],
+      });
+
+    }
+    ,
     getTeacherClasses: async (_, { emp_id }) => {
       const assignments = await TeacherSubjectSection.findAll({
         where: { emp_id },
@@ -99,6 +110,10 @@ export default {
         return [];
       }
     },
+
+    getTeacherCount: async () => {
+      return await Teacher.count();
+    }
   },
 
   Mutation: {
@@ -112,67 +127,67 @@ export default {
 
     },
     // Replace the existing bulkImportTeachers with this:
-bulkImportTeachers: async (_, { input }) => {
-  // input shape per schema: { teachers: [TeacherInput!]!, overwrite?: Boolean }
-  const { teachers, overwrite = true } = input || {};
+    bulkImportTeachers: async (_, { input }) => {
+      // input shape per schema: { teachers: [TeacherInput!]!, overwrite?: Boolean }
+      const { teachers, overwrite = true } = input || {};
 
-  if (!Array.isArray(teachers)) {
-    throw new Error("Invalid input: 'teachers' must be a non-empty array");
-  }
-
-  const results = {
-    created: 0,
-    updated: 0,
-    skipped: 0,
-    errors: []
-  };
-
-  for (const [index, teacher] of teachers.entries()) {
-    try {
-      // Minimal sanity checks (your frontend already validates too)
-      if (!teacher.emp_id || !teacher.emp_name || !teacher.emp_email || !teacher.dep_id) {
-        throw new Error("Missing required fields (emp_id, emp_name, emp_email, dep_id)");
+      if (!Array.isArray(teachers)) {
+        throw new Error("Invalid input: 'teachers' must be a non-empty array");
       }
 
-      const existing = await Teacher.findOne({ where: { emp_id: teacher.emp_id } });
+      const results = {
+        created: 0,
+        updated: 0,
+        skipped: 0,
+        errors: []
+      };
 
-      if (existing) {
-        if (overwrite) {
-          await existing.update(teacher);
-          results.updated++;
-        } else {
+      for (const [index, teacher] of teachers.entries()) {
+        try {
+          // Minimal sanity checks (your frontend already validates too)
+          if (!teacher.emp_id || !teacher.emp_name || !teacher.emp_email || !teacher.dep_id) {
+            throw new Error("Missing required fields (emp_id, emp_name, emp_email, dep_id)");
+          }
+
+          const existing = await Teacher.findOne({ where: { emp_id: teacher.emp_id } });
+
+          if (existing) {
+            if (overwrite) {
+              await existing.update(teacher);
+              results.updated++;
+            } else {
+              results.skipped++;
+              results.errors.push({
+                row: index + 1,
+                emp_id: teacher.emp_id,
+                error: "Teacher exists (enable overwrite to update)"
+              });
+            }
+          } else {
+            await Teacher.create(teacher);
+            results.created++;
+          }
+        } catch (error) {
           results.skipped++;
           results.errors.push({
             row: index + 1,
-            emp_id: teacher.emp_id,
-            error: "Teacher exists (enable overwrite to update)"
+            emp_id: teacher?.emp_id ?? null,
+            error: error.message
           });
         }
-      } else {
-        await Teacher.create(teacher);
-        results.created++;
       }
-    } catch (error) {
-      results.skipped++;
-      results.errors.push({
-        row: index + 1,
-        emp_id: teacher?.emp_id ?? null,
-        error: error.message
-      });
-    }
-  }
 
-  return {
-    success: results.errors.length === 0,
-    message:
-      results.errors.length === 0
-        ? "All teachers imported successfully"
-        : results.errors.length === teachers.length
-          ? "Import failed - all rows had errors"
-          : "Import completed with some errors",
-    details: results
-  };
-},
+      return {
+        success: results.errors.length === 0,
+        message:
+          results.errors.length === 0
+            ? "All teachers imported successfully"
+            : results.errors.length === teachers.length
+              ? "Import failed - all rows had errors"
+              : "Import completed with some errors",
+        details: results
+      };
+    },
 
 
 
@@ -234,6 +249,10 @@ bulkImportTeachers: async (_, { input }) => {
         include: [{ model: Subject }],
       });
     },
+      isAdmin: (parent) => {
+    return !!parent.Admin; // GraphQL will check Admin from the JOIN
+  }
+
   },
 
   TeacherSubSec: {

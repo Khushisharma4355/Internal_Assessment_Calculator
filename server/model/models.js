@@ -176,12 +176,14 @@ Department.hasMany(Teacher,{
    onDelete: "CASCADE",
   onUpdate: "CASCADE"
 })
+
+
 Admin.belongsTo(Teacher,{
   foreignKey:"emp_id",
    onDelete: "CASCADE",
   onUpdate: "CASCADE"
 })
-Teacher.hasMany(Admin,{
+Teacher.hasOne(Admin,{
   foreignKey:"emp_id",
    onDelete: "CASCADE",
   onUpdate: "CASCADE"

@@ -61,7 +61,7 @@ type ImportError {
 
     # Fetch all students
     students: [Student]
-
+    getStudentCount:Int
     # Fetch a single student by registration number
     student(registrationNo: BigInt!): Student
 
