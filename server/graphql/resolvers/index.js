@@ -6,6 +6,7 @@ import assessment from "./assessment.js";
 // import shared from "./shared.js";
 import admin from "./admin.js";
 import department from "./department.js";
+import { announcementResolvers} from "./announcement.js";
 // import shared from "./shared.js";
 // import { resolvers } from "./checkEmail.js";
 import {emailResolvers} from "./shared.js"
@@ -28,5 +29,6 @@ export default mergeResolvers(
   admin,
   // shared,
   department,
-  emailResolvers
+  emailResolvers,
+  announcementResolvers
 );

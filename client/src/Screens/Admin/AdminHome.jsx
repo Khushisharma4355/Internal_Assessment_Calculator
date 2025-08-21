@@ -34,7 +34,7 @@ ChartJS.register(
 
 export const AdminHome = () => {
     const navigate = useNavigate();
-    const empid = "T006"; // This should be dynamically set based on logged-in admin
+    const empid = "T001"; // This should be dynamically set based on logged-in admin
 
     //for add user modal
     const [modalShow, setModalShow] = React.useState(false);
