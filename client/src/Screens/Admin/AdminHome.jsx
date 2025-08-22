@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Card, Row, Col, Button, ListGroup, Alert, Dropdown } from 'react-bootstrap';
 import { AdminNav } from '../../Components/Admin/AdminNav';
 import { FiBook, FiUsers, FiAlertCircle, FiUserPlus, FiUpload, FiMail, FiCalendar, FiBarChart2, FiMenu, FiX } from 'react-icons/fi';
@@ -18,6 +18,15 @@ ChartJS.register(
 );
 
 export const AdminHome = () => {
+    const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 992);
+    useEffect(() => {
+        const handleResize = () => {
+            setIsDesktop(window.innerWidth >= 992);
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
     const navigate = useNavigate();
     const empid = "T001"; // This should be dynamically set based on logged-in admin
 
@@ -56,18 +65,13 @@ export const AdminHome = () => {
     const adminData = data?.getAdmin;
     const adminName = adminData?.teacher?.emp_name || "Admin";
 
-    // Mock data for charts (since your backend doesn't provide this yet)
+    // Mock data for charts
     const userDistributionData = {
         labels: ['BCA Students', 'MCA Students', 'BBA Students', 'MBA Students'],
         datasets: [
             {
                 data: [20, 10, 15, 12],
-                backgroundColor: [
-                    '#457b9d', // BCA
-                    '#a8dadc', // MCA
-                    '#f1faee', // BBA
-                    '#1d3557'  // MBA
-                ],
+                backgroundColor: ['#457b9d', '#a8dadc', '#f1faee', '#1d3557'],
                 borderColor: '#fff',
                 borderWidth: 1,
             },
@@ -79,13 +83,8 @@ export const AdminHome = () => {
         datasets: [
             {
                 label: 'Passing Percentage',
-                data: [78, 82.5, 70, 75], // % of students passed
-                backgroundColor: [
-                    '#457b9d', // BCA
-                    '#a8dadc', // MCA
-                    '#f1faee', // BBA
-                    '#1d3557'  // MBA
-                ],
+                data: [78, 82.5, 70, 75],
+                backgroundColor: ['#457b9d', '#a8dadc', '#f1faee', '#1d3557'],
                 borderWidth: 1,
             },
         ],
@@ -106,14 +105,24 @@ export const AdminHome = () => {
     };
 
     return (
-        <div className="d-flex">
-            {/* Sidebar Navigation - Fixed for desktop, offcanvas for mobile */}
-            <div className="d-none d-lg-block" style={{ width: "250px", flexShrink: 0 }}>
+        <div>
+            {/* Sidebar Navigation */}
+            <div
+                className="d-none d-lg-block"
+                style={{
+                    width: "250px",
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    height: "100vh",
+                    zIndex: 1030,
+                }}
+            >
                 <AdminNav />
             </div>
 
             {/* Main Content */}
-            <div className="flex-grow-1 p-3 p-md-4" style={{ marginLeft: 0 }}>
+            <div className={`flex-grow-1 p-3 p-md-4 ${isDesktop ? "ms-lg-250" : ""}`}>
                 {/* Mobile Nav Toggle */}
                 <div className="d-lg-none mb-3">
                     <Button
@@ -128,13 +137,13 @@ export const AdminHome = () => {
 
                 {/* Mobile Navigation Overlay */}
                 {isMobileNavOpen && (
-                    <div 
+                    <div
                         className="d-lg-none position-fixed top-0 start-0 h-100 w-100"
                         style={{ zIndex: 1040, backgroundColor: "rgba(0,0,0,0.5)" }}
                         onClick={() => setIsMobileNavOpen(false)}
                     >
-                        <div 
-                            className="h-100"
+                        <div
+                            className="h-100 bg-white"
                             style={{ width: "75%", maxWidth: "280px" }}
                             onClick={(e) => e.stopPropagation()}
                         >
@@ -142,8 +151,7 @@ export const AdminHome = () => {
                         </div>
                     </div>
                 )}
-
-                <Container fluid>
+                <Container style={{marginLeft:isDesktop?250:0}}>
                     <Row className='mb-4'>
                         <Col>
                             <h2 style={{ color: '#1d3557' }}>Welcome, <span style={{ color: 'orange' }}>{adminName}</span></h2>
@@ -243,7 +251,7 @@ export const AdminHome = () => {
                                     onHide={() => setModalShow(false)}
                                     formType={activeFormType}
                                 />
-                                
+
                                 <Dropdown>
                                     <Dropdown.Toggle variant="outline-secondary">
                                         <FiUpload className="me-2" />
@@ -258,7 +266,7 @@ export const AdminHome = () => {
                                         </Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
-                                
+
                                 <Button variant="warning" onClick={() => navigate("/admin/send-announcement")}>
                                     <FiMail className="me-2" />
                                     Send Announcement

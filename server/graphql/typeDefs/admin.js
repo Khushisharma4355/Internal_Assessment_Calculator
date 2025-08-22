@@ -12,6 +12,7 @@ const adminTypeDef = gql`
   }
   extend type Mutation {
     addAdmin(emp_id: String!): Admin
+    removeAdmin(emp_id:String!):Boolean
   }
 `;
 

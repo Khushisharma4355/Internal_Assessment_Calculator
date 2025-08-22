@@ -19,11 +19,27 @@ import { useState } from "react";
 import { FaSearch, FaEdit, FaTrash, FaUserShield, FaBars, FaTimes } from "react-icons/fa";
 import { RingLoader } from "../../Components/Spinner/RingLoader";
 import { GET_ALL_TEACHERS } from "../../GraphQL/Queries";
-import { ADD_ADMIN } from "../../GraphQL/Mutation";
-
+import { ADD_ADMIN, REMOVE_ADMIN } from "../../GraphQL/Mutation";
+import { useEffect } from "react";
 export const TeacherMgmt = () => {
+ 
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 992); // lg breakpoint
+
+      useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 992);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const [addAdmin] = useMutation(ADD_ADMIN, {
     refetchQueries: ["GetAllTeachers"],
+    awaitRefetchQueries: true,
+  });
+
+  const [removeAdmin] = useMutation(REMOVE_ADMIN, {
+    refetchQueries: ["GetAllTeachers"], // refresh teacher list after removal
     awaitRefetchQueries: true,
   });
 
@@ -32,6 +48,7 @@ export const TeacherMgmt = () => {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [selectedTeachers, setSelectedTeachers] = useState([]);
   const [currentAdminLoading, setCurrentAdminLoading] = useState(null);
+  const [deletingAdmin, setDeletingAdmin] = useState(null);
 
   if (loading) return <RingLoader />;
   if (error) {
@@ -60,6 +77,20 @@ export const TeacherMgmt = () => {
       console.error("Error making admin:", err.message);
     } finally {
       setCurrentAdminLoading(null);
+    }
+  };
+
+  const handleRemoveAdmin = async (emp_id) => {
+    if (!window.confirm("Are you sure you want to remove this admin?")) return;
+    setDeletingAdmin(emp_id);
+    try {
+      await removeAdmin({
+        variables: { emp_id },
+      });
+    } catch (err) {
+      console.error("Error removing admin:", err.message);
+    } finally {
+      setDeletingAdmin(null);
     }
   };
 
@@ -106,7 +137,7 @@ export const TeacherMgmt = () => {
                   <Button variant="outline-primary" size="sm" title="Edit">
                     <FaEdit />
                   </Button>
-                  {!teacher.isAdmin && (
+                  {!teacher.isAdmin ? (
                     <Button
                       variant="outline-success"
                       size="sm"
@@ -120,10 +151,21 @@ export const TeacherMgmt = () => {
                         <FaUserShield />
                       )}
                     </Button>
+                  ) : (
+                    <Button
+                      variant="outline-danger"
+                      size="sm"
+                      title="Remove Admin"
+                      disabled={deletingAdmin === teacher.emp_id}
+                      onClick={() => handleRemoveAdmin(teacher.emp_id)}
+                    >
+                      {deletingAdmin === teacher.emp_id ? (
+                        <Spinner animation="border" size="sm" />
+                      ) : (
+                        <FaTrash />
+                      )}
+                    </Button>
                   )}
-                  <Button variant="outline-danger" size="sm" title="Delete">
-                    <FaTrash />
-                  </Button>
                 </div>
               </div>
               
@@ -242,7 +284,7 @@ export const TeacherMgmt = () => {
                       <Button variant="outline-primary" size="sm" title="Edit">
                         <FaEdit />
                       </Button>
-                      {!teacher.isAdmin && (
+                      {!teacher.isAdmin ? (
                         <Button
                           variant="outline-success"
                           size="sm"
@@ -256,10 +298,21 @@ export const TeacherMgmt = () => {
                             <FaUserShield />
                           )}
                         </Button>
+                      ) : (
+                        <Button
+                          variant="outline-danger"
+                          size="sm"
+                          title="Remove Admin"
+                          disabled={deletingAdmin === teacher.emp_id}
+                          onClick={() => handleRemoveAdmin(teacher.emp_id)}
+                        >
+                          {deletingAdmin === teacher.emp_id ? (
+                            <Spinner animation="border" size="sm" />
+                          ) : (
+                            <FaTrash />
+                          )}
+                        </Button>
                       )}
-                      <Button variant="outline-danger" size="sm" title="Delete">
-                        <FaTrash />
-                      </Button>
                     </div>
                   </td>
                 </tr>
@@ -280,12 +333,19 @@ export const TeacherMgmt = () => {
   return (
     <div className="d-flex">
       {/* Sidebar Navigation - Fixed for desktop, offcanvas for mobile */}
-      <div className="d-none d-lg-block" style={{ width: "250px", flexShrink: 0 }}>
+      <div 
+      className="d-none d-lg-block position-fixed h-100"
+      style={{ width: "250px", left: 0, top: 0, background: "#fff", borderRight: "1px solid #dee2e6" }}
+    >
         <AdminNav />
       </div>
 
       {/* Main Content */}
-      <div className="flex-grow-1 p-3 p-md-4" style={{ marginLeft: 0 }}>
+      <div className="flex-grow-1 p-3 p-md-4" style={
+          isMobile
+            ? { width: "100%" } // ✅ No margin for mobile
+            : { marginLeft: "250px", width: "calc(100% - 250px)" } // ✅ With margin for desktop
+        }>
         {/* Mobile Nav Toggle */}
         <div className="d-lg-none mb-3">
           <Button
