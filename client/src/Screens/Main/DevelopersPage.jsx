@@ -29,8 +29,8 @@ const developers = [
     name: "Khushi Sharma",
     role: "Database & Backend Setup",
     img: khushi,
-    github: "https://github.com",
-    linkedin: "https://linkedin.com",
+    github: "https://github.com/Khushisharma4355",
+    linkedin: "http://www.linkedin.com/in/khushi-sharma004",
     responsibilities: [
       "Set up and configured MongoDB database with collections.",
       "Designed efficient schemas to store and retrieve assessment data.",
@@ -42,8 +42,8 @@ const developers = [
     name: "Pallavi Goswami",
     role: "Teachers Portal & Integration",
     img: pallavi,
-    github: "https://github.com",
-    linkedin: "https://linkedin.com",
+    github: "https://github.com/Pallavi-Goswami153",
+    linkedin: "https://www.linkedin.com/in/pallavi-goswami1?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BwxWOziXaR1SM9S%2FEG7mSMg%3D%3D",
     responsibilities: [
       "Developed a dedicated teacher’s portal for managing assessments.",
       "Linked frontend pages with backend APIs for real-time data exchange.",
@@ -124,7 +124,8 @@ export const Developer = () => {
                       <a href={dev.linkedin} target="_blank" rel="noreferrer">
                         <FaLinkedin
                           size={28}
-                          className="text-primary hover-icon"
+                          className="hover-icon"
+                          style={{color:"#1d3557"}}
                         />
                       </a>
                     </div>
