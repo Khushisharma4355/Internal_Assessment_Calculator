@@ -126,7 +126,7 @@ export const Developer = () => {
                           size={28}
                           className="hover-icon"
                           style={{color:"#1d3557"}}
-                        />
+                        /> 
                       </a>
                     </div>
                   </Card.Body>

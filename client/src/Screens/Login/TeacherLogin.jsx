@@ -1,61 +1,72 @@
+
 import React from 'react'
 import { LoginForm } from '../../Components/Login/login'
-import { Container, Row, Col } from 'react-bootstrap'
-import { Card } from 'react-bootstrap'
+import { Container, Row, Col, Card } from 'react-bootstrap'
 import maimt from '../../assets/maimtphoto.jpg'
-export const TeacherLogin = () => {
+
+export const TeacherLogin  = () => {
   return (
-    <div>
-      <div className="min-vh-100 bg-light">
-        <Container fluid className="min-vh-100 d-flex align-items-center justify-content-center p-0">
-          <Row className="w-100 g-0">
-            {/* Left Side Image */}
-            <Col lg={6} className="d-none d-lg-block p-0">
-              <img
-                className="img-fluid w-100 h-100"
-                src={maimt}
-                alt="College"
-                style={{ objectFit: 'cover' }}
-              />
-            </Col>
-            {/* Right Side Login Form */}
-            <Col
-              xs={12} lg={6} className="d-flex align-items-center justify-content-center min-vh-100 bg-light"
-            >
-              <Card className="p-4 shadow-lg rounded-4 w-100" style={{ maxWidth: '450px' }}>
-                {/* Logo and Branding */}
-                <div className="text-center mb-4">
-                  <h1 className="text-center mb-3 text-dark fw-bold" style={{ color: '#1d3557' }}>Teacher Login</h1>
-                  <img
-                    src="http://192.168.1.12/images/maimt_logo.png"
-                    width="100"
-                    height="100"
-                    alt="MAIMT Logo"
-                    className="mb-2"
-                  />
-                  <h2
-                    style={{
-                      fontFamily: 'cursive',
-                      fontWeight: 'bold',
-                      fontSize: '2rem',
-                      margin: 0
-                    }}
-                  >
-                    <span style={{ color: 'orange' }}>Ur</span>
-                   <span style={{color:"#1d3557"}}>Level</span>
-                  </h2>
-                </div>
+    <div
+      className="min-vh-100 d-flex align-items-center justify-content-center"
+      style={{
+        backgroundImage: `url(${maimt})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        position: 'relative'
+      }}
+    >
+      {/* Overlay */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.6)' // Dark overlay
+        }}
+      ></div>
 
-                {/* Form Title */}
-                {/* <h4 className="text-center mb-3 text-dark fw-bold">Admin Login</h4> */}
+      <Container
+        fluid
+        className="d-flex align-items-center justify-content-center"
+        style={{ position: 'relative', zIndex: 1 }}
+      >
+        <Row className="w-100 justify-content-center">
+          <Col xs={12} md={8} lg={5}>
+            <Card className="p-4 shadow-lg rounded-4" style={{ background: 'rgba(255,255,255,0.9)' }}>
+              {/* Logo & Title */}
+              <div className="text-center mb-4">
+                <h1 className="fw-bold" style={{ color: '#1d3557' }}>
+                   Faculty Login
+                </h1>
+                <img
+                  src="http://192.168.1.12/images/maimt_logo.png"
+                  width="80"
+                  height="80"
+                  alt="MAIMT Logo"
+                  className="mb-2"
+                />
+                <h2
+                  style={{
+                    fontFamily: 'cursive',
+                    fontWeight: 'bold',
+                    fontSize: '2rem',
+                    margin: 0
+                  }}
+                >
+                  <span style={{ color: 'orange' }}>Ur</span>
+                  <span style={{ color: '#1d3557' }}>Level</span>
+                </h2>
+              </div>
 
-                {/* Login Form */}
-                <LoginForm role="teacher"/>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      </div>
+              {/* Login Form */}
+              <LoginForm role="teacher" />
+            </Card>
+          </Col>
+        </Row>
+      </Container>
     </div>
   )
 }
+
