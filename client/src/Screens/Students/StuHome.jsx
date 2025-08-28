@@ -75,7 +75,7 @@ const InfoCard = ({ icon, title, value, color = "primary" }) => (
 );
 
 export const StuHome = () => {
-  const student_email = localStorage.getItem("student_email") || "pallavigoswami153@gmail.com";
+  const student_email = localStorage.getItem("student_email") || "ananya@example.com";
 
   // Fetch student info
   const { loading: loadingStudent, error: errorStudent, data: dataStudent } = useQuery(GET_STUDENT_BY_EMAIL, {
