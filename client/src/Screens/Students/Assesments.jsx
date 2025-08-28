@@ -52,7 +52,7 @@ const GradeBadge = ({ score }) => {
 
 export const Assesments=()=>{
 
-     const regno = 20230004;
+     const regno = 20230003;
     
         const { loading, error, data } = useQuery(GET_ASSESSMENT, {
             variables: { regno },
