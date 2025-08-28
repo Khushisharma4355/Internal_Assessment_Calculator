@@ -28,7 +28,8 @@ const LogoutButton = ({ variant = 'link', className = '', icon = true }) => {
                     width: '100%',
                     textAlign: 'left',
                     backgroundColor: 'transparent',
-                    border: 'none'
+                    border: 'none',
+                    textDecoration:"none"
                 } : {}}
             >
                 {icon && <FiLogOut style={{ marginRight: '12px', fontSize: '1.1rem' }} />}

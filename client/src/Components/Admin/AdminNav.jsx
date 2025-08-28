@@ -57,13 +57,13 @@ export const AdminNav = ({ onSelect }) => {
         >
             <div>
                 <div className="mb-5 d-flex align-items-center">
-                    <img
-                        src="/images/maimt_logo.png"
-                        alt="UrLevel Logo"
-                        width="35"
-                        height="35"
-                        className="me-2"
-                    />
+                   <img
+                            src="http://192.168.1.12/images/maimt_logo.png"
+                            alt="UrLevel Logo"
+                            width="35"
+                            height="35"
+                            className="me-2"
+                        />
                     <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white' }}>
                         <span style={{ color: 'orange' }}>Ur</span>Level
                     </span>

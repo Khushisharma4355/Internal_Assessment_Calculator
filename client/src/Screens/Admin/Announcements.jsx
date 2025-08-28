@@ -1,5 +1,4 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Row,
@@ -11,72 +10,11 @@ import {
   ToastContainer,
   Badge,
 } from "react-bootstrap";
-
-
-
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { AdminNav } from "../../Components/Admin/AdminNav"; // Sidebar component
-// import { DELETE_ANNOUNCEMENT,UPDATE_ANNOUNCEMENT,GET_ANNOUNCEMENTS,CREATE_ANNOUNCEMENT } from "../../GraphQL/AnnouncementQueries";
+import { AdminNav } from "../../Components/Admin/AdminNav";
+import { FaBars, FaTimes } from "react-icons/fa";
+import { CREATE_ANNOUNCEMENT,GET_ANNOUNCEMENTS,DELETE_ANNOUNCEMENT,UPDATE_ANNOUNCEMENT } from "../../GraphQL/Queries";
 
-
-// GraphQL Mutation
-const CREATE_ANNOUNCEMENT = gql`
-  mutation CreateAnnouncement($input: CreateAnnouncementInput!) {
-    createAnnouncement(input: $input) {
-      id
-      title
-      description
-      type
-      filePath
-      createdBy {
-        emp_id
-        emp_name
-      }
-      createdAt
-    }
-  }
-`;
-
-// GraphQL Query
-const GET_ANNOUNCEMENTS = gql`
-  query GetAnnouncements {
-    getAnnouncements {
-      id
-      title
-      description
-      type
-      filePath
-      createdBy {
-        emp_id
-        emp_name
-      }
-      createdAt
-    }
-  }
-`;
-export const DELETE_ANNOUNCEMENT = gql`
-  mutation DeleteAnnouncement($id: ID!) {
-    deleteAnnouncement(id: $id)
-  }
-`;
-
-export const UPDATE_ANNOUNCEMENT = gql`
-  mutation UpdateAnnouncement($id: ID!, $input: CreateAnnouncementInput!) {
-    updateAnnouncement(id: $id, input: $input) {
-      id
-      title
-      description
-      type
-      filePath
-      createdBy {
-        emp_id
-        emp_name
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
 
 
 
@@ -103,9 +41,7 @@ export const AdminAnnouncements = () => {
   });
 
   const [showToast, setShowToast] = useState(false);
-
   const [editingId, setEditingId] = useState(null);
-
 
   const { data, loading: loadingAnnouncements, error, refetch } =
     useQuery(GET_ANNOUNCEMENTS);
@@ -125,20 +61,23 @@ export const AdminAnnouncements = () => {
   });
 
   const [updateAnnouncement] = useMutation(UPDATE_ANNOUNCEMENT);
-
-
-  // Setup mutation
   const [deleteAnnouncement] = useMutation(DELETE_ANNOUNCEMENT);
-  // Fix handleDelete to accept id
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this announcement?"
-    );
-    if (!confirmDelete) return;
 
+  // Responsive sidebar state
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 992);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this announcement?")) return;
     try {
       await deleteAnnouncement({ variables: { id } });
-      refetch(); // refresh after deletion
+      refetch();
     } catch (err) {
       console.error("Delete failed:", err.message);
     }
@@ -152,60 +91,50 @@ export const AdminAnnouncements = () => {
     }));
   };
 
-  
-
-
- const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  try {
-    if (editingId) {
-      // 🔄 Update flow
-      await updateAnnouncement({
-        variables: {
-          id: editingId,
-          input: {
-            title: formData.title.trim(),
-            description: formData.description.trim(),
-            type: formData.type,
-            filePath: formData.file ? formData.file.name : formData.filePath,
-            emp_id: formData.emp_id,
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (editingId) {
+        await updateAnnouncement({
+          variables: {
+            id: editingId,
+            input: {
+              title: formData.title.trim(),
+              description: formData.description.trim(),
+              type: formData.type,
+              filePath: formData.file ? formData.file.name : formData.filePath,
+              emp_id: formData.emp_id,
+            },
           },
-        },
-      });
-    } else {
-      // ➕ Create flow
-      await createAnnouncement({
-        variables: {
-          input: {
-            title: formData.title.trim(),
-            description: formData.description.trim(),
-            type: formData.type,
-            filePath: formData.file ? formData.file.name : "",
-            emp_id: formData.emp_id,
+        });
+      } else {
+        await createAnnouncement({
+          variables: {
+            input: {
+              title: formData.title.trim(),
+              description: formData.description.trim(),
+              type: formData.type,
+              filePath: formData.file ? formData.file.name : "",
+              emp_id: formData.emp_id,
+            },
           },
-        },
+        });
+      }
+
+      setFormData({
+        title: "",
+        description: "",
+        type: "",
+        filePath: "",
+        emp_id: "",
+        file: null,
       });
+      setEditingId(null);
+      refetch();
+    } catch (err) {
+      console.error("Save failed:", err.message);
     }
-
-    // Reset form
-    setFormData({
-      title: "",
-      description: "",
-      type: "",
-      filePath: "",
-      emp_id: "",
-      file: null,
-    });
-    setEditingId(null);
-    refetch();
-
-  } catch (err) {
-    console.error("Save failed:", err.message);
-  }
-};
-
-
+  };
 
   const sortedAnnouncements =
     data?.getAnnouncements?.slice().sort(
@@ -213,21 +142,54 @@ export const AdminAnnouncements = () => {
     ) || [];
 
   return (
-    <Container fluid>
-      <Row className="vh-100">
-        {/* Sidebar */}
-        <Col
-          xs={12}
-          md={3}
-          lg={2}
-          className="bg-light p-0 shadow-sm"
-          style={{ minHeight: "100vh" }}
-        >
-          <AdminNav />
-        </Col>
+    <div className="d-flex">
+      {/* Sidebar (Desktop) */}
+      <div
+        className="d-none d-lg-block position-fixed h-100"
+        style={{ width: "250px", background: "#fff", borderRight: "1px solid #dee2e6" }}
+      >
+        <AdminNav />
+      </div>
 
-        {/* Main Content */}
-        <Col xs={12} md={9} lg={10} className="p-4 overflow-auto">
+      {/* Main Content */}
+      <div
+        className="flex-grow-1 p-3 p-md-4"
+        style={
+          isMobile
+            ? { width: "100%" }
+            : { marginLeft: "250px", width: "calc(100% - 250px)" }
+        }
+      >
+        {/* Mobile Nav Toggle */}
+        <div className="d-lg-none mb-3">
+          <Button
+            variant="outline-secondary"
+            onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
+          >
+            {isMobileNavOpen ? <FaTimes className="me-1" /> : <FaBars className="me-1" />}
+            Menu
+          </Button>
+        </div>
+
+        {/* Mobile Overlay Nav */}
+        {isMobileNavOpen && (
+          <div
+            className="d-lg-none position-fixed top-0 start-0 h-100 w-100"
+            style={{ zIndex: 1040, backgroundColor: "rgba(0,0,0,0.5)" }}
+            onClick={() => setIsMobileNavOpen(false)}
+          >
+            <div
+              className="h-100"
+              style={{ width: "75%", maxWidth: "280px", background: "#fff" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <AdminNav onSelect={() => setIsMobileNavOpen(false)} />
+            </div>
+          </div>
+        )}
+
+        {/* Page Content */}
+        <Container fluid className="p-0">
           <h2 className="text-center mb-4 fw-bold" style={{ color: "#1d3557" }}>
             📢 Announcements
           </h2>
@@ -297,9 +259,7 @@ export const AdminAnnouncements = () => {
 
               <Row className="mb-3">
                 <Col md={6}>
-                  <Form.Label className="fw-semibold">
-                    📎 Upload File (optional)
-                  </Form.Label>
+                  <Form.Label className="fw-semibold">📎 Upload File (optional)</Form.Label>
                   <Form.Control
                     type="file"
                     name="file"
@@ -349,14 +309,11 @@ export const AdminAnnouncements = () => {
           ) : sortedAnnouncements.length === 0 ? (
             <p className="text-muted">No announcements yet.</p>
           ) : (
-           
-
             <Row className="g-4">
               {sortedAnnouncements.map((ann) => (
                 <Col md={6} lg={4} key={ann.id}>
                   <Card className="mb-4 shadow-sm h-100 border-0 rounded-4">
                     <Card.Body className="d-flex flex-column">
-                      {/* Header: Title + Badge */}
                       <div className="d-flex justify-content-between align-items-center mb-2">
                         <Card.Title className="mb-0 fw-semibold text-truncate">
                           {ann.title}
@@ -366,7 +323,6 @@ export const AdminAnnouncements = () => {
                         </Badge>
                       </div>
 
-                      {/* Date */}
                       <Card.Subtitle className="text-muted mb-3 small">
                         📅{" "}
                         {ann.createdAt && !isNaN(new Date(ann.createdAt))
@@ -374,45 +330,30 @@ export const AdminAnnouncements = () => {
                           : "Date not available"}
                       </Card.Subtitle>
 
-                      {/* Description */}
                       <Card.Text className="text-secondary flex-grow-1" style={{ minHeight: "60px" }}>
                         {ann.description}
                       </Card.Text>
 
-                      {/* Attachment */}
-                      {/* {ann.filePath && ( */}
-                        {/* <a
-                          href={ann.filePath}
-                          download
+                      {ann.filePath && (
+                        <a
+                          href={`http://localhost:5000${ann.filePath}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="btn btn-sm btn-outline-secondary rounded-2 mt-2"
+                          className="btn btn-sm btn-primary rounded-3"
+                          download
                         >
-                          📎 Download Attachment
-                        </a> */}
-                      {/* )} */}
-{ann.filePath && (
-      <a 
-        href={`http://localhost:5000${ann.filePath}`} 
-        target="_blank" 
-        rel="noopener noreferrer" 
-        className="btn btn-sm btn-primary rounded-3"
-        download
-      >
-        📥 Download Attachment
-      </a>
-    )}
-                      {/* Footer Info */}
+                          📥 Download Attachment
+                        </a>
+                      )}
+
                       <div className="mt-3 pt-2 border-top small text-muted">
                         👤 <strong>{ann.createdBy.emp_name}</strong> ({ann.createdBy.emp_id})
                       </div>
 
-                      {/* Actions */}
                       <div className="d-flex justify-content-end gap-2 mt-3">
-                        {/* <Button
+                        <Button
                           style={{ backgroundColor: "#1d3557" }}
                           size="sm"
-
                           className="rounded-2"
                           onClick={() => {
                             setFormData({
@@ -427,26 +368,7 @@ export const AdminAnnouncements = () => {
                           }}
                         >
                           Edit
-                        </Button> */}
-                        <Button
-                          style={{ backgroundColor: "#1d3557" }}
-                          size="sm"
-                          className="rounded-2"
-                          onClick={() => {
-                            setFormData({
-                              title: ann.title,
-                              description: ann.description,
-                              type: ann.type,
-                              filePath: ann.filePath,
-                              emp_id: ann.createdBy.emp_id,
-                              file: null, // if you’re handling new upload
-                            });
-                            setEditingId(ann.id); // 👈 tells form this is EDIT mode
-                          }}
-                        >
-                          Edit
                         </Button>
-
 
                         <Button
                           size="sm"
@@ -462,11 +384,9 @@ export const AdminAnnouncements = () => {
                 </Col>
               ))}
             </Row>
-
           )}
-        </Col>
-      </Row>
-    </Container>
+        </Container>
+      </div>
+    </div>
   );
 };
-

@@ -22,7 +22,19 @@ export const GET_STUDENT_ASSESSMENT = gql`
     }
   }
 `;
-
+export const GET_ALL_STUDENTS = gql`
+  query GetAllStudents {
+    students {
+      student_name
+      student_email
+      rollno
+      registrationNo
+      course {
+        courseName
+      }
+    }
+  }
+`;
 export const GET_STUDENTS = gql`
   query GetStudents {
     students {
@@ -175,6 +187,79 @@ export const GET_ALL_TEACHERS = gql`
           subjectName
         }
       }
+    }
+  }
+`;
+
+export const GET_COURSE_DETAILS = gql`
+  query GetCourseDetails($courseId: ID!) {
+    courseById(courseId: $courseId) {
+      courseName
+      semesters {
+        semester_id
+        semester_Name
+        subjects {
+          subjectCode
+          subjectName
+        }
+      }
+    }
+  }
+`;
+
+export const CREATE_ANNOUNCEMENT = gql`
+  mutation CreateAnnouncement($input: CreateAnnouncementInput!) {
+    createAnnouncement(input: $input) {
+      id
+      title
+      description
+      type
+      filePath
+      createdBy {
+        emp_id
+        emp_name
+      }
+      createdAt
+    }
+  }
+`;
+
+export const GET_ANNOUNCEMENTS = gql`
+  query GetAnnouncements {
+    getAnnouncements {
+      id
+      title
+      description
+      type
+      filePath
+      createdBy {
+        emp_id
+        emp_name
+      }
+      createdAt
+    }
+  }
+`;
+export const DELETE_ANNOUNCEMENT = gql`
+  mutation DeleteAnnouncement($id: ID!) {
+    deleteAnnouncement(id: $id)
+  }
+`;
+
+export const UPDATE_ANNOUNCEMENT = gql`
+  mutation UpdateAnnouncement($id: ID!, $input: CreateAnnouncementInput!) {
+    updateAnnouncement(id: $id, input: $input) {
+      id
+      title
+      description
+      type
+      filePath
+      createdBy {
+        emp_id
+        emp_name
+      }
+      createdAt
+      updatedAt
     }
   }
 `;

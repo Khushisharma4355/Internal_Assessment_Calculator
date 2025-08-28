@@ -1,17 +1,17 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import {
   Container,
   Table,
   Button,
-  Spinner,
   Alert,
   ProgressBar,
   Modal
 } from "react-bootstrap";
-import { FaWhatsapp, FaPaperPlane } from "react-icons/fa";
+import { FaWhatsapp, FaPaperPlane, FaBars, FaTimes } from "react-icons/fa";
 import { AdminNav } from "../../Components/Admin/AdminNav";
 import { RingLoader } from "../../Components/Spinner/RingLoader";
+
 const GET_ALL_STUDENTS_WITH_ASSESSMENTS = gql`
   query GetAllStudentsWithAssessments {
     getAllStudentsWithAssessments {
@@ -49,6 +49,15 @@ export const SendAllReports = () => {
   const [progress, setProgress] = useState(0);
   const [completed, setCompleted] = useState(0);
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 992);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const uniqueStudents = useMemo(() => {
     if (!data?.getAllStudentsWithAssessments) return [];
     const seen = new Set();
@@ -69,7 +78,7 @@ export const SendAllReports = () => {
     let count = 0;
 
     for (const student of uniqueStudents) {
-      if (!student.parentPhone) continue; // skip if no parent phone
+      if (!student.parentPhone) continue;
 
       try {
         const reportText = `Hello ${student.studentName}, your marks:\n` +
@@ -99,82 +108,125 @@ export const SendAllReports = () => {
     alert(`Reports sent to ${count} parents!`);
   };
 
- if (loading) {
-    return (
-     <RingLoader/>
-    );
-  }
+  if (loading) return <RingLoader />;
   if (error) {
     return <Alert variant="danger" className="m-4">Error fetching students: {error.message}</Alert>;
   }
 
   return (
     <div className="d-flex">
-      <div style={{ width: "250px", flexShrink: 0 }}><AdminNav /></div>
-      <Container fluid className="p-4">
-        <h2 className="mb-3 text-center"><FaPaperPlane className="me-2" />Send Student Reports</h2>
+      {/* Sidebar (Desktop) */}
+      <div
+        className="d-none d-lg-block position-fixed h-100"
+        style={{ width: "250px", background: "#fff", borderRight: "1px solid #dee2e6" }}
+      >
+        <AdminNav />
+      </div>
 
-        <div className="text-center mb-3">
+      {/* Main Content */}
+      <div
+        className="flex-grow-1 p-3 p-md-4"
+        style={
+          isMobile
+            ? { width: "100%" }
+            : { marginLeft: "250px", width: "calc(100% - 250px)" }
+        }
+      >
+        {/* Mobile Nav Toggle */}
+        <div className="d-lg-none mb-3">
           <Button
-            variant="success"
-            onClick={() => setShowConfirmModal(true)}
-            disabled={sending || uniqueStudents.length === 0}
+            variant="outline-secondary"
+            onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
           >
-            <FaWhatsapp className="me-2" />
-            {sending ? "Sending Reports..." : "Send All Reports via WhatsApp"}
+            {isMobileNavOpen ? <FaTimes className="me-1" /> : <FaBars className="me-1" />}
+            Menu
           </Button>
         </div>
 
-        {sending && (
-          <ProgressBar now={progress} label={`${progress}%`} animated striped className="mb-3" />
+        {/* Mobile Overlay Nav */}
+        {isMobileNavOpen && (
+          <div
+            className="d-lg-none position-fixed top-0 start-0 h-100 w-100"
+            style={{ zIndex: 1040, backgroundColor: "rgba(0,0,0,0.5)" }}
+            onClick={() => setIsMobileNavOpen(false)}
+          >
+            <div
+              className="h-100"
+              style={{ width: "75%", maxWidth: "280px", background: "#fff" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <AdminNav onSelect={() => setIsMobileNavOpen(false)} />
+            </div>
+          </div>
         )}
 
-        <Table striped bordered hover responsive>
-          <thead>
-            <tr>
-              <th>Reg No</th>
-              <th>Student Name</th>
-              <th>Parent Phone</th>
-              <th>Subject</th>
-              <th>CT1</th>
-              <th>CT2</th>
-              <th>MTE</th>
-              <th>ETE</th>
-              <th>Attendance</th>
-            </tr>
-          </thead>
-          <tbody>
-            {uniqueStudents.map(student => (
-              student.assessments?.length > 0 ? (
-                student.assessments.map((a, idx) => (
-                  <tr key={`${student.registrationNo}-${idx}`}>
-                    {idx === 0 && (
-                      <>
-                        <td rowSpan={student.assessments.length}>{student.registrationNo}</td>
-                        <td rowSpan={student.assessments.length}>{student.studentName}</td>
-                        <td rowSpan={student.assessments.length}>{student.parentPhone}</td>
-                      </>
-                    )}
-                    <td>{a.subjectCode}</td>
-                    <td>{a.Class_test_1 || 0}</td>
-                    <td>{a.Class_test_2 || 0}</td>
-                    <td>{a.MTE || 0}</td>
-                    <td>{a.ETE || 0}</td>
-                    <td>{a.attendance || 0}%</td>
-                  </tr>
-                ))
-              ) : (
-                <tr key={student.registrationNo}>
-                  <td>{student.registrationNo}</td>
-                  <td>{student.studentName}</td>
-                  <td>{student.parentPhone}</td>
-                  <td colSpan="6" className="text-center">No assessments found</td>
-                </tr>
-              )
-            ))}
-          </tbody>
-        </Table>
+        {/* Page Content */}
+        <Container fluid className="p-0">
+          <h2 className="mb-3 text-center"><FaPaperPlane className="me-2" />Send Student Reports</h2>
 
+          <div className="text-center mb-3">
+            <Button
+              variant="success"
+              onClick={() => setShowConfirmModal(true)}
+              disabled={sending || uniqueStudents.length === 0}
+            >
+              <FaWhatsapp className="me-2" />
+              {sending ? "Sending Reports..." : "Send All Reports via WhatsApp"}
+            </Button>
+          </div>
+
+          {sending && (
+            <ProgressBar now={progress} label={`${progress}%`} animated striped className="mb-3" />
+          )}
+
+          <Table striped bordered hover responsive>
+            <thead>
+              <tr>
+                <th>Reg No</th>
+                <th>Student Name</th>
+                <th>Parent Phone</th>
+                <th>Subject</th>
+                <th>CT1</th>
+                <th>CT2</th>
+                <th>MTE</th>
+                <th>ETE</th>
+                <th>Attendance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {uniqueStudents.map(student => (
+                student.assessments?.length > 0 ? (
+                  student.assessments.map((a, idx) => (
+                    <tr key={`${student.registrationNo}-${idx}`}>
+                      {idx === 0 && (
+                        <>
+                          <td rowSpan={student.assessments.length}>{student.registrationNo}</td>
+                          <td rowSpan={student.assessments.length}>{student.studentName}</td>
+                          <td rowSpan={student.assessments.length}>{student.parentPhone}</td>
+                        </>
+                      )}
+                      <td>{a.subjectCode}</td>
+                      <td>{a.Class_test_1 || 0}</td>
+                      <td>{a.Class_test_2 || 0}</td>
+                      <td>{a.MTE || 0}</td>
+                      <td>{a.ETE || 0}</td>
+                      <td>{a.attendance || 0}%</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr key={student.registrationNo}>
+                    <td>{student.registrationNo}</td>
+                    <td>{student.studentName}</td>
+                    <td>{student.parentPhone}</td>
+                    <td colSpan="6" className="text-center">No assessments found</td>
+                  </tr>
+                )
+              ))}
+            </tbody>
+          </Table>
+        </Container>
+
+        {/* Confirm Modal */}
         <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)}>
           <Modal.Header closeButton>
             <Modal.Title><FaWhatsapp className="me-2 text-success" />Confirm Send Reports</Modal.Title>
@@ -189,7 +241,7 @@ export const SendAllReports = () => {
             </Button>
           </Modal.Footer>
         </Modal>
-      </Container>
+      </div>
     </div>
   );
 };
