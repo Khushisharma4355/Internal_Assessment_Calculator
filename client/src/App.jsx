@@ -43,7 +43,7 @@ import { BulkStudentImport } from './Components/Admin/bulkimportStudent';
 import { BulkTeacherImport } from './Components/Admin/bulkimportTeacher';
 import NotFoundPage from './Screens/NotFoundPage';
 import { SendAllReports } from './Screens/Admin/SendAllReports';
-import {Developer} from './Screens/Main/DevelopersPage';
+// import {Developer} from './Screens/Main/DevelopersPage';
 
 
 // import { Attendance } from './Screens/Students/Attendance';
@@ -56,7 +56,7 @@ function App() {
       <Routes>
          <Route path="/" element={<MainHome />} />
         <Route path="/features" element={<FeaturesPage />} />
-        <Route path="/developers" element={<Developer />} />
+        {/* <Route path="/developers" element={<Developer />} /> */}
         {/* <Route path="/developers" element={<DevelopersPage />} /> */}
         <Route path="/students/login" element={<StuLogin />} />
         {/* the below route is home route of student and right now working on /students route */}

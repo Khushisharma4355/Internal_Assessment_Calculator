@@ -1,32 +1,4 @@
-// import nodemailer from "nodemailer";
-// import dotenv from "dotenv";
-// dotenv.config();
 
-// export const sendEmailWithOTP = async (email, otp) => {
-//   const transporter = nodemailer.createTransport({
-//     service: "gmail",
-//     auth: {
-//        user: process.env.MAIL_USER, // your email address
-//     pass: process.env.MAIL_PASS  // your app password or real password
-//     },
-//   });
- 
-
-// transporter.verify((error, success) => {
-//   if (error) {
-//     console.log("❌ Transporter error:", error);
-//   } else {
-//     console.log("✅ Server is ready to take our messages", success);
-//   }
-// });
-
-//   await transporter.sendMail({
-//     from: "thakur.sarita7788@gmail.com",
-//     to: email,
-//     subject: "Your OTP Code",
-//     text: `Your OTP is: ${otp}`,
-//   });
-// };
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();

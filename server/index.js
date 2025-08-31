@@ -43,7 +43,7 @@ const startServer = async () => {
         if (token) {
           try {
             const user = jwt.verify(token, process.env.JWT_SECRET);
-            return { user }; // 🔥 available in resolvers as context.user
+            return { user }; //  available in resolvers as context.user
           } catch (err) {
             throw new Error("Invalid token");
           }
