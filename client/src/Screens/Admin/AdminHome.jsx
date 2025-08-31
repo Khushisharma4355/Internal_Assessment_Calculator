@@ -151,7 +151,7 @@ export const AdminHome = () => {
                         </div>
                     </div>
                 )}
-                <Container style={{marginLeft:isDesktop?250:0}}>
+                <Container style={{marginLeft:isDesktop?250:0, width:"auto"}}>
                     <Row className='mb-4'>
                         <Col>
                             <h2 style={{ color: '#1d3557' }}>Welcome, <span style={{ color: 'orange' }}>{adminName}</span></h2>

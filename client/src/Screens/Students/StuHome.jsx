@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Container, Card, Badge, Spinner, Alert, ListGroup, Button } from "react-bootstrap";
 import { Stunav } from "../../Components/Students/Stunav";
 import { useQuery, gql } from "@apollo/client";
@@ -7,6 +7,7 @@ import { BsPersonCheck } from "react-icons/bs";
 import { Pie, Bar, Doughnut, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title, PointElement, LineElement } from 'chart.js';
 import { RingLoader } from '../../Components/Spinner/RingLoader';
+import { FaBars, FaTimes } from "react-icons/fa";
 // Register ChartJS components
 ChartJS.register(
   ArcElement, Tooltip, Legend, CategoryScale, 
@@ -76,6 +77,14 @@ const InfoCard = ({ icon, title, value, color = "primary" }) => (
 
 export const StuHome = () => {
   const student_email = localStorage.getItem("student_email") || "ananya@example.com";
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 992);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Fetch student info
   const { loading: loadingStudent, error: errorStudent, data: dataStudent } = useQuery(GET_STUDENT_BY_EMAIL, {
@@ -225,257 +234,278 @@ export const StuHome = () => {
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', flexDirection: window.innerWidth < 992 ? 'column' : 'row' }}>
-      {/* Sidebar */}
-      <div style={{ 
-        width: '250px', 
-        flexShrink: 0,
-        background: `linear-gradient(180deg, ${colors.primary} 0%, ${colors.secondary} 100%)`,
-        boxShadow: '4px 0 15px rgba(0,0,0,0.1)'
-      }}>
+    <div className="d-flex">
+      {/* Sidebar (Desktop) */}
+      <div
+        className="d-none d-lg-block position-fixed h-100"
+        style={{ 
+          width: "250px", 
+          background: `linear-gradient(180deg, ${colors.primary} 0%, ${colors.secondary} 100%)`,
+          boxShadow: '4px 0 15px rgba(0,0,0,0.1)',
+          zIndex: 1000
+        }}
+      >
         <Stunav />
       </div>
 
       {/* Main Content */}
-      <Container fluid style={{ padding: '2rem', backgroundColor: colors.light }}>
-        <Row className='mb-4'>
-          <Col>
-            <h2 style={{ color: colors.primary }}>Welcome, <span style={{ color: 'orange' }}>{student_name}</span></h2>
-            <p className="text-muted">Your academic dashboard for Semester {semester_id}</p>
-          </Col>
-          <Col md="auto" className="d-flex align-items-center">
-            <FiCalendar className="me-2" />
-            <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
-          </Col>
-        </Row>
+      <div
+        className="flex-grow-1 p-3 p-md-4"
+        style={
+          isMobile
+            ? { width: "100%" }
+            : { marginLeft: "250px", width: "calc(100% - 250px)" }
+        }
+      >
+        {/* Mobile Nav Toggle */}
+        <div className="d-lg-none mb-3">
+          <Button
+            variant="outline-secondary"
+            onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
+          >
+            {isMobileNavOpen ? <FaTimes className="me-1" /> : <FaBars className="me-1" />}
+            Menu
+          </Button>
+        </div>
 
-        {/* Stats Cards */}
-        <Row>
-          <Col md={6} lg={3} className='mb-3 mb-lg-0'>
-            <InfoCard 
-              icon={<FiAward />} 
-              title="Average Marks" 
-              value={`${averageMarks}%`} 
-              color="primary"
-            />
-          </Col>
-          <Col md={6} lg={3} className='mb-3 mb-lg-0'>
-            <InfoCard 
-              icon={<BsPersonCheck />} 
-              title="Attendance" 
-              value={`${averageAttendance.toFixed(1)}%`} 
-              color="success"
-            />
-          </Col>
-          <Col md={6} lg={3} className='mb-3 mb-lg-0'>
-            <InfoCard 
-              icon={<FiBook />} 
-              title="Subjects" 
-              value={assessments.length} 
-              color="secondary"
-            />
-          </Col>
-          <Col md={6} lg={3} className='mb-3 mb-lg-0'>
-            <InfoCard 
-              icon={<FiAlertCircle />} 
-              title="Pending Tasks" 
-              value="3" 
-              color="warning"
-            />
-          </Col>
-        </Row>
-
-        {/* Quick Actions */}
-        {/* <Row className="mt-4">
-          <Col>
-            <div className="d-flex gap-3 flex-wrap">
-              <Button variant="primary">
-                <FiCalendar className="me-2" />
-                View Timetable
-              </Button>
-              <Button variant="outline-secondary">
-                <FiBook className="me-2" />
-                Study Materials
-              </Button>
-              <Button variant="warning">
-                <FiAlertCircle className="me-2" />
-                Report Issue
-              </Button>
+        {/* Mobile Overlay Nav */}
+        {isMobileNavOpen && (
+          <div
+            className="d-lg-none position-fixed top-0 start-0 h-100 w-100"
+            style={{ zIndex: 1040, backgroundColor: "rgba(0,0,0,0.5)" }}
+            onClick={() => setIsMobileNavOpen(false)}
+          >
+            <div
+              className="h-100"
+              style={{ width: "75%", maxWidth: "280px", background: `linear-gradient(180deg, ${colors.primary} 0%, ${colors.secondary} 100%)` }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Stunav onSelect={() => setIsMobileNavOpen(false)} />
             </div>
-          </Col>
-        </Row> */}
+          </div>
+        )}
 
-        {/* Charts and Recent Activity Section */}
-        <Row className="mt-4">
-          {/* Subject Performance Pie Chart */}
-          <Col md={12} lg={4} className="mb-4">
-            <Card className="shadow-sm h-100">
-              <Card.Header className="d-flex justify-content-between align-items-center">
-                <span>Subject Performance</span>
-                <FiPieChart />
-              </Card.Header>
-              <Card.Body>
-                <div style={{ height: '250px' }}>
-                  <Doughnut 
-                    data={performanceData} 
-                    options={{ 
-                      maintainAspectRatio: false,
-                      cutout: '70%',
-                      plugins: {
-                        legend: {
-                          position: 'bottom'
-                        }
-                      }
-                    }} 
-                  />
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
+        {/* Dashboard Content */}
+        <Container fluid className="p-0">
+          <Row className='mb-4 align-items-center'>
+            <Col>
+              <h2 style={{ color: colors.primary }}>Welcome, <span style={{ color: 'orange' }}>{student_name}</span></h2>
+              <p className="text-muted">Your academic dashboard for Semester {semester_id}</p>
+            </Col>
+            <Col md="auto" className="d-flex align-items-center">
+              <FiCalendar className="me-2" />
+              <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+            </Col>
+          </Row>
 
-          {/* Attendance Trend Line Chart */}
-          <Col md={12} lg={4} className="mb-4">
-            <Card className="shadow-sm h-100">
-              <Card.Header className="d-flex justify-content-between align-items-center">
-                <span>Attendance Trend</span>
-                <FiBarChart2 />
-              </Card.Header>
-              <Card.Body>
-                <div style={{ height: '250px' }}>
-                  <Line 
-                    data={attendanceTrendData} 
-                    options={{ 
-                      maintainAspectRatio: false,
-                      scales: {
-                        y: {
-                          beginAtZero: false,
-                          min: 70,
-                          max: 100
-                        }
-                      }
-                    }} 
-                  />
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
+          {/* Stats Cards */}
+          <Row>
+            <Col md={6} lg={3} className='mb-3 mb-lg-0'>
+              <InfoCard 
+                icon={<FiAward />} 
+                title="Average Marks" 
+                value={`${averageMarks}%`} 
+                color="primary"
+              />
+            </Col>
+            <Col md={6} lg={3} className='mb-3 mb-lg-0'>
+              <InfoCard 
+                icon={<BsPersonCheck />} 
+                title="Attendance" 
+                value={`${averageAttendance.toFixed(1)}%`} 
+                color="success"
+              />
+            </Col>
+            <Col md={6} lg={3} className='mb-3 mb-lg-0'>
+              <InfoCard 
+                icon={<FiBook />} 
+                title="Subjects" 
+                value={assessments.length} 
+                color="secondary"
+              />
+            </Col>
+            <Col md={6} lg={3} className='mb-3 mb-lg-0'>
+              <InfoCard 
+                icon={<FiAlertCircle />} 
+                title="Pending Tasks" 
+                value="3" 
+                color="warning"
+              />
+            </Col>
+          </Row>
 
-          {/* Today's Schedule */}
-          <Col md={12} lg={4} className="mb-4">
-            <Card className="shadow-sm h-100">
-              <Card.Header>Today's Schedule</Card.Header>
-              <Card.Body>
-                <ListGroup variant="flush">
-                  <ListGroup.Item className="d-flex justify-content-between align-items-center">
-                    <span>Mathematics</span>
-                    <div className="text-end">
-                      <strong>9:00 - 10:00</strong>
-                      <div className="text-success">
-                        <small>Room 201</small>
-                      </div>
-                    </div>
-                  </ListGroup.Item>
-                  <ListGroup.Item className="d-flex justify-content-between align-items-center">
-                    <span>Computer Science</span>
-                    <div className="text-end">
-                      <strong>10:30 - 11:30</strong>
-                      <div className="text-success">
-                        <small>Lab 3</small>
-                      </div>
-                    </div>
-                  </ListGroup.Item>
-                  <ListGroup.Item className="d-flex justify-content-between align-items-center">
-                    <span>English</span>
-                    <div className="text-end">
-                      <strong>12:00 - 1:00</strong>
-                      <div className="text-success">
-                        <small>Room 105</small>
-                      </div>
-                    </div>
-                  </ListGroup.Item>
-                  <ListGroup.Item className="d-flex justify-content-between align-items-center">
-                    <span>Physics</span>
-                    <div className="text-end">
-                      <strong>2:00 - 3:00</strong>
-                      <div className="text-success">
-                        <small>Room 302</small>
-                      </div>
-                    </div>
-                  </ListGroup.Item>
-                </ListGroup>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-
-        {/* Second Row */}
-        <Row>
-          {/* Detailed Test Scores */}
-          <Col md={12} lg={6} className="mb-4">
-            <Card className="shadow-sm h-100">
-              <Card.Header className="d-flex justify-content-between align-items-center">
-                <span>Detailed Test Scores</span>
-                <FiBarChart2 />
-              </Card.Header>
-              <Card.Body>
-                <div style={{ height: '250px' }}>
-                  <Bar 
-                    data={testScoresData}
-                    options={{ 
-                      maintainAspectRatio: false,
-                      scales: {
-                        y: {
-                          beginAtZero: true,
-                          max: 100,
-                          title: {
-                            display: true,
-                            text: 'Marks (%)',
-                          },
-                          ticks: {
-                            callback: value => value + '%'
+          {/* Charts and Recent Activity Section */}
+          <Row className="mt-4">
+            {/* Subject Performance Pie Chart */}
+            <Col md={12} lg={4} className="mb-4">
+              <Card className="shadow-sm h-100">
+                <Card.Header className="d-flex justify-content-between align-items-center">
+                  <span>Subject Performance</span>
+                  <FiPieChart />
+                </Card.Header>
+                <Card.Body>
+                  <div style={{ height: '250px' }}>
+                    <Doughnut 
+                      data={performanceData} 
+                      options={{ 
+                        maintainAspectRatio: false,
+                        cutout: '70%',
+                        plugins: {
+                          legend: {
+                            position: 'bottom'
                           }
                         }
-                      },
-                      plugins: {
-                        legend: {
-                          position: 'top',
-                        }
-                      }
-                    }} 
-                  />
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
+                      }} 
+                    />
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
 
-          {/* Recent Announcements */}
-          <Col md={12} lg={6} className="mb-4">
-            <Card className="shadow-sm h-100">
-              <Card.Header>Recent Announcements</Card.Header>
-              <Card.Body style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                <ListGroup variant="flush">
-                  <ListGroup.Item>
-                    <small className="text-muted">Today, 10:30 AM</small><br />
-                    <strong>Mathematics Test</strong> scheduled for Friday
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <small className="text-muted">Yesterday, 3:45 PM</small><br />
-                    <strong>Library</strong> will remain closed tomorrow
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <small className="text-muted">Monday, 11:20 AM</small><br />
-                    <strong>Sports Day</strong> registration now open
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <small className="text-muted">Last Friday, 9:15 AM</small><br />
-                    <strong>Exam Schedule</strong> has been updated
-                  </ListGroup.Item>
-                </ListGroup>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
+            {/* Attendance Trend Line Chart */}
+            <Col md={12} lg={4} className="mb-4">
+              <Card className="shadow-sm h-100">
+                <Card.Header className="d-flex justify-content-between align-items-center">
+                  <span>Attendance Trend</span>
+                  <FiBarChart2 />
+                </Card.Header>
+                <Card.Body>
+                  <div style={{ height: '250px' }}>
+                    <Line 
+                      data={attendanceTrendData} 
+                      options={{ 
+                        maintainAspectRatio: false,
+                        scales: {
+                          y: {
+                            beginAtZero: false,
+                            min: 70,
+                            max: 100
+                          }
+                        }
+                      }} 
+                    />
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+
+            {/* Today's Schedule */}
+            <Col md={12} lg={4} className="mb-4">
+              <Card className="shadow-sm h-100">
+                <Card.Header>Today's Schedule</Card.Header>
+                <Card.Body>
+                  <ListGroup variant="flush">
+                    <ListGroup.Item className="d-flex justify-content-between align-items-center">
+                      <span>Mathematics</span>
+                      <div className="text-end">
+                        <strong>9:00 - 10:00</strong>
+                        <div className="text-success">
+                          <small>Room 201</small>
+                        </div>
+                      </div>
+                    </ListGroup.Item>
+                    <ListGroup.Item className="d-flex justify-content-between align-items-center">
+                      <span>Computer Science</span>
+                      <div className="text-end">
+                        <strong>10:30 - 11:30</strong>
+                        <div className="text-success">
+                          <small>Lab 3</small>
+                        </div>
+                      </div>
+                    </ListGroup.Item>
+                    <ListGroup.Item className="d-flex justify-content-between align-items-center">
+                      <span>English</span>
+                      <div className="text-end">
+                        <strong>12:00 - 1:00</strong>
+                        <div className="text-success">
+                          <small>Room 105</small>
+                        </div>
+                      </div>
+                    </ListGroup.Item>
+                    <ListGroup.Item className="d-flex justify-content-between align-items-center">
+                      <span>Physics</span>
+                      <div className="text-end">
+                        <strong>2:00 - 3:00</strong>
+                        <div className="text-success">
+                          <small>Room 302</small>
+                        </div>
+                      </div>
+                    </ListGroup.Item>
+                  </ListGroup>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+
+          {/* Second Row */}
+          <Row>
+            {/* Detailed Test Scores */}
+            <Col md={12} lg={6} className="mb-4">
+              <Card className="shadow-sm h-100">
+                <Card.Header className="d-flex justify-content-between align-items-center">
+                  <span>Detailed Test Scores</span>
+                  <FiBarChart2 />
+                </Card.Header>
+                <Card.Body>
+                  <div style={{ height: '250px' }}>
+                    <Bar 
+                      data={testScoresData}
+                      options={{ 
+                        maintainAspectRatio: false,
+                        scales: {
+                          y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                              display: true,
+                              text: 'Marks (%)',
+                            },
+                            ticks: {
+                              callback: value => value + '%'
+                            }
+                          }
+                        },
+                        plugins: {
+                          legend: {
+                            position: 'top',
+                          }
+                        }
+                      }} 
+                    />
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+
+            {/* Recent Announcements */}
+            <Col md={12} lg={6} className="mb-4">
+              <Card className="shadow-sm h-100">
+                <Card.Header>Recent Announcements</Card.Header>
+                <Card.Body style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                  <ListGroup variant="flush">
+                    <ListGroup.Item>
+                      <small className="text-muted">Today, 10:30 AM</small><br />
+                      <strong>Mathematics Test</strong> scheduled for Friday
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <small className="text-muted">Yesterday, 3:45 PM</small><br />
+                      <strong>Library</strong> will remain closed tomorrow
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <small className="text-muted">Monday, 11:20 AM</small><br />
+                      <strong>Sports Day</strong> registration now open
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <small className="text-muted">Last Friday, 9:15 AM</small><br />
+                      <strong>Exam Schedule</strong> has been updated
+                    </ListGroup.Item>
+                  </ListGroup>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      </div>
     </div>
   );
 };
