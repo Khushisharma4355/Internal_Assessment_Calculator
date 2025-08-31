@@ -1,6 +1,5 @@
-import { useQuery, gql } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import {
-  Spinner,
   Table,
   Alert,
   Container,
@@ -45,29 +44,32 @@ export const StudentMgmt = () => {
     );
   }
 
-  const filteredStudents = data.students.filter(
+  // ✅ Safely handle data
+  const studentsList = data?.students || [];
+
+  // ✅ Filter students safely
+  const filteredStudents = studentsList.filter(
     (student) =>
       student.student_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.student_email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.registrationNo?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // ✅ Mobile Card View
   const renderMobileCards = (list) => (
     <div className="d-md-none">
-      {list.length > 0 ? (
+      {list.length ? (
         list.map((student, idx) => (
           <Card key={idx} className="mb-3 shadow-sm">
             <Card.Body>
               <div className="d-flex justify-content-between align-items-start mb-2">
-                <h6 className="fw-semibold mb-0">{student.student_name ?? "N/A"}</h6>
+                <h6 className="fw-semibold mb-0">{student.student_name || "N/A"}</h6>
                 <Badge bg="light" text="dark">
-                  {student.registrationNo}
+                  {student.registrationNo || "N/A"}
                 </Badge>
               </div>
 
-              <div className="mb-2 text-muted small">{student.student_email ?? "N/A"}</div>
-              <div className="mb-2 text-muted small">{student.student_phone ?? "N/A"}</div>
+              <div className="mb-2 text-muted small">{student.student_email || "N/A"}</div>
+              <div className="mb-2 text-muted small">{student.student_phone || "N/A"}</div>
 
               <div className="mb-2">
                 {student.course?.courseName ? (
@@ -94,7 +96,6 @@ export const StudentMgmt = () => {
     </div>
   );
 
-  // ✅ Desktop Table View
   const renderTable = (list) => (
     <Card className="border-0 shadow-sm d-none d-md-block">
       <Card.Body className="p-0">
@@ -109,18 +110,16 @@ export const StudentMgmt = () => {
             </tr>
           </thead>
           <tbody>
-            {list.length > 0 ? (
+            {list.length ? (
               list.map((student, idx) => (
                 <tr key={idx}>
                   <td>
-                    <Badge bg="light" text="dark">
-                      {student.registrationNo}
-                    </Badge>
+                    <Badge bg="light" text="dark">{student.registrationNo || "N/A"}</Badge>
                   </td>
-                  <td className="fw-semibold">{student.student_name ?? "N/A"}</td>
+                  <td className="fw-semibold">{student.student_name || "N/A"}</td>
                   <td>
-                    <div className="text-muted small">{student.student_email ?? "N/A"}</div>
-                    <div className="text-muted small">{student.student_phone ?? "N/A"}</div>
+                    <div className="text-muted small">{student.student_email || "N/A"}</div>
+                    <div className="text-muted small">{student.student_phone || "N/A"}</div>
                   </td>
                   <td>
                     {student.course?.courseName ? (
@@ -231,7 +230,6 @@ export const StudentMgmt = () => {
               {renderMobileCards(filteredStudents)}
               {renderTable(filteredStudents)}
             </Tab>
-            {/* Example extra tabs */}
             <Tab eventKey="course" title="By Course">
               <div className="text-muted">Course-based filtering goes here.</div>
             </Tab>
