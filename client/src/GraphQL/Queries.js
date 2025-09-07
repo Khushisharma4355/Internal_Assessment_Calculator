@@ -155,17 +155,13 @@ export const GET_TEACHER_CLASSES = gql`
 `;
 
 export const GET_STUDENTS_BY_CLASS = gql`
-  query GetStudentsByClass($emp_id: String!, $courseId: String!, $semester_id: String!, $section_id: String!) {
-  getStudentsByClass(
-    emp_id: $emp_id,
-    courseId: $courseId,
-    semester_id: $semester_id,
-    section_id: $section_id
-  ) {
-    registrationNo
-    student_name
+  query GetStudentsByClass($emp_id: String!, $courseId: String!, $semester_id: Int!, $section_id: String!) {
+    getStudentsByClass(emp_id: $emp_id, courseId: $courseId, semester_id: $semester_id, section_id: $section_id) {
+      student_email
+      student_name
+      registrationNo
+    }
   }
-}
 `;
 
 
