@@ -45,7 +45,12 @@ export const UploadMarks = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
+  // Add this near your other useEffects
+  // useEffect(() => {
+  //   if (errorStudents) {
+  //     console.error('Students query error:', errorStudents);
+  //   }
+  // }, [errorStudents]);
   const { loading: loadingTeacher, error: errorTeacher, data: dataTeacher } = useQuery(GET_TEACHER, { variables: { emp_id: empId } });
   const { loading: loadingClasses, error: errorClasses, data: dataClasses } = useQuery(GET_TEACHER_CLASSES, { variables: { emp_id: empId } });
   const { loading: loadingStudents, error: errorStudents, data: studentsData } = useQuery(GET_STUDENTS_BY_CLASS, {
@@ -61,71 +66,83 @@ export const UploadMarks = () => {
   const [bulkEnterMarks, { loading: loadingSubmit }] = useMutation(BULK_ENTER_MARKS);
 
   const handleMarkChange = (registrationNo, value) => {
+    const regNo = registrationNo.toString(); // normalize
     if (value === '') {
-      setMarksMap(prev => ({ ...prev, [registrationNo]: '' }));
+      setMarksMap(prev => ({ ...prev, [regNo]: '' }));
       return;
     }
-
     let val = Number(value);
     if (val < 0) val = 0;
     if (val > totalMarks) val = totalMarks;
-
-    setMarksMap(prev => ({ ...prev, [registrationNo]: val }));
+    setMarksMap(prev => ({ ...prev, [regNo]: val }));
   };
 
+
   const downloadSampleFile = () => {
-    if (!selectedClass) {
-      setAlert({ show: true, variant: 'warning', message: 'Please select a class first' });
+    if (!selectedClass || !studentsData?.getStudentsByClass?.length) {
+      setAlert({ show: true, variant: 'warning', message: 'Please select a class with students first' });
       return;
     }
 
-    const sampleData = [
-      {
-        registrationNo: 20230001,
-        subjectCode: selectedClass.subjectCode,
-        marks: 80,
-        markType: markType, // use currently selected mark type
-      },
-      {
-        registrationNo: 20230002,
-        subjectCode: selectedClass.subjectCode,
-        marks: 75,
-        markType: markType,
-      },
-    ];
+    // Prepare sample data with studentName (but no markType in sheet)
+    const sampleData = studentsData.getStudentsByClass.map(student => ({
+      registrationNo: parseInt(student.registrationNo), // Read-only (informational)
+      studentName: student.student_name,               // Informational
+      subjectCode: selectedClass.subjectCode,          // Informational
+      marks: ""                                        // Teacher enters here
+    }));
 
     const worksheet = XLSX.utils.json_to_sheet(sampleData);
+
+    // Freeze header row
+    worksheet['!freeze'] = { xSplit: 0, ySplit: 1 };
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "MarksSample");
 
-    XLSX.writeFile(workbook, `Marks_Sample_${markType}.xlsx`);
+    XLSX.writeFile(workbook, `Marks_Sample_${selectedClass.subjectCode}.xlsx`);
   };
+
+
 
   const handleSubmit = async () => {
     if (!studentsData?.getStudentsByClass?.length) {
-      setAlert({ show: true, variant: 'warning', message: 'No students found to submit marks for.' });
+      setAlert({ show: true, variant: 'warning', message: 'No students found to submit marks.' });
       return;
     }
+    console.log("handle submit")
+    const marksArray = studentsData.getStudentsByClass.map(stu => {
+      const regNo = stu.registrationNo.toString();
+      let enteredMarks = marksMap[regNo];
+      enteredMarks = enteredMarks === '' || enteredMarks === undefined ? 0 : Number(enteredMarks);
+      if (enteredMarks > totalMarks) enteredMarks = totalMarks;
 
-    const marksArray = studentsData.getStudentsByClass.map(stu => ({
-      registrationNo: stu.registrationNo,
-      subjectCode: selectedClass.subjectCode,
-      marks: marksMap[stu.registrationNo] === '' || marksMap[stu.registrationNo] === undefined
-        ? 0
-        : marksMap[stu.registrationNo],
-      markType,
-    }));
+      return {
+        registrationNo: regNo,
+        subjectCode: selectedClass.subjectCode,
+        marks: enteredMarks,
+        markType,
+      };
+    });
+
+
+    console.log("Payload to submit:", marksArray);
 
     try {
       const res = await bulkEnterMarks({ variables: { marks: marksArray } });
-      setAlert({ show: true, variant: 'success', message: res.data.bulkEnterMarks.message });
-      setMarksMap({});
-      setFile(null);
-    } catch (error) {
-      setAlert({ show: true, variant: 'danger', message: 'Error submitting marks: ' + error.message });
-      console.error('Submit Marks Error:', error);
+      if (res.data.bulkEnterMarks.success) {
+        setAlert({ show: true, variant: 'success', message: res.data.bulkEnterMarks.message });
+        setMarksMap({});
+        setFile(null);
+      } else {
+        setAlert({ show: true, variant: 'danger', message: res.data.bulkEnterMarks.message });
+      }
+    } catch (err) {
+      console.error("Error submitting marks:", err);
+      setAlert({ show: true, variant: 'danger', message: "Error submitting marks: " + err.message });
     }
   };
+
 
   const handleFileChange = (e) => {
     if (e.target.files.length > 0) setFile(e.target.files[0]);
@@ -139,24 +156,49 @@ export const UploadMarks = () => {
 
     const reader = new FileReader();
     reader.onload = (evt) => {
-      const data = evt.target.result;
-      const workbook = XLSX.read(data, { type: 'binary' });
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[sheetName];
-      const jsonData = XLSX.utils.sheet_to_json(worksheet);
+      try {
+        const data = evt.target.result;
+        const workbook = XLSX.read(data, { type: 'binary' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
-      const newMarksMap = {};
-      jsonData.forEach(row => {
-        if (row.registrationNo && row.marks !== undefined) {
-          let marks = Number(row.marks);
-          if (marks < 0) marks = 0;
-          if (marks > totalMarks) marks = totalMarks;
-          newMarksMap[row.registrationNo] = marks;
-        }
+        const newMarksMap = {};
+        let importedCount = 0;
+
+        jsonData.forEach(row => {
+          // Handle both string and number registration numbers
+          const regNo = row.registrationNo ? row.registrationNo.toString() : null;
+          if (regNo && row.marks !== undefined) {
+            let marks = Number(row.marks);
+            if (isNaN(marks)) marks = 0;
+            if (marks < 0) marks = 0;
+            if (marks > totalMarks) marks = totalMarks;
+            newMarksMap[regNo] = marks;
+            importedCount++;
+          }
+        });
+
+        setMarksMap(prev => ({ ...prev, ...newMarksMap }));
+        setAlert({
+          show: true,
+          variant: 'success',
+          message: `Marks imported successfully for ${importedCount} students`
+        });
+      } catch (error) {
+        setAlert({
+          show: true,
+          variant: 'danger',
+          message: 'Error reading Excel file: ' + error.message
+        });
+      }
+    };
+    reader.onerror = () => {
+      setAlert({
+        show: true,
+        variant: 'danger',
+        message: 'Error reading file'
       });
-
-      setMarksMap(prev => ({ ...prev, ...newMarksMap }));
-      setAlert({ show: true, variant: 'success', message: 'Marks imported successfully from Excel' });
     };
     reader.readAsBinaryString(file);
   };
@@ -302,75 +344,75 @@ export const UploadMarks = () => {
 
               <Card className="shadow-sm border-0 mb-4">
                 <Card.Body>
-                <Row className="mb-4 g-3">
-  {/* Mark Type */}
-  <Col md={3} sm={6}>
-    <Form.Group>
-      <Form.Label>Mark Type</Form.Label>
-      <Form.Select
-        value={markType}
-        onChange={(e) => setMarkType(e.target.value)}
-        style={{ borderColor: '#1d3557' }}
-      >
-        <option value="MTE">Mid-Term Exam</option>
-        <option value="Class_test_1">Class Test 1</option>
-        <option value="Class_test_2">Class Test 2</option>
-        <option value="ETE">End-Term Exam</option>
-        <option value="attendance">Attendance</option>
-      </Form.Select>
-    </Form.Group>
-  </Col>
+                  <Row className="mb-4 g-3">
+                    {/* Mark Type */}
+                    <Col md={3} sm={6}>
+                      <Form.Group>
+                        <Form.Label>Mark Type</Form.Label>
+                        <Form.Select
+                          value={markType}
+                          onChange={(e) => setMarkType(e.target.value)}
+                          style={{ borderColor: '#1d3557' }}
+                        >
+                          <option value="MTE">Mid-Term Exam</option>
+                          <option value="Class_test_1">Class Test 1</option>
+                          <option value="Class_test_2">Class Test 2</option>
+                          <option value="ETE">End-Term Exam</option>
+                          <option value="attendance">Attendance</option>
+                        </Form.Select>
+                      </Form.Group>
+                    </Col>
 
-  {/* Total Marks */}
-  <Col md={2} sm={6}>
-    <Form.Group>
-      <Form.Label>Total Marks</Form.Label>
-      <Form.Control
-        type="number"
-        min="1"
-        max="1000"
-        value={totalMarks}
-        onChange={(e) => {
-          const val = Number(e.target.value);
-          if (val > 0) setTotalMarks(val);
-        }}
-        style={{ borderColor: '#1d3557' }}
-      />
-    </Form.Group>
-  </Col>
+                    {/* Total Marks */}
+                    <Col md={2} sm={6}>
+                      <Form.Group>
+                        <Form.Label>Total Marks</Form.Label>
+                        <Form.Control
+                          type="number"
+                          min="1"
+                          max="1000"
+                          value={totalMarks}
+                          onChange={(e) => {
+                            const val = Number(e.target.value);
+                            if (val > 0) setTotalMarks(val);
+                          }}
+                          style={{ borderColor: '#1d3557' }}
+                        />
+                      </Form.Group>
+                    </Col>
 
-  {/* File Upload & Buttons */}
-  <Col md={7} sm={12}>
-    <Form.Group>
-      <Form.Label>Upload & Sample</Form.Label>
-      <div className="d-flex flex-wrap gap-2">
-        <Form.Control
-          type="file"
-          accept=".xlsx, .xls, .csv"
-          onChange={handleFileChange}
-          style={{ borderColor: '#1d3557', maxWidth: '250px' }}
-        />
-        <Button
-          variant="outline-secondary"
-          onClick={handleBulkImport}
-          style={{ borderColor: '#1d3557' }}
-        >
-          Import
-        </Button>
-        <Button
-          variant="outline-primary"
-          onClick={downloadSampleFile}
-          style={{ borderColor: '#1d3557' }}
-        >
-          Sample
-        </Button>
-      </div>
-      <Form.Text className="text-muted">
-        Excel must have columns: <b>registrationNo</b> and <b>marks</b>
-      </Form.Text>
-    </Form.Group>
-  </Col>
-</Row>
+                    {/* File Upload & Buttons */}
+                    <Col md={7} sm={12}>
+                      <Form.Group>
+                        <Form.Label>Upload & Sample</Form.Label>
+                        <div className="d-flex flex-wrap gap-2">
+                          <Form.Control
+                            type="file"
+                            accept=".xlsx, .xls, .csv"
+                            onChange={handleFileChange}
+                            style={{ borderColor: '#1d3557', maxWidth: '250px' }}
+                          />
+                          <Button
+                            variant="outline-secondary"
+                            onClick={handleBulkImport}
+                            style={{ borderColor: '#1d3557' }}
+                          >
+                            Import
+                          </Button>
+                          <Button
+                            variant="outline-primary"
+                            onClick={downloadSampleFile}
+                            style={{ borderColor: '#1d3557' }}
+                          >
+                            Sample
+                          </Button>
+                        </div>
+                        <Form.Text className="text-muted">
+                          Excel must have columns: <b>registrationNo</b> and <b>marks</b>
+                        </Form.Text>
+                      </Form.Group>
+                    </Col>
+                  </Row>
 
 
                   {loadingStudents ? (
@@ -401,7 +443,14 @@ export const UploadMarks = () => {
                                   </div>
                                 </td>
                                 <td style={{ padding: '1rem' }}>
-                                  <Form.Control type="number" value={marksMap[stu.registrationNo] ?? ''} onChange={(e) => handleMarkChange(stu.registrationNo, e.target.value)} min="0" max={totalMarks} style={{ width: '100px' }} />
+                                  <Form.Control
+                                    type="number"
+                                    value={marksMap[stu.registrationNo.toString()] ?? ''}
+                                    onChange={(e) => handleMarkChange(stu.registrationNo, e.target.value)}
+                                    min="0"
+                                    max={totalMarks}
+                                    style={{ width: '100px' }}
+                                  />
                                 </td>
                               </tr>
                             ))}
@@ -410,8 +459,20 @@ export const UploadMarks = () => {
                       </div>
 
                       <div className="d-flex justify-content-end mt-4">
-                        <Button variant="primary" onClick={handleSubmit} disabled={loadingSubmit} style={{ backgroundColor: '#1d3557', border: 'none', minWidth: '150px' }}>
-                          {loadingSubmit ? <><Spinner as="span" animation="border" size="sm" className="me-2" /> Submitting...</> : 'Submit Marks'}
+                        <Button
+                          variant="primary"
+                          onClick={handleSubmit}
+                          // disabled={loadingSubmit || Object.keys(marksMap).length === 0}
+                          style={{ backgroundColor: '#1d3557', border: 'none', minWidth: '150px' }}
+                        >
+                          {loadingSubmit ? (
+                            <>
+                              <Spinner as="span" animation="border" size="sm" className="me-2" />
+                              Submitting...
+                            </>
+                          ) : (
+                            `Submit Marks (${Object.keys(marksMap).length})`
+                          )}
                         </Button>
                       </div>
                     </>

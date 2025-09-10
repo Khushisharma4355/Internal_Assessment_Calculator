@@ -12,6 +12,7 @@ import {
   Badge,
   Tabs,
   Tab,
+  Spinner,
 } from "react-bootstrap";
 import { AdminNav } from "../../Components/Admin/AdminNav";
 import { useState, useEffect } from "react";
@@ -24,12 +25,14 @@ export const StudentMgmt = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [selectedStudents, setSelectedStudents] = useState([]);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 992);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
 
   if (loading) return <RingLoader />;
   if (error) {
@@ -48,12 +51,51 @@ export const StudentMgmt = () => {
   const studentsList = data?.students || [];
 
   // ✅ Filter students safely
-  const filteredStudents = studentsList.filter(
-    (student) =>
-      student.student_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.student_email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.registrationNo?.toLowerCase().includes(searchTerm.toLowerCase())
+
+const filteredStudents = studentsList.filter((student) => {
+  const name = student.student_name?.toLowerCase() || "";
+  const email = student.student_email?.toLowerCase() || "";
+  const regNo = student.registrationNo ? String(student.registrationNo).toLowerCase() : "";
+
+  return (
+    name.includes(searchTerm.toLowerCase()) ||
+    email.includes(searchTerm.toLowerCase()) ||
+    regNo.includes(searchTerm.toLowerCase())
   );
+});
+
+
+  // console.log(filteredStudents)
+  // Categorize students by course - only include courses with students
+  const studentsByCourse = filteredStudents.reduce((acc, student) => {
+    const courseName = student.course?.courseName || "Not Assigned";
+    if (!acc[courseName]) {
+      acc[courseName] = [];
+    }
+    acc[courseName].push(student);
+    return acc;
+  }, {});
+
+  // Filter out empty course tabs when searching
+  const nonEmptyCourses = Object.entries(studentsByCourse).filter(
+    ([courseName, students]) => students.length > 0
+  );
+
+  const toggleSelectAll = (list) => {
+    if (selectedStudents.length === list.length) {
+      setSelectedStudents([]);
+    } else {
+      setSelectedStudents(list.map((s) => s.id));
+    }
+  };
+
+  const toggleSelectOne = (id) => {
+    setSelectedStudents((prev) =>
+      prev.includes(id)
+        ? prev.filter((studentId) => studentId !== id)
+        : [...prev, id]
+    );
+  };
 
   const renderMobileCards = (list) => (
     <div className="d-md-none">
@@ -62,14 +104,33 @@ export const StudentMgmt = () => {
           <Card key={idx} className="mb-3 shadow-sm">
             <Card.Body>
               <div className="d-flex justify-content-between align-items-start mb-2">
-                <h6 className="fw-semibold mb-0">{student.student_name || "N/A"}</h6>
-                <Badge bg="light" text="dark">
+                <Form.Check
+                  type="checkbox"
+                  checked={selectedStudents.includes(student.id)}
+                  onChange={() => toggleSelectOne(student.id)}
+                />
+                <div className="d-flex gap-2">
+                  <Button variant="outline-primary" size="sm">
+                    <FaEdit />
+                  </Button>
+                  <Button variant="outline-danger" size="sm">
+                    <FaTrash />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="mb-2">
+                <Badge bg="light" text="dark" className="fw-normal me-2">
                   {student.registrationNo || "N/A"}
                 </Badge>
               </div>
 
-              <div className="mb-2 text-muted small">{student.student_email || "N/A"}</div>
-              <div className="mb-2 text-muted small">{student.student_phone || "N/A"}</div>
+              <h6 className="fw-semibold mb-2">{student.student_name || "N/A"}</h6>
+
+              <div className="mb-2">
+                <div className="text-muted small">{student.student_email || "N/A"}</div>
+                <div className="text-muted small">{student.student_phone || "N/A"}</div>
+              </div>
 
               <div className="mb-2">
                 {student.course?.courseName ? (
@@ -77,15 +138,6 @@ export const StudentMgmt = () => {
                 ) : (
                   <Badge bg="secondary">Not assigned</Badge>
                 )}
-              </div>
-
-              <div className="d-flex gap-2 justify-content-end">
-                <Button variant="outline-primary" size="sm">
-                  <FaEdit />
-                </Button>
-                <Button variant="outline-danger" size="sm">
-                  <FaTrash />
-                </Button>
               </div>
             </Card.Body>
           </Card>
@@ -102,6 +154,13 @@ export const StudentMgmt = () => {
         <Table hover responsive className="mb-0">
           <thead className="table-light">
             <tr>
+              <th>
+                <Form.Check
+                  type="checkbox"
+                  checked={selectedStudents.length === list.length && list.length > 0}
+                  onChange={() => toggleSelectAll(list)}
+                />
+              </th>
               <th>Reg. No.</th>
               <th>Name</th>
               <th>Contact</th>
@@ -114,7 +173,16 @@ export const StudentMgmt = () => {
               list.map((student, idx) => (
                 <tr key={idx}>
                   <td>
-                    <Badge bg="light" text="dark">{student.registrationNo || "N/A"}</Badge>
+                    <Form.Check
+                      type="checkbox"
+                      checked={selectedStudents.includes(student.id)}
+                      onChange={() => toggleSelectOne(student.id)}
+                    />
+                  </td>
+                  <td>
+                    <Badge bg="light" text="dark" className="fw-normal">
+                      {student.registrationNo || "N/A"}
+                    </Badge>
                   </td>
                   <td className="fw-semibold">{student.student_name || "N/A"}</td>
                   <td>
@@ -142,7 +210,7 @@ export const StudentMgmt = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="5" className="text-center py-4 text-muted">
+                <td colSpan="6" className="text-center py-4 text-muted">
                   No students found
                 </td>
               </tr>
@@ -230,9 +298,12 @@ export const StudentMgmt = () => {
               {renderMobileCards(filteredStudents)}
               {renderTable(filteredStudents)}
             </Tab>
-            <Tab eventKey="course" title="By Course">
-              <div className="text-muted">Course-based filtering goes here.</div>
-            </Tab>
+            {nonEmptyCourses.map(([courseName, students]) => (
+              <Tab key={courseName} eventKey={courseName} title={`${courseName} (${students.length})`}>
+                {renderMobileCards(students)}
+                {renderTable(students)}
+              </Tab>
+            ))}
           </Tabs>
         </Container>
       </div>
