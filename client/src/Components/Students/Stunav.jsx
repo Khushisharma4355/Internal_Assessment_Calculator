@@ -5,7 +5,7 @@ import { FiHome, FiUsers } from 'react-icons/fi';
 import { TfiAnnouncement } from "react-icons/tfi";
 import LogoutButton from '../Logout/Logout';
 import './sidebar.css';
-
+import { FaChartBar } from "react-icons/fa";
 export const Stunav = ({ onSelect }) => {
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
@@ -35,7 +35,7 @@ export const Stunav = ({ onSelect }) => {
   // Navigation items
   const navItems = [
     { path: '/students/', icon: <FiHome style={iconStyle} />, label: 'Home' },
-    { path: '/students/assesments', icon: <FiUsers style={iconStyle} />, label: 'Assessment' },
+    { path: '/students/assesments', icon: <FaChartBar  style={iconStyle} />, label: 'Assessment' },
     { path: '/students/announcements', icon: <TfiAnnouncement style={iconStyle} />, label: 'Announcements' },
   ];
 

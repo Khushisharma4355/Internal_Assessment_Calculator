@@ -3,6 +3,7 @@ import { Nav } from 'react-bootstrap';
 import { NavLink, useLocation } from 'react-router-dom';
 import { FiHome, FiUsers, FiBook } from 'react-icons/fi';
 import { TfiAnnouncement } from "react-icons/tfi";
+import {FaUserGraduate,FaUpload,FaFileInvoice } from "react-icons/fa";
 import LogoutButton from '../Logout/Logout';
 
 export const TeaNav = ({ onSelect }) => {
@@ -34,9 +35,9 @@ export const TeaNav = ({ onSelect }) => {
   // Navigation items
   const navItems = [
     { path: '/teachers/', icon: <FiHome style={iconStyle} />, label: 'Home' },
-    { path: '/teachers/managestudents', icon: <FiUsers style={iconStyle} />, label: 'Manage Students' },
-    { path: '/teachers/uploadmarks', icon: <FiUsers style={iconStyle} />, label: 'Upload marks' },
-    { path: '/teachers/reports', icon: <FiBook style={iconStyle} />, label: 'Reports' },
+    { path: '/teachers/managestudents', icon: <FaUserGraduate style={iconStyle} />, label: 'Manage Students' },
+    { path: '/teachers/uploadmarks', icon: <FaUpload  style={iconStyle} />, label: 'Upload marks' },
+    { path: '/teachers/reports', icon: <FaFileInvoice style={iconStyle} />, label: 'Reports' },
     { path: '/teachers/announcements', icon: <TfiAnnouncement style={iconStyle} />, label: 'Announcements' }
   ];
 

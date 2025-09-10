@@ -8,6 +8,7 @@ import {
   FiBook, 
   FiMail
 } from 'react-icons/fi';
+import { FaUserGraduate,FaChalkboardTeacher,FaLayerGroup,FaFileInvoice  } from "react-icons/fa";
 import { TfiAnnouncement } from "react-icons/tfi";
 import LogoutButton from '../Logout/Logout';
 import './sidebar.css';
@@ -40,10 +41,10 @@ export const AdminNav = ({ onSelect }) => {
 
     const navItems = [
         { path: '/admin/', icon: <FiHome style={iconStyle} />, label: 'Home' },
-        { path: '/admin/teachers', icon: <FiUsers style={iconStyle} />, label: 'Teachers' },
-        { path: '/admin/students', icon: <FiUsers style={iconStyle} />, label: 'Students' },
-        { path: '/admin/courses', icon: <FiBook style={iconStyle} />, label: 'Courses' },
-        { path: '/admin/sendreports', icon: <FiMail style={iconStyle} />, label: 'Send Reports' },
+        { path: '/admin/teachers', icon: <FaChalkboardTeacher  style={iconStyle} />, label: 'Teachers' },
+        { path: '/admin/students', icon: <FaUserGraduate style={iconStyle} />, label: 'Students' },
+        { path: '/admin/courses', icon: <FaLayerGroup  style={iconStyle} />, label: 'Courses' },
+        { path: '/admin/sendreports', icon: <FaFileInvoice  style={iconStyle} />, label: 'Send Reports' },
         { path: '/admin/announcements', icon: <TfiAnnouncement style={iconStyle} />, label: 'Announcements' }
     ];
 
