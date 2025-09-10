@@ -105,3 +105,9 @@ export const REMOVE_ADMIN=gql`
      removeAdmin(emp_id: $emp_id)
   }
 `
+
+export const REMOVE_STUDENT=gql`
+  mutation RemoveStudent($registrationNo:BigInt!){
+   removeStudent(registrationNo: $registrationNo)
+  }
+`

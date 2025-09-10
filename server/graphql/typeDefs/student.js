@@ -75,6 +75,8 @@ type ImportError {
   extend type Mutation {
     # Bulk import students from Excel/CSV
     bulkImportStudents(data: [StudentBulkInput!]!): BulkImportResult!
+    removeStudent(registrationNo:BigInt!):Boolean
+
   }
 `;
 

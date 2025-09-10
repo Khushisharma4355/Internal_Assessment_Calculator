@@ -226,7 +226,20 @@ export default {
           }
         };
       }
-    }
+    },
+     removeStudent: async (_, { registrationNo }) => {
+          try {
+            const deleted = await Student.destroy({
+              where: { registrationNo }
+            });
+    
+            // destroy returns the number of rows deleted
+            return deleted > 0;
+          } catch (err) {
+            console.error("Error removing student:", err);
+            throw new Error("Failed to remove student");
+          }
+        }
   },
 
   // Student type resolvers

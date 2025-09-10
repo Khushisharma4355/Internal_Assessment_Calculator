@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import {
   Table,
   Alert,
@@ -12,16 +12,20 @@ import {
   Badge,
   Tabs,
   Tab,
-  Spinner,
 } from "react-bootstrap";
 import { AdminNav } from "../../Components/Admin/AdminNav";
 import { useState, useEffect } from "react";
 import { FaSearch, FaEdit, FaTrash, FaBars, FaTimes, FaPlus } from "react-icons/fa";
 import { RingLoader } from "../../Components/Spinner/RingLoader";
 import { GET_ALL_STUDENTS } from "../../GraphQL/Queries";
+import { REMOVE_STUDENT } from "../../GraphQL/Mutation";
 
 export const StudentMgmt = () => {
   const { loading, error, data } = useQuery(GET_ALL_STUDENTS);
+  const [removeStudent] = useMutation(REMOVE_STUDENT, {
+    refetchQueries: [{ query: GET_ALL_STUDENTS }], // refresh list after delete
+  });
+
   const [searchTerm, setSearchTerm] = useState("");
   const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
@@ -33,6 +37,15 @@ export const StudentMgmt = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const handleDeleteStudent = async (registrationNo) => {
+    if (!window.confirm("Are you sure you want to remove this student?")) return;
+    try {
+      await removeStudent({ variables: { registrationNo } });
+    } catch (err) {
+      console.error("Delete failed:", err);
+      alert("Failed to delete student");
+    }
+  };
 
   if (loading) return <RingLoader />;
   if (error) {
@@ -40,80 +53,79 @@ export const StudentMgmt = () => {
       <Alert variant="danger" className="mt-4">
         <Alert.Heading>Error loading students</Alert.Heading>
         <p>{error.message}</p>
-        <Button variant="outline-danger" size="sm" onClick={() => window.location.reload()}>
+        <Button
+          variant="outline-danger"
+          size="sm"
+          onClick={() => window.location.reload()}
+        >
           Retry
         </Button>
       </Alert>
     );
   }
 
-  // ✅ Safely handle data
   const studentsList = data?.students || [];
 
-  // ✅ Filter students safely
+  const filteredStudents = studentsList.filter((student) => {
+    const name = student.student_name?.toLowerCase() || "";
+    const email = student.student_email?.toLowerCase() || "";
+    const regNo = student.registrationNo
+      ? String(student.registrationNo).toLowerCase()
+      : "";
 
-const filteredStudents = studentsList.filter((student) => {
-  const name = student.student_name?.toLowerCase() || "";
-  const email = student.student_email?.toLowerCase() || "";
-  const regNo = student.registrationNo ? String(student.registrationNo).toLowerCase() : "";
+    return (
+      name.includes(searchTerm.toLowerCase()) ||
+      email.includes(searchTerm.toLowerCase()) ||
+      regNo.includes(searchTerm.toLowerCase())
+    );
+  });
 
-  return (
-    name.includes(searchTerm.toLowerCase()) ||
-    email.includes(searchTerm.toLowerCase()) ||
-    regNo.includes(searchTerm.toLowerCase())
-  );
-});
-
-
-  // console.log(filteredStudents)
-  // Categorize students by course - only include courses with students
   const studentsByCourse = filteredStudents.reduce((acc, student) => {
     const courseName = student.course?.courseName || "Not Assigned";
-    if (!acc[courseName]) {
-      acc[courseName] = [];
-    }
+    if (!acc[courseName]) acc[courseName] = [];
     acc[courseName].push(student);
     return acc;
   }, {});
 
-  // Filter out empty course tabs when searching
   const nonEmptyCourses = Object.entries(studentsByCourse).filter(
-    ([courseName, students]) => students.length > 0
+    ([, students]) => students.length > 0
   );
 
   const toggleSelectAll = (list) => {
     if (selectedStudents.length === list.length) {
       setSelectedStudents([]);
     } else {
-      setSelectedStudents(list.map((s) => s.id));
+      setSelectedStudents(list.map((s) => s.registrationNo));
     }
   };
 
   const toggleSelectOne = (id) => {
     setSelectedStudents((prev) =>
-      prev.includes(id)
-        ? prev.filter((studentId) => studentId !== id)
-        : [...prev, id]
+      prev.includes(id) ? prev.filter((studentId) => studentId !== id) : [...prev, id]
     );
   };
 
   const renderMobileCards = (list) => (
     <div className="d-md-none">
       {list.length ? (
-        list.map((student, idx) => (
-          <Card key={idx} className="mb-3 shadow-sm">
+        list.map((student) => (
+          <Card key={student.registrationNo} className="mb-3 shadow-sm">
             <Card.Body>
               <div className="d-flex justify-content-between align-items-start mb-2">
                 <Form.Check
                   type="checkbox"
-                  checked={selectedStudents.includes(student.id)}
-                  onChange={() => toggleSelectOne(student.id)}
+                  checked={selectedStudents.includes(student.registrationNo)}
+                  onChange={() => toggleSelectOne(student.registrationNo)}
                 />
                 <div className="d-flex gap-2">
                   <Button variant="outline-primary" size="sm">
                     <FaEdit />
                   </Button>
-                  <Button variant="outline-danger" size="sm">
+                  <Button
+                    variant="outline-danger"
+                    size="sm"
+                    onClick={() => handleDeleteStudent(student.registrationNo)}
+                  >
                     <FaTrash />
                   </Button>
                 </div>
@@ -170,13 +182,13 @@ const filteredStudents = studentsList.filter((student) => {
           </thead>
           <tbody>
             {list.length ? (
-              list.map((student, idx) => (
-                <tr key={idx}>
+              list.map((student) => (
+                <tr key={student.registrationNo}>
                   <td>
                     <Form.Check
                       type="checkbox"
-                      checked={selectedStudents.includes(student.id)}
-                      onChange={() => toggleSelectOne(student.id)}
+                      checked={selectedStudents.includes(student.registrationNo)}
+                      onChange={() => toggleSelectOne(student.registrationNo)}
                     />
                   </td>
                   <td>
@@ -201,7 +213,11 @@ const filteredStudents = studentsList.filter((student) => {
                       <Button variant="outline-primary" size="sm">
                         <FaEdit />
                       </Button>
-                      <Button variant="outline-danger" size="sm">
+                      <Button
+                        variant="outline-danger"
+                        size="sm"
+                        onClick={() => handleDeleteStudent(student.registrationNo)}
+                      >
                         <FaTrash />
                       </Button>
                     </div>
@@ -223,7 +239,6 @@ const filteredStudents = studentsList.filter((student) => {
 
   return (
     <div className="d-flex">
-      {/* Sidebar */}
       <div
         className="d-none d-lg-block position-fixed h-100"
         style={{ width: "250px", background: "#fff", borderRight: "1px solid #dee2e6" }}
@@ -231,7 +246,6 @@ const filteredStudents = studentsList.filter((student) => {
         <AdminNav />
       </div>
 
-      {/* Main Content */}
       <div
         className="flex-grow-1 p-3 p-md-4"
         style={
@@ -240,7 +254,6 @@ const filteredStudents = studentsList.filter((student) => {
             : { marginLeft: "250px", width: "calc(100% - 250px)" }
         }
       >
-        {/* Mobile Nav Toggle */}
         <div className="d-lg-none mb-3">
           <Button
             variant="outline-secondary"
@@ -251,7 +264,6 @@ const filteredStudents = studentsList.filter((student) => {
           </Button>
         </div>
 
-        {/* Mobile Overlay Nav */}
         {isMobileNavOpen && (
           <div
             className="d-lg-none position-fixed top-0 start-0 h-100 w-100"
@@ -294,12 +306,19 @@ const filteredStudents = studentsList.filter((student) => {
           </Row>
 
           <Tabs defaultActiveKey="all" className="mb-3">
-            <Tab eventKey="all" title={`All Students (${filteredStudents.length})`}>
+            <Tab
+              eventKey="all"
+              title={`All Students (${filteredStudents.length})`}
+            >
               {renderMobileCards(filteredStudents)}
               {renderTable(filteredStudents)}
             </Tab>
             {nonEmptyCourses.map(([courseName, students]) => (
-              <Tab key={courseName} eventKey={courseName} title={`${courseName} (${students.length})`}>
+              <Tab
+                key={courseName}
+                eventKey={courseName}
+                title={`${courseName} (${students.length})`}
+              >
                 {renderMobileCards(students)}
                 {renderTable(students)}
               </Tab>
