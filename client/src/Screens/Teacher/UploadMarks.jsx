@@ -172,60 +172,80 @@ const handleSubmit = async () => {
     if (e.target.files.length > 0) setFile(e.target.files[0]);
   };
 
-  const handleBulkImport = () => {
-    if (!file) {
-      setAlert({ show: true, variant: 'warning', message: 'Please select a file first' });
-      return;
-    }
+ const handleBulkImport = () => {
+  if (!file) {
+    setAlert({ show: true, variant: 'warning', message: 'Please select a file first' });
+    return;
+  }
 
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      try {
-        const data = evt.target.result;
-        const workbook = XLSX.read(data, { type: 'binary' });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    try {
+      const data = evt.target.result;
+      const workbook = XLSX.read(data, { type: 'binary' });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
-        const newMarksMap = {};
-        let importedCount = 0;
+      const newMarksMap = {};
+      let importedCount = 0;
+      const exceededStudents = [];
 
-        jsonData.forEach(row => {
-          // Handle both string and number registration numbers
-          const regNo = row.registrationNo ? row.registrationNo.toString() : null;
-          if (regNo && row.marks !== undefined) {
-            let marks = Number(row.marks);
-            if (isNaN(marks)) marks = 0;
-            if (marks < 0) marks = 0;
-            if (marks > totalMarks) marks = totalMarks;
-            newMarksMap[regNo] = marks;
-            importedCount++;
+      jsonData.forEach(row => {
+        const regNo = row.registrationNo ? row.registrationNo.toString() : null;
+        if (regNo && row.marks !== undefined) {
+          let marks = Number(row.marks);
+          if (isNaN(marks)) marks = 0;
+          if (marks < 0) marks = 0;
+
+          // Check if marks exceed totalMarks
+          if (marks > totalMarks) {
+            exceededStudents.push({ regNo, marks });
+            marks = totalMarks; // optionally clamp to max
           }
-        });
 
-        setMarksMap(prev => ({ ...prev, ...newMarksMap }));
+          newMarksMap[regNo] = marks;
+          importedCount++;
+        }
+      });
+
+      setMarksMap(prev => ({ ...prev, ...newMarksMap }));
+
+      if (exceededStudents.length > 0) {
+        const exceededMsg = exceededStudents
+          .map(s => `RegNo ${s.regNo}: ${s.marks} > ${totalMarks}`)
+          .join('; ');
+        setAlert({
+          show: true,
+          variant: 'warning',
+          message: `Some marks exceeded totalMarks and were capped: ${exceededMsg}`
+        });
+      } else {
         setAlert({
           show: true,
           variant: 'success',
           message: `Marks imported successfully for ${importedCount} students`
         });
-      } catch (error) {
-        setAlert({
-          show: true,
-          variant: 'danger',
-          message: 'Error reading Excel file: ' + error.message
-        });
       }
-    };
-    reader.onerror = () => {
+    } catch (error) {
       setAlert({
         show: true,
         variant: 'danger',
-        message: 'Error reading file'
+        message: 'Error reading Excel file: ' + error.message
       });
-    };
-    reader.readAsBinaryString(file);
+    }
   };
+
+  reader.onerror = () => {
+    setAlert({
+      show: true,
+      variant: 'danger',
+      message: 'Error reading file'
+    });
+  };
+  reader.readAsBinaryString(file);
+};
+
 
 
   if (loadingTeacher || loadingClasses) return <RingLoader />;
