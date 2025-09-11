@@ -37,7 +37,7 @@ export default {
           return {
             registrationNo: student.registrationNo,
             studentName: student.student_name || "Unknown Student",
-            parentPhone: student.parent_Detail || "", // Use the parent's real phone number
+            parentPhone: student.parent_Detail || "",
             assessments
           };
         })
@@ -58,10 +58,7 @@ export default {
       }
 
       try {
-        // Check if number already starts with +; otherwise, add +91
         const formattedPhone = parentPhone.startsWith("+") ? parentPhone : `+91${parentPhone}`;
-
-        // Call Twilio function
         const response = await sendWhatsAppMessage(formattedPhone, message);
         return { success: true, sid: response.sid };
       } catch (err) {
@@ -88,29 +85,39 @@ export default {
     },
 
     // Bulk enter marks
-    bulkEnterMarks: async (_, { marks }) => {
-      try {
-        for (const m of marks) {
-          const existing = await Assessment.findOne({
-            where: { registrationNo: m.registrationNo, subjectCode: m.subjectCode }
-          });
+   bulkEnterMarks: async (_, { marks, semester_id, emp_id, section_id }) => {
+  try {
+    for (const m of marks) {
+      const existing = await Assessment.findOne({
+        where: {
+          registrationNo: m.registrationNo,
+          subjectCode: m.subjectCode,
+          semester_id,
+          section_id,
+        },
+      });
 
-          if (existing) {
-            await existing.update({ [m.markType]: m.marks });
-          } else {
-            await Assessment.create({
-              registrationNo: m.registrationNo,
-              subjectCode: m.subjectCode,
-              [m.markType]: m.marks
-            });
-          }
-        }
-        return { success: true, message: "Marks saved successfully" };
-      } catch (err) {
-        console.error("Bulk mark entry error:", err);
-        return { success: false, message: "Error saving marks" };
+      if (existing) {
+        await existing.update({ [m.markType]: m.marks });
+      } else {
+        await Assessment.create({
+          registrationNo: m.registrationNo,
+          subjectCode: m.subjectCode,
+          [m.markType]: m.marks,
+          semester_id,
+          emp_id,
+          section_id,
+        });
       }
-    },
+    }
+    return { success: true, message: "Marks saved successfully" };
+  } catch (err) {
+    console.error("Bulk mark entry error:", err);
+    return { success: false, message: "Error saving marks" };
+  }
+}
+
+,
   },
 
   Assessment: {

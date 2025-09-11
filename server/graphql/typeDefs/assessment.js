@@ -10,7 +10,7 @@ const assessmentTypeDef = gql`
     MTE: Int
     ETE: Int
     attendance: Int
-    sem_id: ID
+    semester_id: ID
     emp_id: String
     student: Student
     subject: Subject
@@ -48,13 +48,20 @@ const assessmentTypeDef = gql`
   }
 
   extend type Mutation {
-    bulkEnterMarks(marks: [MarksInput!]!): ResponseMessage!
+    bulkEnterMarks(
+    marks: [MarksInput!]!,
+    semester_id: ID!,
+    emp_id: String!,
+    section_id: String!
+  ): ResponseMessage!
+
     enterMarks(
       registrationNo: BigInt!
       subjectCode: String!
       marks: Int!
       markType: String!
     ): ResponseMessage!
+
     sendReport(parentPhone: String!, message: String!): SendReportResponse!
   }
 `;

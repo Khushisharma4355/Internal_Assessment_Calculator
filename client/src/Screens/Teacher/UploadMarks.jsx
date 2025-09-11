@@ -21,13 +21,24 @@ import { FaBars, FaTimes } from "react-icons/fa";
 import * as XLSX from 'xlsx';
 
 const BULK_ENTER_MARKS = gql`
-  mutation BulkEnterMarks($marks: [MarksInput!]!) {
-    bulkEnterMarks(marks: $marks) {
+  mutation BulkEnterMarks(
+    $marks: [MarksInput!]!,
+    $semester_id: ID!,
+    $emp_id: String!,
+    $section_id: String!
+  ) {
+    bulkEnterMarks(
+      marks: $marks,
+      semester_id: $semester_id,
+      emp_id: $emp_id,
+      section_id: $section_id
+    ) {
       success
       message
     }
   }
 `;
+
 
 export const UploadMarks = () => {
   const empId = "T001";
@@ -105,43 +116,56 @@ export const UploadMarks = () => {
 
 
 
-  const handleSubmit = async () => {
-    if (!studentsData?.getStudentsByClass?.length) {
-      setAlert({ show: true, variant: 'warning', message: 'No students found to submit marks.' });
-      return;
-    }
-    console.log("handle submit")
-    const marksArray = studentsData.getStudentsByClass.map(stu => {
-      const regNo = stu.registrationNo.toString();
-      let enteredMarks = marksMap[regNo];
-      enteredMarks = enteredMarks === '' || enteredMarks === undefined ? 0 : Number(enteredMarks);
-      if (enteredMarks > totalMarks) enteredMarks = totalMarks;
+const handleSubmit = async () => {
+  if (!selectedClass) {
+    setAlert({ show: true, variant: 'warning', message: 'Please select a class first.' });
+    return;
+  }
 
-      return {
-        registrationNo: regNo,
-        subjectCode: selectedClass.subjectCode,
-        marks: enteredMarks,
-        markType,
-      };
+  if (!studentsData?.getStudentsByClass?.length) {
+    setAlert({ show: true, variant: 'warning', message: 'No students found to submit marks.' });
+    return;
+  }
+
+  const marksArray = studentsData.getStudentsByClass.map(stu => {
+    const regNo = stu.registrationNo.toString();
+    let enteredMarks = marksMap[regNo];
+    enteredMarks = enteredMarks === '' || enteredMarks === undefined ? 0 : Number(enteredMarks);
+    if (enteredMarks > totalMarks) enteredMarks = totalMarks;
+
+    return {
+      registrationNo: regNo,
+      subjectCode: selectedClass.subjectCode,
+      marks: enteredMarks,
+      markType,
+    };
+  });
+
+  console.log("Payload to submit:", marksArray);
+
+  try {
+    const res = await bulkEnterMarks({
+      variables: {
+        marks: marksArray,
+        semester_id: selectedClass.semester_id, // ensure this exists
+        emp_id: empId,                          // teacher ID
+        section_id: selectedClass.section_id,   // ensure this exists
+      },
     });
 
-
-    console.log("Payload to submit:", marksArray);
-
-    try {
-      const res = await bulkEnterMarks({ variables: { marks: marksArray } });
-      if (res.data.bulkEnterMarks.success) {
-        setAlert({ show: true, variant: 'success', message: res.data.bulkEnterMarks.message });
-        setMarksMap({});
-        setFile(null);
-      } else {
-        setAlert({ show: true, variant: 'danger', message: res.data.bulkEnterMarks.message });
-      }
-    } catch (err) {
-      console.error("Error submitting marks:", err);
-      setAlert({ show: true, variant: 'danger', message: "Error submitting marks: " + err.message });
+    if (res.data.bulkEnterMarks.success) {
+      setAlert({ show: true, variant: 'success', message: res.data.bulkEnterMarks.message });
+      setMarksMap({});
+      setFile(null);
+    } else {
+      setAlert({ show: true, variant: 'danger', message: res.data.bulkEnterMarks.message });
     }
-  };
+  } catch (err) {
+    console.error("Error submitting marks:", err);
+    setAlert({ show: true, variant: 'danger', message: "Error submitting marks: " + err.message });
+  }
+};
+
 
 
   const handleFileChange = (e) => {

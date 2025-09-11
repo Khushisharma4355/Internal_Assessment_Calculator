@@ -243,6 +243,7 @@ const syncDatabase = async () => {
 
     // Sync all models
     console.log('Syncing models...');
+    // await Assessment.drop();
     await sequelize.sync();
 // await Announcement.drop();
     console.log("All models synced successfully.");

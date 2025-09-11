@@ -8,7 +8,8 @@ import Section from "./Section.js";
 
 const Assessment = sequelize.define("Assessment", {
   assmt_id: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
+    autoIncrement:true,
     allowNull: false,
     primaryKey: true,
   },
