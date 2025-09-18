@@ -259,3 +259,32 @@ export const UPDATE_ANNOUNCEMENT = gql`
     }
   }
 `;
+export const GET_ACTIVITIES = gql`
+  query GetActivities($limit: Int) {
+    getActivities(limit: $limit) {
+      id
+      action
+      details
+      createdAt
+      teacher {
+        emp_name
+      }
+    }
+  }
+`;
+
+export const GET_TEACHER_ACTIVITIES = gql`
+  query GetTeacherActivities($emp_id: String!, $limit: Int) {
+    getTeacherActivities(emp_id: $emp_id, limit: $limit) {
+      id
+      action
+      details
+      createdAt
+      teacher {
+        emp_name
+      }
+    }
+  }
+`;
+
+

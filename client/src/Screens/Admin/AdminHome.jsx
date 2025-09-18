@@ -10,7 +10,7 @@ import { Pie, Bar, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, PointElement, LineElement } from 'chart.js';
 import { GET_ADMIN_DATA, GET_COURSE_COUNT, GET_STUDENT_COUNT, GET_TEACHER_COUNT } from '../../GraphQL/Queries';
 import { RingLoader } from '../../Components/Spinner/RingLoader';
-
+import { GET_ACTIVITIES } from '../../GraphQL/Queries';
 // Register ChartJS components
 ChartJS.register(
     ArcElement, Tooltip, Legend, CategoryScale,
@@ -44,6 +44,12 @@ export const AdminHome = () => {
     const { data: studentCount, loading: studentsLoading } = useQuery(GET_STUDENT_COUNT)
     const { data: teacherCount, loading: teacherLoading } = useQuery(GET_TEACHER_COUNT)
     const { data: courseCount, loading: courseLoading } = useQuery(GET_COURSE_COUNT)
+    const { data: activityData, loading: activitiesLoading, error: activitiesError } = useQuery(
+        GET_ACTIVITIES,
+        { variables: { limit: 5 } } // Fetch latest 10 activities
+    );
+
+    const activities = activityData?.getActivities || [];
     const totalStudents = studentCount?.getStudentCount;
     const totalTeachers = teacherCount?.getTeacherCount;
     const totalCourses = courseCount?.getCourseCount;
@@ -151,7 +157,7 @@ export const AdminHome = () => {
                         </div>
                     </div>
                 )}
-                <Container style={{marginLeft:isDesktop?250:0, width:"auto"}}>
+                <Container style={{ marginLeft: isDesktop ? 250 : 0, width: "auto" }}>
                     <Row className='mb-4'>
                         <Col>
                             <h2 style={{ color: '#1d3557' }}>Welcome, <span style={{ color: 'orange' }}>{adminName}</span></h2>
@@ -415,31 +421,52 @@ export const AdminHome = () => {
                         </Col>
 
                         {/* Recent Activity */}
+                        {/* Recent Activity */}
                         <Col md={12} lg={6} className="mb-4">
-                            <Card className="shadow-sm h-100">
-                                <Card.Header>Recent Activity</Card.Header>
-                                <Card.Body style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                            <Card className="shadow-sm h-100 d-flex flex-column">
+                                <Card.Header style={{ backgroundColor: "white", borderBottom: "1px solid rgba(0,0,0,.125)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                    <h5 className="mb-0">Recent Activity</h5>
+                                    <Button
+                                        variant="link"
+                                        className="p-0 text-decoration-none"
+                                        style={{ color: "#1d3557", fontWeight: "500" }}
+                                        onClick={() => navigate("/admin/activities")}
+                                    >
+                                        See All
+                                    </Button>
+                                </Card.Header>
+
+                                {/* Scrollable Activity List */}
+                                <Card.Body style={{ maxHeight: '250px', overflowY: 'auto' }}>
+                                    {activitiesLoading && <p>Loading activities...</p>}
+                                    {activitiesError && <Alert variant="danger">Error loading activities</Alert>}
+                                    {!activitiesLoading && activities.length === 0 && (
+                                        <p className="text-muted">No recent activities</p>
+                                    )}
+
                                     <ListGroup variant="flush">
-                                        <ListGroup.Item>
-                                            <small className="text-muted">Today, 10:30 AM</small><br />
-                                            <strong>Ms. Sharma</strong> submitted Math test marks
-                                        </ListGroup.Item>
-                                        <ListGroup.Item>
-                                            <small className="text-muted">Yesterday, 3:45 PM</small><br />
-                                            <strong>Mr. Khan</strong> requested course change
-                                        </ListGroup.Item>
-                                        <ListGroup.Item>
-                                            <small className="text-muted">Yesterday, 11:20 AM</small><br />
-                                            <strong>System</strong> 15 new student accounts created
-                                        </ListGroup.Item>
-                                        <ListGroup.Item>
-                                            <small className="text-muted">Monday, 9:15 AM</small><br />
-                                            <strong>Admin</strong> updated school policies
-                                        </ListGroup.Item>
+                                        {activities.map((activity) => (
+                                            <ListGroup.Item key={activity.id}>
+                                                <small className="text-muted">
+                                                    {new Date(activity.createdAt).toLocaleString()}
+                                                </small>
+                                                <br />
+                                                <strong>{activity.teacher?.emp_name || "System"}</strong> {activity.action}
+                                                {activity.details && (
+                                                    <div className="text-muted">{activity.details}</div>
+                                                )}
+                                            </ListGroup.Item>
+                                        ))}
                                     </ListGroup>
                                 </Card.Body>
+
+
+
                             </Card>
                         </Col>
+
+
+
                     </Row>
                 </Container>
             </div>

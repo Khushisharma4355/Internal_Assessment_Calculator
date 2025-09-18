@@ -111,3 +111,13 @@ export const REMOVE_STUDENT=gql`
    removeStudent(registrationNo: $registrationNo)
   }
 `
+export const CREATE_ACTIVITY = gql`
+  mutation CreateActivity($input: CreateActivityInput!) {
+    createActivity(input: $input) {
+      id
+      action
+      details
+      createdAt
+    }
+  }
+`;

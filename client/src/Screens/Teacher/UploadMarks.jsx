@@ -19,6 +19,7 @@ import { FiBook, FiUsers, FiMail, FiPhone, FiUpload, FiArrowLeft, FiUser } from 
 import { RingLoader } from '../../Components/Spinner/RingLoader';
 import { FaBars, FaTimes } from "react-icons/fa";
 import * as XLSX from 'xlsx';
+import { CREATE_ACTIVITY } from '../../GraphQL/Mutation';
 
 const BULK_ENTER_MARKS = gql`
   mutation BulkEnterMarks(
@@ -75,7 +76,7 @@ export const UploadMarks = () => {
   });
 
   const [bulkEnterMarks, { loading: loadingSubmit }] = useMutation(BULK_ENTER_MARKS);
-
+  const [createActivity] = useMutation(CREATE_ACTIVITY);
   const handleMarkChange = (registrationNo, value) => {
     const regNo = registrationNo.toString(); // normalize
     if (value === '') {
@@ -144,26 +145,38 @@ const handleSubmit = async () => {
   console.log("Payload to submit:", marksArray);
 
   try {
-    const res = await bulkEnterMarks({
+  const res = await bulkEnterMarks({
+    variables: {
+      marks: marksArray,
+      semester_id: selectedClass.semester_id,
+      emp_id: empId,
+      section_id: selectedClass.section_id,
+    },
+  });
+
+  if (res.data.bulkEnterMarks.success) {
+    // ✅ Log activity here
+    await createActivity({
       variables: {
-        marks: marksArray,
-        semester_id: selectedClass.semester_id, // ensure this exists
-        emp_id: empId,                          // teacher ID
-        section_id: selectedClass.section_id,   // ensure this exists
+        input: {
+          action: "Uploaded Marks",
+          details: `Uploaded ${markType} marks for ${selectedClass.subjectName} (${selectedClass.subjectCode}), Section ${selectedClass.section_id}`,
+          emp_id: empId,
+        },
       },
     });
 
-    if (res.data.bulkEnterMarks.success) {
-      setAlert({ show: true, variant: 'success', message: res.data.bulkEnterMarks.message });
-      setMarksMap({});
-      setFile(null);
-    } else {
-      setAlert({ show: true, variant: 'danger', message: res.data.bulkEnterMarks.message });
-    }
-  } catch (err) {
-    console.error("Error submitting marks:", err);
-    setAlert({ show: true, variant: 'danger', message: "Error submitting marks: " + err.message });
+    setAlert({ show: true, variant: 'success', message: res.data.bulkEnterMarks.message });
+    setMarksMap({});
+    setFile(null);
+  } else {
+    setAlert({ show: true, variant: 'danger', message: res.data.bulkEnterMarks.message });
   }
+} catch (err) {
+  console.error("Error submitting marks:", err);
+  setAlert({ show: true, variant: 'danger', message: "Error submitting marks: " + err.message });
+}
+
 };
 
 

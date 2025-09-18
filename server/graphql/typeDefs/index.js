@@ -11,6 +11,7 @@ import department from "./department.js";
 import {emailTypedefs} from "./shared.js"
 // import { typeDefs } from "./checkEmail.js";
 import announcementTypeDefs from "./announcement.js";
+import activityTypeDefs from "./activity.js";
 const root = gql`
   type Query
   type Mutation
@@ -27,5 +28,6 @@ export default [
   // shared,
   department,
   emailTypedefs,
+  activityTypeDefs,
   announcementTypeDefs
 ];

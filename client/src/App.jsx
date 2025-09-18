@@ -27,7 +27,7 @@ import { Reports } from './Screens/Teacher/Reports';
 import { UploadMarks } from './Screens/Teacher/UploadMarks';
 import { Managestu } from './Screens/Teacher/ManageStudents';
 import TeacherAnnouncements from './Screens/Teacher/Announcement';
-
+import { TeacherActivities } from './Screens/Teacher/TeacherActivities';
 // ========== ADMIN ==========
 import { AdminHome } from './Screens/Admin/AdminHome';
 import { TeacherMgmt } from './Screens/Admin/TeacherMgmt';
@@ -38,6 +38,7 @@ import { BulkTeacherImport } from './Components/Admin/bulkimportTeacher';
 import { SendAllReports } from './Screens/Admin/SendAllReports';
 import { Course } from './Screens/Admin/Courses';
 import { CourseDetails } from './Screens/Admin/CourseDetails';
+import AdminActivities from './Screens/Admin/AdminActivities';
 
 // ========== COMMON ==========
 import NotFoundPage from './Screens/NotFoundPage';
@@ -65,7 +66,8 @@ function App() {
         <Route path="/teachers/uploadmarks" element={<UploadMarks />} />
         <Route path="/teachers/managestudents" element={<Managestu />} />
         <Route path="/teachers/announcements" element={<TeacherAnnouncements />} />
-
+        <Route path="/teacher/activities" element={<TeacherActivities />} />
+        
         {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/" element={<AdminHome />} />
@@ -78,7 +80,7 @@ function App() {
         <Route path="/admin/courses" element={<Course />} />
         <Route path="/admin/courses/:courseId" element={<CourseDetails />} />
         <Route path="/admin/bulk-import" element={<BulkStudentImport />} />
-
+        <Route path="/admin/activities" element={<AdminActivities />} />
         {/* Not Found */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
